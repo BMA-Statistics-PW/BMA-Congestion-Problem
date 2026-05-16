@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BMA Traffic Congestion Portfolio Dashboard (FY 2566-2568)</title>
+  <title>แดชบอร์ดวิเคราะห์จุดปัญหาการจราจรติดขัด กรุงเทพมหานคร (ปีงบประมาณ 2566-2568)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -21,6 +21,7 @@
       --paper: #f5f7fa;
       --panel: #ffffff;
       --line: #d9e2ec;
+      --header-accent: #00CED1;
     }
 
     * { box-sizing: border-box; }
@@ -28,47 +29,50 @@
     body {
       margin: 0;
       font-family: "Sarabun", sans-serif;
+      font-size: 16px;
       color: var(--ink);
       background:
         radial-gradient(circle at 15% 10%, rgba(47, 102, 144, 0.12), transparent 38%),
         radial-gradient(circle at 85% 0%, rgba(58, 161, 126, 0.12), transparent 32%),
         var(--paper);
-      line-height: 1.5;
+      line-height: 1.65;
     }
 
     .hero {
-      padding: 30px 22px;
-      background: #004d40;
-      color: #fff;
-      box-shadow: 0 4px 18px rgba(16, 42, 67, 0.28);
+      padding: 36px 24px;
+      background: linear-gradient(135deg, #00b8c0 0%, var(--header-accent) 55%, #6ee7e8 100%);
+      color: #083344;
+      box-shadow: 0 4px 18px rgba(16, 42, 67, 0.18);
     }
 
     .hero h1 {
       margin: 0;
       font-family: "Sarabun", sans-serif;
-      font-size: 24px;
+      font-size: clamp(1.8rem, 2vw + 1rem, 2.6rem);
+      line-height: 1.25;
       letter-spacing: 0.2px;
     }
 
     .hero p {
-      margin: 8px 0 0;
-      opacity: 0.95;
-      font-size: 14px;
+      margin: 12px 0 0;
+      opacity: 0.98;
+      font-size: clamp(1rem, 0.7vw + 0.8rem, 1.15rem);
+      max-width: 980px;
     }
 
     .meta {
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
-      margin-top: 10px;
-      font-size: 12px;
-      opacity: 0.9;
+      margin-top: 14px;
+      font-size: clamp(0.82rem, 0.35vw + 0.75rem, 0.95rem);
+      opacity: 0.95;
     }
 
     .container {
       max-width: 1280px;
       margin: 0 auto;
-      padding: 22px;
+      padding: 24px;
     }
 
     .kpi-grid {
@@ -81,12 +85,12 @@
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 14px;
+      padding: 16px;
       box-shadow: 0 1px 3px rgba(16, 42, 67, 0.06);
     }
 
     .kpi .label {
-      font-size: 12px;
+      font-size: clamp(0.76rem, 0.3vw + 0.72rem, 0.9rem);
       color: var(--steel);
       font-weight: 600;
       text-transform: uppercase;
@@ -94,37 +98,43 @@
     }
 
     .kpi .value {
-      margin-top: 4px;
+      margin-top: 6px;
       font-family: "Sarabun", sans-serif;
-      font-size: 30px;
+      font-size: clamp(1.7rem, 1vw + 1.2rem, 2.2rem);
       color: var(--sky);
+      line-height: 1.2;
     }
 
     .kpi .hint {
-      margin-top: 2px;
-      font-size: 12px;
+      margin-top: 4px;
+      font-size: clamp(0.82rem, 0.3vw + 0.74rem, 0.95rem);
       color: var(--steel);
     }
 
     .section {
-      margin-top: 16px;
+      margin-top: 18px;
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 18px;
+      padding: 20px;
       box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06);
     }
 
     .section h2 {
       margin: 0;
-      font-size: 18px;
+      font-size: clamp(1.2rem, 0.7vw + 1rem, 1.5rem);
       color: var(--ink);
+      line-height: 1.35;
+    }
+
+    .section h3 {
+      line-height: 1.4;
     }
 
     .section p.sub {
-      margin: 5px 0 12px;
+      margin: 8px 0 14px;
       color: var(--steel);
-      font-size: 13px;
+      font-size: clamp(0.92rem, 0.35vw + 0.84rem, 1rem);
     }
 
     .two-col {
@@ -136,7 +146,7 @@
     .card {
       border: 1px solid var(--line);
       border-radius: 10px;
-      padding: 12px;
+      padding: 14px;
       background: #fbfdff;
     }
 
@@ -150,13 +160,14 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
+      font-size: clamp(0.9rem, 0.25vw + 0.84rem, 0.98rem);
     }
 
     th, td {
       border-bottom: 1px solid var(--line);
       text-align: left;
-      padding: 9px 8px;
+      padding: 10px 8px;
+      vertical-align: top;
     }
 
     th {
@@ -167,9 +178,9 @@
 
     .tag {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: 999px;
-      font-size: 11px;
+      font-size: clamp(0.75rem, 0.2vw + 0.72rem, 0.86rem);
       font-weight: 600;
     }
 
@@ -185,8 +196,9 @@
       border-left: 4px solid var(--amber);
       background: #fffaeb;
       border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 13px;
+      padding: 12px 14px;
+      font-size: clamp(0.92rem, 0.35vw + 0.84rem, 1rem);
+      line-height: 1.7;
     }
 
     .area-grid {
@@ -200,66 +212,139 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       background: #ffffff;
-      padding: 8px;
+      padding: 10px;
     }
 
     .area-card .k {
-      font-size: 12px;
+      font-size: clamp(0.8rem, 0.22vw + 0.76rem, 0.9rem);
       color: var(--steel);
       font-weight: 600;
     }
 
     .area-card .v {
-      font-size: 22px;
+      font-size: clamp(1.2rem, 0.7vw + 1rem, 1.5rem);
       color: var(--ink);
       font-weight: 700;
       line-height: 1.2;
-      margin-top: 2px;
+      margin-top: 4px;
+    }
+
+    .footer-credit {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(72, 101, 129, 0.18);
+      font-size: clamp(0.84rem, 0.25vw + 0.8rem, 0.95rem);
+      color: var(--ink);
+      line-height: 1.7;
     }
 
     footer {
-      margin-top: 16px;
+      margin-top: 18px;
       text-align: center;
-      font-size: 12px;
+      font-size: clamp(0.82rem, 0.2vw + 0.78rem, 0.92rem);
       color: var(--steel);
-      padding-bottom: 22px;
+      padding-bottom: 24px;
     }
 
     @media (max-width: 980px) {
+      body {
+        font-size: 15px;
+      }
+
       .two-col { grid-template-columns: 1fr; }
-      .hero h1 { font-size: 21px; }
+      .hero {
+        padding: 30px 20px;
+      }
       #map { height: 430px; }
+      .container {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        padding: 26px 18px;
+      }
+
+      .meta {
+        gap: 10px;
+        flex-direction: column;
+      }
+
+      .container {
+        padding: 18px;
+      }
+
+      .section,
+      .kpi,
+      .card {
+        padding: 14px;
+      }
+
+      #map {
+        height: 360px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        font-size: 14px;
+      }
+
+      .hero {
+        padding: 22px 16px;
+      }
+
+      .container {
+        padding: 14px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      table {
+        font-size: 0.86rem;
+      }
+
+      th, td {
+        padding: 8px 6px;
+      }
+
+      #map {
+        height: 300px;
+      }
     }
   </style>
 </head>
 <body>
   <header class="hero">
-    <h1>BMA Traffic Congestion Dashboard</h1>
-    <p>ระบบนำเสนอข้อมูลจุดปัญหาจราจรติดขัด กรุงเทพมหานคร ปี 2566-2568 สำหรับผลงานเชิงนโยบายและพอร์ตโฟลิโอ</p>
+    <h1>แดชบอร์ดวิเคราะห์จุดปัญหาการจราจรติดขัด กรุงเทพมหานคร</h1>
+    <p>นำเสนอข้อมูลและการวิเคราะห์จุดปัญหาการจราจรติดขัดในพื้นที่กรุงเทพมหานคร เพื่อใช้ประกอบการติดตามสถานการณ์ วางแผนแก้ไขปัญหา และสนับสนุนการตัดสินใจเชิงนโยบายในปีงบประมาณ 2566-2568</p>
     <div class="meta">
-      <span>Scope: 50 Districts, 6 Zones</span>
-      <span>Spatial lineage threshold: 250m</span>
-      <span>Updated: 17 May 2026</span>
+      <span>ครอบคลุมพื้นที่ 50 เขต 6 โซน</span>
+      <span>เกณฑ์เชื่อมโยงข้อมูลเชิงพื้นที่ 250 เมตร</span>
+      <span>อัปเดตล่าสุด: 17 พฤษภาคม 2026</span>
     </div>
   </header>
 
   <main class="container">
     <section class="kpi-grid" aria-label="key indicators">
-      <article class="kpi"><div class="label">FY 2566 Inventory</div><div class="value" id="kpi2566">-</div><div class="hint">จุดที่รวบรวมทั้งหมด</div></article>
-      <article class="kpi"><div class="label">FY 2567 Filtered</div><div class="value" id="kpi2567">-</div><div class="hint">Carry + จุดใหม่</div></article>
-      <article class="kpi"><div class="label">FY 2568 Continued</div><div class="value" id="kpi2568">-</div><div class="hint">Carry + Reactivated</div></article>
-      <article class="kpi"><div class="label">Persistent 3-Year</div><div class="value" id="kpiPersistent">-</div><div class="hint">District + Road persistent</div></article>
+      <article class="kpi"><div class="label">FY 2566 Inventory</div><div class="value" id="kpi2566">-</div><div class="hint">จุดปัญหาที่รวบรวมทั้งหมด</div></article>
+      <article class="kpi"><div class="label">FY 2567 Filtered</div><div class="value" id="kpi2567">-</div><div class="hint">จุดต่อเนื่องและจุดใหม่</div></article>
+      <article class="kpi"><div class="label">FY 2568 Continued</div><div class="value" id="kpi2568">-</div><div class="hint">จุดต่อเนื่องและจุดกลับมาเกิดซ้ำ</div></article>
+      <article class="kpi"><div class="label">Persistent 3-Year</div><div class="value" id="kpiPersistent">-</div><div class="hint">จุดที่พบต่อเนื่อง 3 ปี</div></article>
       <article class="kpi"><div class="label">Drop-out 66->67</div><div class="value" id="kpiDrop">-</div><div class="hint" id="kpiDropHint">-</div></article>
-      <article class="kpi"><div class="label">Persistent Corridors</div><div class="value" id="kpiCorridors">-</div><div class="hint">From corridor sheet</div></article>
+      <article class="kpi"><div class="label">Persistent Corridors</div><div class="value" id="kpiCorridors">-</div><div class="hint">แนวถนนที่พบปัญหาต่อเนื่อง</div></article>
     </section>
 
     <section class="section">
-      <h2>Area Type Analytics</h2>
-      <p class="sub">สรุปลักษณะพื้นที่ที่เป็นจุดปัญหาจราจร และสัดส่วนตามโซนในปีล่าสุด</p>
+      <h2>การวิเคราะห์ตามลักษณะพื้นที่</h2>
+      <p class="sub">สรุปลักษณะของพื้นที่ที่เกิดปัญหาจราจรติดขัด และแสดงสัดส่วนการกระจายตัวตามโซนของกรุงเทพมหานครในปีงบประมาณ 2568</p>
       <div class="two-col">
         <div class="card">
-          <h3 style="margin:0 0 6px; font-size:15px;">ลักษณะพื้นที่จุดปัญหาจราจร</h3>
-          <p style="margin:0 0 10px; font-size:12px; color:#486581;">เช่น ทางแยก คอขวด สถานศึกษา/โรงเรียน และอื่นๆ (คำนวณจากข้อมูลเต็ม)</p>
+          <h3 style="margin:0 0 8px; font-size:clamp(1rem, 0.45vw + 0.92rem, 1.12rem);">ลักษณะพื้นที่ของจุดปัญหาจราจร</h3>
+          <p style="margin:0 0 12px; font-size:clamp(0.88rem, 0.25vw + 0.82rem, 0.96rem); color:#486581;">เช่น ทางแยก คอขวด สถานศึกษา/โรงเรียน ชุมชน/ตลาด และพื้นที่สำคัญประเภทอื่น ๆ</p>
           <div id="areaTypeSummary" class="area-grid"></div>
           <table id="areaTypeTable"></table>
         </div>
@@ -268,12 +353,12 @@
     </section>
 
     <section class="section">
-      <h2>Hotspot Map (OpenStreetMap)</h2>
-      <p class="sub">แสดงจุดปัญหาเรื้อรัง 14 จุดที่พบต่อเนื่อง 3 ปี เพื่อจัดลำดับความสำคัญการแก้ไขเชิงโครงสร้าง</p>
+      <h2>แผนที่จุดปัญหาจราจร (OpenStreetMap)</h2>
+      <p class="sub">แสดงตำแหน่งจุดปัญหาการจราจรที่สำคัญ เพื่อใช้สนับสนุนการติดตามพื้นที่เสี่ยง การเปรียบเทียบข้อมูลรายปี และการจัดลำดับความสำคัญในการแก้ไขปัญหา</p>
       <div class="card" style="margin-bottom:10px;">
-        <label for="mapYearFilter"><strong>Filter Year:</strong></label>
-        <select id="mapYearFilter" style="margin-left:8px; padding:5px 8px; border:1px solid #d9e2ec; border-radius:6px;">
-          <option value="all">All</option>
+        <label for="mapYearFilter"><strong>เลือกปีงบประมาณ:</strong></label>
+        <select id="mapYearFilter" style="margin-left:8px; padding:7px 10px; border:1px solid #d9e2ec; border-radius:6px; font-size:0.95rem;">
+          <option value="all">ทั้งหมด</option>
           <option value="2566">2566</option>
           <option value="2567">2567</option>
           <option value="2568">2568</option>
@@ -283,25 +368,28 @@
     </section>
 
     <section class="section">
-      <h2>Chronic Hotspots (3-Year Persistent)</h2>
-      <p class="sub">สรุปจุดสำคัญสำหรับใช้กำหนดนโยบายในระดับ corridor-level</p>
+      <h2>จุดปัญหาเรื้อรังที่พบต่อเนื่อง 3 ปี</h2>
+      <p class="sub">สรุปจุดปัญหาสำคัญที่ควรให้ความสำคัญเชิงนโยบายและการบริหารจัดการในระดับแนวถนนหรือโครงข่าย</p>
       <table id="hotspotTable"></table>
     </section>
 
     <section class="section">
-      <h2>Policy Findings</h2>
+      <h2>ข้อค้นพบเชิงนโยบาย</h2>
       <div class="findings">
-        <div class="finding"><strong>1) การลดจำนวนจุด 266 -> 127 -> 77</strong> สะท้อนทั้งผลการแก้ไขและกระบวนการคัดกรองทางวิศวกรรม ไม่ควรตีความว่าแก้ไขสำเร็จทั้งหมดโดยอัตโนมัติ</div>
-        <div class="finding"><strong>2) Persistent 3-year (23 จุด)</strong> ต้องใช้มาตรการเชิงโครงสร้างร่วมกับการจัดการจราจรเฉพาะช่วงเวลา</div>
-        <div class="finding"><strong>3) Priority Zones</strong> โซนกรุงเทพใต้และกรุงเทพเหนือยังมีสัดส่วนจุดสูง ควรมีแผนรายโซนที่ชัดเจน</div>
-        <div class="finding"><strong>4) Corridor-based Intervention</strong> การแก้แบบรายจุดอย่างเดียวไม่พอใน corridor ที่เกิดซ้ำ ควรกำหนดแผนรวมทั้งแนวเส้นทาง</div>
+        <div class="finding"><strong>1) การลดลงของจำนวนจุดจาก 266 → 127 → 77</strong> สะท้อนทั้งผลของการแก้ไขปัญหาในบางพื้นที่ และการคัดกรองข้อมูลให้มีความเฉพาะเจาะจงมากขึ้นในแต่ละปี</div>
+        <div class="finding"><strong>2) จุดปัญหาที่พบต่อเนื่อง 3 ปี</strong> ควรได้รับการพิจารณามาตรการแก้ไขเชิงโครงสร้าง ควบคู่กับการบริหารจัดการจราจรในระดับพื้นที่</div>
+        <div class="finding"><strong>3) โซนที่ควรเฝ้าระวังเป็นพิเศษ</strong> ควรใช้ข้อมูลเชิงพื้นที่และข้อมูลรายปีร่วมกัน เพื่อกำหนดลำดับความสำคัญของพื้นที่ที่ยังมีปัญหาสะสม</div>
+        <div class="finding"><strong>4) การแก้ไขเชิงแนวเส้นทาง (Corridor-based Intervention)</strong> เหมาะสำหรับพื้นที่ที่มีจุดปัญหากระจุกตัวต่อเนื่องบนถนนสายหลักหรือโครงข่ายเดียวกัน</div>
       </div>
     </section>
 
     <footer>
-      Data and tiles: OpenStreetMap contributors (ODbL) | Dashboard prepared for portfolio presentation<br />
-      จัดทำขึ้นเพื่อประโยชน์สาธารณะ ไม่อนุญาตให้นำไปใช้เพื่อแสวงหาผลประโยชน์ส่วนบุคคล<br />
-      Statistics and Research Group, Policy and Planning Division, Traffic and Transportation Department, BMA
+      Data and tiles: OpenStreetMap contributors (ODbL) | จัดทำเพื่อใช้ประกอบการนำเสนอและวิเคราะห์ข้อมูล<br />
+      จัดทำขึ้นเพื่อประโยชน์สาธารณะ ไม่อนุญาตให้นำไปใช้เพื่อแสวงหาผลประโยชน์เชิงพาณิชย์โดยไม่ได้รับอนุญาต
+      <div class="footer-credit">
+        © Prapawadee_W.<br />
+        กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สำนักการจราจรและขนส่ง กรุงเทพมหานคร
+      </div>
     </footer>
   </main>
 
