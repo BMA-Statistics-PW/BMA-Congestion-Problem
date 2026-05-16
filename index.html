@@ -61,7 +61,10 @@
       letter-spacing: 0.1px;
       color: #ffffff;
       font-weight: 700;
-      max-width: 980px;
+      max-width: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .hero p {
@@ -293,6 +296,12 @@
     @media (max-width: 768px) {
       .hero {
         padding: 38px 18px 30px;
+      }
+
+      .hero h1 {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
       }
 
       .meta {
