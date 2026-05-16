@@ -56,9 +56,9 @@
     .hero h1 {
       margin: 0;
       font-family: "Sarabun", sans-serif;
-      font-size: clamp(2rem, 2.2vw + 1rem, 2.9rem);
-      line-height: 1.22;
-      letter-spacing: 0.2px;
+      font-size: clamp(1.6rem, 1.5vw + 0.95rem, 2.2rem);
+      line-height: 1.3;
+      letter-spacing: 0.1px;
       color: #ffffff;
       font-weight: 700;
       max-width: 980px;
@@ -67,10 +67,10 @@
     .hero p {
       margin: 18px 0 0;
       opacity: 0.98;
-      font-size: clamp(1rem, 0.7vw + 0.82rem, 1.16rem);
+      font-size: clamp(0.92rem, 0.45vw + 0.8rem, 1.02rem);
       max-width: 900px;
       color: rgba(255, 255, 255, 0.96);
-      line-height: 1.8;
+      line-height: 1.75;
     }
 
     .meta {
@@ -78,7 +78,7 @@
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 24px;
-      font-size: clamp(0.84rem, 0.35vw + 0.76rem, 0.96rem);
+      font-size: clamp(0.8rem, 0.22vw + 0.74rem, 0.9rem);
       opacity: 1;
       color: var(--header-meta);
     }
@@ -359,7 +359,7 @@
   <header class="hero">
     <div class="hero-inner">
       <h1>Dashboard วิเคราะห์จุดปัญหาการจราจรติดขัดในพื้นที่กรุงเทพมหานคร</h1>
-      <p>เพื่อใช้ประกอบการติดตามสถานการณ์ วางแผนแก้ไขปัญหา และสนับสนุนการตัดสินใจเชิงนโยบาย</p>
+      <p>เพื่อใช้ประกอบการติดตามสถานการณ์ วางแผนแก้ไขปัญหา และสนับสนุนการตัดสินใจเชิงนโยบายด้านการจราจรของกรุงเทพมหานคร</p>
       <div class="meta">
         <span>วิเคราะห์และจัดทำโดย © Prapawadee_W. กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สำนักการจราจรและขนส่ง กรุงเทพมหานคร</span>
         <span>ครอบคลุมพื้นที่ 50 เขต 6 โซน</span>
@@ -373,18 +373,18 @@
       <article class="kpi"><div class="label">ปีงบประมาณ 2566</div><div class="value" id="kpi2566">-</div><div class="hint">จุดปัญหาที่รวบรวมทั้งหมด</div></article>
       <article class="kpi"><div class="label">ปีงบประมาณ 2567</div><div class="value" id="kpi2567">-</div><div class="hint">จุดที่วิเคราะห์ทางพื้นที่แล้ว</div></article>
       <article class="kpi"><div class="label">ปีงบประมาณ 2568</div><div class="value" id="kpi2568">-</div><div class="hint">จุดที่วิเคราะห์ทางพื้นที่แล้ว</div></article>
-      <article class="kpi"><div class="label">จุดต่อเนื่อง</div><div class="value" id="kpiPersistent">-</div><div class="hint">จุดที่ดำเนินการติดตามต่อเนื่อง 3 ปี</div></article>
+      <article class="kpi"><div class="label">จุดต่อเนื่อง</div><div class="value" id="kpiPersistent">-</div><div class="hint">จุดที่ดำเนินการติดตามต่อเนื่อง</div></article>
       <article class="kpi"><div class="label">จุดที่ลดลง</div><div class="value" id="kpiDrop">-</div><div class="hint" id="kpiDropHint">-</div></article>
       <article class="kpi"><div class="label">แนวถนนต่อเนื่อง</div><div class="value" id="kpiCorridors">-</div><div class="hint">แนวถนนที่พบปัญหาต่อเนื่อง</div></article>
     </section>
 
     <section class="section">
       <h2>การวิเคราะห์ตามลักษณะพื้นที่</h2>
-      <p class="sub">สรุปลักษณะพื้นที่ที่เกิดปัญหาจราจรติดขัด และแสดงสัดส่วนการกระจายตัวของจุดปัญหา</p>
+      <p class="sub">สรุปลักษณะพื้นที่ที่เกิดปัญหาจราจรติดขัด และแสดงสัดส่วนการกระจายตัวตามโซนของกรุงเทพมหานคร</p>
       <div class="two-col">
         <div class="card">
           <h3 style="margin:0 0 8px; font-size:clamp(1rem, 0.45vw + 0.92rem, 1.12rem);">ลักษณะพื้นที่ของจุดปัญหาจราจร</h3>
-          <p style="margin:0 0 12px; font-size:clamp(0.88rem, 0.25vw + 0.82rem, 0.96rem); color:#486581;">อาทิ ทางแยก คอขวด สถานศึกษา/โรงเรียน ชุมชน/ตลาด ช่วงถนน/จุดกลับรถ และประเภทอื่น ๆ</p>
+          <p style="margin:0 0 12px; font-size:clamp(0.88rem, 0.25vw + 0.82rem, 0.96rem); color:#486581;">อาทิ ทางแยก คอขวด สถานศึกษา/โรงเรียน ชุมชน/ตลาด และช่วงถนนสำคัญ</p>
           <div id="areaTypeSummary" class="area-grid"></div>
           <table id="areaTypeTable"></table>
         </div>
@@ -398,7 +398,7 @@
 
     <section class="section">
       <h2>แผนที่จุดปัญหาจราจร (OpenStreetMap)</h2>
-      <p class="sub">แสดงตำแหน่งจุดปัญหาการจราจรที่สำคัญ เพื่อใช้สนับสนุนการติดตามและจัดลำดับความสำคัญ</p>
+      <p class="sub">แสดงตำแหน่งจุดปัญหาการจราจรที่สำคัญ เพื่อใช้สนับสนุนการติดตามเชิงพื้นที่</p>
       <div class="card" style="margin-bottom:10px;">
         <label for="mapYearFilter"><strong>เลือกปีงบประมาณ:</strong></label>
         <select id="mapYearFilter" style="margin-left:8px; padding:7px 10px; border:1px solid #d9e2ec; border-radius:6px; font-size:0.95rem;">
@@ -422,14 +422,14 @@
       <div class="findings">
         <div class="finding"><strong>1) ต้องคัดกรองข้อมูลให้มีความเฉพาะเจาะจงเพิ่มขึ้น</strong></div>
         <div class="finding"><strong>2) จุดปัญหาซ้ำซาก</strong> ควรได้รับการพิจารณามาตรการแก้ไขเชิงโครงสร้าง</div>
-        <div class="finding"><strong>3) </strong> ควรใช้ข้อมูลเชิงพื้นที่และข้อมูลพฤติกรรมร่วมกัน เพื่อสนับสนุนการตัดสินใจ</div>
-        <div class="finding"><strong>4) การแก้ไขตามแนวเส้นทาง (Corridor-based Intervention)</strong> เหมาะสำหรับพื้นที่ที่มีปัญหาเชื่อมโยงกันหลายจุด</div>
+        <div class="finding"><strong>3) </strong> ควรใช้ข้อมูลเชิงพื้นที่และข้อมูลพฤติกรรมร่วมกัน เพื่อเพิ่มความแม่นยำของการวิเคราะห์</div>
+        <div class="finding"><strong>4) การแก้ไขตามแนวเส้นทาง (Corridor-based Intervention)</strong> เหมาะสำหรับพื้นที่ที่มีลักษณะปัญหาต่อเนื่อง</div>
       </div>
     </section>
 
     <footer>
-      ข้อมูลแผนที่และชั้นข้อมูลพื้นฐาน: OpenStreetMap contributors (ODbL) | เพื่อใช้ประกอบการนำเสนอเชิงวิชาการและเชิงนโยบาย
-      <br></span>จัดทำขึ้นเพื่อประโยชน์สาธารณะ ไม่อนุญาตให้นำไปใช้เพื่อแสวงหาผลประโยชน์ส่วนตัว</span>
+      ข้อมูลแผนที่และชั้นข้อมูลพื้นฐาน: OpenStreetMap contributors (ODbL) | เพื่อใช้ประกอบการนำเสนอข้อมูลเชิงสาธารณะ
+      <br />จัดทำขึ้นเพื่อประโยชน์สาธารณะ ไม่อนุญาตให้นำไปใช้เพื่อแสวงหาผลประโยชน์ทางการค้า
       <div class="footer-credit">
         © Prapawadee_W.<br />
         กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สำนักการจราจรและขนส่ง กรุงเทพมหานคร
