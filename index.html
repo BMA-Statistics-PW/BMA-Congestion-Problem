@@ -368,7 +368,7 @@
   <header class="hero">
     <div class="hero-inner">
       <h1>Dashboard วิเคราะห์จุดปัญหาการจราจรติดขัดในพื้นที่กรุงเทพมหานคร</h1>
-      <p>เพื่อใช้ประกอบการติดตามสถานการณ์ วางแผนแก้ไขปัญหา และสนับสนุนการตัดสินใจเชิงนโยบายของหน่วยงานที่เกี่ยวข้อง</p>
+      <p>เพื่อใช้ประกอบการติดตามสถานการณ์ วางแผนแก้ไขปัญหา และสนับสนุนการตัดสินใจเชิงนโยบายในการบริหารจัดการจราจรบนพื้นฐานข้อมูลเชิงพื้นที่</p>
       <div class="meta">
         <span>วิเคราะห์และจัดทำโดย © Prapawadee_W. กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สำนักการจราจรและขนส่ง กรุงเทพมหานคร</span>
         <span>ครอบคลุมพื้นที่ 50 เขต 6 โซน</span>
@@ -379,21 +379,21 @@
 
   <main class="container">
     <section class="kpi-grid" aria-label="key indicators">
-      <article class="kpi"><div class="label">ปีงบประมาณ 2566</div><div class="value" id="kpi2566">-</div><div class="hint">จุดปัญหาที่รวบรวมทั้งหมด</div></article>
-      <article class="kpi"><div class="label">ปีงบประมาณ 2567</div><div class="value" id="kpi2567">-</div><div class="hint">จุดที่วิเคราะห์ทางพื้นที่</div></article>
-      <article class="kpi"><div class="label">ปีงบประมาณ 2568</div><div class="value" id="kpi2568">-</div><div class="hint">จุดที่วิเคราะห์ทางพื้นที่</div></article>
-      <article class="kpi"><div class="label">จุดต่อเนื่อง</div><div class="value" id="kpiPersistent">-</div><div class="hint">จุดที่ดำเนินการติดตามต่อเนื่อง</div></article>
+      <article class="kpi"><div class="label">ปีงบประมาณ 2566</div><div class="value" id="kpi2566">-</div><div class="hint">จุดปัญหาที่รวบรวมจากการตรวจสอบ</div></article>
+      <article class="kpi"><div class="label">ปีงบประมาณ 2567</div><div class="value" id="kpi2567">-</div><div class="hint">จุดที่วิเคราะห์ทางสถิติและเชิงพื้นที่</div></article>
+      <article class="kpi"><div class="label">ปีงบประมาณ 2568</div><div class="value" id="kpi2568">-</div><div class="hint">จุดที่วิเคราะห์ทางสถิติและเชิงพื้นที่</div></article>
+      <article class="kpi"><div class="label">จุดต่อเนื่อง</div><div class="value" id="kpiPersistent">-</div><div class="hint">จุดที่ดำเนินการตรวจพบต่อเนื่องอย่างน้อย 3 ปี</div></article>
       <article class="kpi"><div class="label">จุดที่ลดลง</div><div class="value" id="kpiDrop">-</div><div class="hint" id="kpiDropHint">-</div></article>
-      <article class="kpi"><div class="label">แนวถนนต่อเนื่อง</div><div class="value" id="kpiCorridors">-</div><div class="hint">แนวถนนที่พบปัญหาต่อเนื่อง</div></article>
+      <article class="kpi"><div class="label">แนวถนนต่อเนื่อง</div><div class="value" id="kpiCorridors">-</div><div class="hint">แนวถนนที่พบปัญหาต่อเนื่องอย่างน้อย 3 ปี</div></article>
     </section>
 
     <section class="section">
       <h2>การวิเคราะห์ตามลักษณะพื้นที่</h2>
-      <p class="sub">สรุปลักษณะพื้นที่ที่เกิดปัญหาจราจรติดขัด และแสดงสัดส่วนการกระจายในพื้นที่ต่าง ๆ</p>
+      <p class="sub">สรุปลักษณะพื้นที่ที่เกิดปัญหาจราจรติดขัด และแสดงสัดส่วนการกระจายตัวของจุดปัญหาในแต่ละประเภท</p>
       <div class="two-col">
         <div class="card">
           <h3 style="margin:0 0 8px; font-size:clamp(1rem, 0.45vw + 0.92rem, 1.12rem);">ลักษณะพื้นที่ของจุดปัญหาจราจร</h3>
-          <p style="margin:0 0 12px; font-size:clamp(0.88rem, 0.25vw + 0.82rem, 0.96rem); color:#486581;">อาทิ ทางแยก คอขวด สถานศึกษา/โรงเรียน ชุมชน/ตลาด ช่วงถนน/จุดกลับรถ และพื้นที่อื่น ๆ</p>
+          <p style="margin:0 0 12px; font-size:clamp(0.88rem, 0.25vw + 0.82rem, 0.96rem); color:#486581;">อาทิ ทางแยก คอขวด สถานศึกษา/โรงเรียน ชุมชน/ตลาด ช่วงถนน/จุดกลับรถ และพื้นที่พิเศษอื่น ๆ</p>
           <div id="areaTypeSummary" class="area-grid"></div>
           <table id="areaTypeTable"></table>
         </div>
@@ -421,7 +421,7 @@
     </section>
 
     <section class="section">
-      <h2>จุดปัญหาเรื้อรังที่พบต่อเนื่อง 3 ปี</h2>
+      <h2>"บริเวณถนนที่พบปัญหา"</h2>
       <p class="sub">สรุปจุดปัญหาสำคัญที่ควรให้ความสำคัญเชิงนโยบายและการบริหารจัดการ</p>
       <table id="hotspotTable"></table>
     </section>
@@ -432,13 +432,13 @@
         <div class="finding"><strong>1) ต้องคัดกรองข้อมูลให้มีความเฉพาะเจาะจงเพิ่มขึ้น</strong></div>
         <div class="finding"><strong>2) จุดปัญหาซ้ำซาก</strong> ควรได้รับการพิจารณามาตรการแก้ไขเชิงโครงสร้างและการบริหารจัดการอย่างต่อเนื่อง</div>
         <div class="finding"><strong>3) </strong> ควรใช้ข้อมูลเชิงพื้นที่และข้อมูลพฤติกรรมร่วมกัน เพื่อกำหนดมาตรการที่เหมาะสมกับบริบท</div>
-        <div class="finding"><strong>4) การแก้ไขตามแนวเส้นทาง (Corridor-based Intervention)</strong> เหมาะสำหรับพื้นที่ที่มีปัญหาเชื่อมโยงต่อเนื่องหลายจุด</div>
+        <div class="finding"><strong>4) การแก้ไขตามแนวเส้นทาง (Corridor-based Intervention)</strong> เหมาะสำหรับพื้นที่ที่มีจุดปัญหาต่อเนื่องหลายปีในแนวถนนเดียวกัน</div>
       </div>
     </section>
 
     <footer>
-      ข้อมูลแผนที่และชั้นข้อมูลพื้นฐาน: OpenStreetMap contributors (ODbL) | เพื่อใช้ประกอบการนำเสนอเชิงวิชาการและเชิงนโยบาย
-      <br />จัดทำขึ้นเพื่อประโยชน์สาธารณะ ไม่อนุญาตให้นำไปใช้แสวงหาผลประโยชน์เชิงพาณิชย์
+      ข้อมูลแผนที่และชั้นข้อมูลพื้นฐาน: OpenStreetMap contributors (ODbL) | เพื่อใช้ประกอบการนำเสนอและวิเคราะห์ภายในขอบเขตที่เหมาะสม
+      <br />จัดทำขึ้นเพื่อประโยชน์สาธารณะ ไม่อนุญาตให้นำไปใช้แสวงหาผลประโยชน์ส่วนบุคคล
       <div class="footer-credit">
         © Prapawadee_W.<br />
         กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สำนักการจราจรและขนส่ง กรุงเทพมหานคร
