@@ -403,6 +403,55 @@
       2568: "#3aa17e"
     };
 
+    const PRESENTATION_COLORS = [
+      "#0077B6",
+      "#00B4D8",
+      "#90E0EF",
+      "#F4A261",
+      "#E76F51",
+      "#6D597A",
+      "#2A9D8F",
+      "#577590"
+    ];
+
+    const doughnutLabelPlugin = {
+      id: "doughnutLabelPlugin",
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        const dataset = chart.data.datasets[0];
+        const meta = chart.getDatasetMeta(0);
+        if (!dataset || !meta || !meta.data) return;
+
+        const data = dataset.data || [];
+        const total = data.reduce((sum, value) => sum + Number(value || 0), 0);
+        if (!total) return;
+
+        ctx.save();
+        meta.data.forEach((arc, index) => {
+          const value = Number(data[index] || 0);
+          if (!value) return;
+
+          const percentage = (value / total) * 100;
+          if (percentage < 4) return;
+
+          const position = arc.tooltipPosition();
+          const label = `${value} (${percentage.toFixed(1)}%)`;
+          const bgColor = Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor[index] : "#0077B6";
+          const darkSliceColors = ["#0077B6", "#00B4D8", "#6D597A", "#577590", "#E76F51"];
+          const textColor = darkSliceColors.includes(bgColor) ? "#ffffff" : "#102a43";
+
+          ctx.font = "600 11px Sarabun";
+          ctx.fillStyle = textColor;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(label, position.x, position.y);
+        });
+        ctx.restore();
+      }
+    };
+
+    Chart.register(doughnutLabelPlugin);
+
     function toInt(value) {
       const n = Number(value);
       return Number.isFinite(n) ? Math.trunc(n) : null;
@@ -554,20 +603,64 @@
         zoneLatest[zone] = (zoneLatest[zone] || 0) + 1;
       });
 
+      const zoneEntries = Object.entries(zoneLatest).sort((a, b) => b[1] - a[1]);
+      const zoneLabels = zoneEntries.map(([label]) => label);
+      const zoneValues = zoneEntries.map(([, value]) => value);
+      const zoneColors = zoneLabels.map((_, index) => PRESENTATION_COLORS[index % PRESENTATION_COLORS.length]);
+
       new Chart(document.getElementById("zoneChart"), {
         type: "doughnut",
         data: {
-          labels: Object.keys(zoneLatest),
+          labels: zoneLabels,
           datasets: [{
-            data: Object.values(zoneLatest),
-            backgroundColor: ["#2f6690", "#d97706", "#3aa17e", "#8b5cf6", "#b42318", "#6b7280"]
+            data: zoneValues,
+            backgroundColor: zoneColors,
+            borderColor: "#ffffff",
+            borderWidth: 2,
+            hoverOffset: 10
           }]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: {
+            padding: 12
+          },
           plugins: {
-            title: { display: true, text: "Zone Share FY 2568" },
-            legend: { position: "right" }
-          }
+            title: {
+              display: true,
+              text: "สัดส่วนจุดปัญหาจราจรตามโซน ปีงบประมาณ 2568",
+              font: {
+                size: 16,
+                weight: "600"
+              },
+              padding: {
+                bottom: 12
+              }
+            },
+            legend: {
+              position: window.innerWidth <= 768 ? "bottom" : "right",
+              labels: {
+                usePointStyle: true,
+                pointStyle: "circle",
+                padding: 14,
+                font: {
+                  size: window.innerWidth <= 480 ? 11 : 12
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label(context) {
+                  const value = Number(context.raw || 0);
+                  const total = context.dataset.data.reduce((sum, item) => sum + Number(item || 0), 0);
+                  const pct = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
+                  return `${context.label}: ${value} จุด (${pct}%)`;
+                }
+              }
+            }
+          },
+          cutout: "42%"
         }
       });
 
