@@ -217,12 +217,12 @@
 
   <main class="container">
     <section class="kpi-grid" aria-label="key indicators">
-      <article class="kpi"><div class="label">FY 2566 Inventory</div><div class="value">266</div><div class="hint">จุดที่รวบรวมทั้งหมด</div></article>
-      <article class="kpi"><div class="label">FY 2567 Filtered</div><div class="value">127</div><div class="hint">Carry + จุดใหม่</div></article>
-      <article class="kpi"><div class="label">FY 2568 Continued</div><div class="value">77</div><div class="hint">Carry + Reactivated</div></article>
-      <article class="kpi"><div class="label">Persistent 3-Year</div><div class="value">23</div><div class="hint">Geo-matched top priority</div></article>
-      <article class="kpi"><div class="label">Drop-out 66->67</div><div class="value">204</div><div class="hint">76.7%</div></article>
-      <article class="kpi"><div class="label">Persistent Corridors</div><div class="value">25</div><div class="hint">DBSCAN-based</div></article>
+      <article class="kpi"><div class="label">FY 2566 Inventory</div><div class="value" id="kpi2566">-</div><div class="hint">จุดที่รวบรวมทั้งหมด</div></article>
+      <article class="kpi"><div class="label">FY 2567 Filtered</div><div class="value" id="kpi2567">-</div><div class="hint">Carry + จุดใหม่</div></article>
+      <article class="kpi"><div class="label">FY 2568 Continued</div><div class="value" id="kpi2568">-</div><div class="hint">Carry + Reactivated</div></article>
+      <article class="kpi"><div class="label">Persistent 3-Year</div><div class="value" id="kpiPersistent">-</div><div class="hint">District + Road persistent</div></article>
+      <article class="kpi"><div class="label">Drop-out 66->67</div><div class="value" id="kpiDrop">-</div><div class="hint" id="kpiDropHint">-</div></article>
+      <article class="kpi"><div class="label">Persistent Corridors</div><div class="value" id="kpiCorridors">-</div><div class="hint">From corridor sheet</div></article>
     </section>
 
     <section class="section">
@@ -237,6 +237,15 @@
     <section class="section">
       <h2>Hotspot Map (OpenStreetMap)</h2>
       <p class="sub">แสดงจุดปัญหาเรื้อรัง 14 จุดที่พบต่อเนื่อง 3 ปี เพื่อจัดลำดับความสำคัญการแก้ไขเชิงโครงสร้าง</p>
+      <div class="card" style="margin-bottom:10px;">
+        <label for="mapYearFilter"><strong>Filter Year:</strong></label>
+        <select id="mapYearFilter" style="margin-left:8px; padding:5px 8px; border:1px solid #d9e2ec; border-radius:6px;">
+          <option value="all">All</option>
+          <option value="2566">2566</option>
+          <option value="2567">2567</option>
+          <option value="2568">2568</option>
+        </select>
+      </div>
       <div id="map"></div>
     </section>
 
@@ -263,110 +272,236 @@
   </main>
 
   <script>
-    const byYear = [266, 127, 77];
-    const zoneYear2568 = {
-      "กรุงธนเหนือ": 10,
-      "กรุงธนใต้": 7,
-      "กรุงเทพกลาง": 18,
-      "กรุงเทพตะวันออก": 11,
-      "กรุงเทพเหนือ": 15,
-      "กรุงเทพใต้": 16
-    };
-
-    const chronicHotspots = [
-      { district: "บางบอน", road: "ถนนเอกชัย", n: 12, years: "[2566,2567,2568]", lat: 13.673869, lon: 100.425 },
-      { district: "สะพานสูง", road: "ถนนรามคำแหง", n: 9, years: "[2566,2567,2568]", lat: 13.781969, lon: 100.68284 },
-      { district: "จตุจักร", road: "ถนนกำแพงเพชร", n: 8, years: "[2566,2567,2568]", lat: 13.797452, lon: 100.54581 },
-      { district: "คลองเตย", road: "ถนนสุขุมวิท", n: 7, years: "[2566,2567,2568]", lat: 13.714488, lon: 100.592585 },
-      { district: "หนองแขม", road: "ถนนเพชรเกษม", n: 6, years: "[2566,2567,2568]", lat: 13.70686, lon: 100.36007 },
-      { district: "ปทุมวัน", road: "ถนนพระรามที่ 1", n: 5, years: "[2566,2567,2568]", lat: 13.74637, lon: 100.53267 },
-      { district: "ราชเทวี", road: "ถนนราชปรารภ", n: 5, years: "[2566,2567,2568]", lat: 13.750603, lon: 100.54114 },
-      { district: "ดุสิต", road: "ถนนสามเสน", n: 4, years: "[2566,2567,2568]", lat: 13.778319, lon: 100.508416 },
-      { district: "พญาไท", road: "ถนนพหลโยธิน", n: 4, years: "[2566,2567,2568]", lat: 13.790002, lon: 100.548558 },
-      { district: "มีนบุรี", road: "ถนนสีหบุรานุกิจ", n: 4, years: "[2566,2567,2568]", lat: 13.81534, lon: 100.73507 },
-      { district: "บางซื่อ", road: "ถนนประชาราษฎร์สาย 1", n: 3, years: "[2566,2567,2568]", lat: 13.801236, lon: 100.521324 },
-      { district: "สวนหลวง", road: "ถนนศรีนครินทร์", n: 3, years: "[2566,2567,2568]", lat: 13.7133, lon: 100.64345 },
-      { district: "สวนหลวง", road: "ถนนอ่อนนุช", n: 3, years: "[2566,2567,2568]", lat: 13.71141, lon: 100.60995 },
-      { district: "ห้วยขวาง", road: "ถนนเพชรบุรี", n: 3, years: "[2566,2567,2568]", lat: 13.742083, lon: 100.59625 }
-    ];
-
     Chart.defaults.font.family = "IBM Plex Sans Thai";
     Chart.defaults.color = "#102a43";
 
-    new Chart(document.getElementById("trendChart"), {
-      type: "line",
-      data: {
-        labels: ["FY 2566", "FY 2567", "FY 2568"],
-        datasets: [{
-          label: "Friction Points",
-          data: byYear,
-          borderColor: "#2f6690",
-          backgroundColor: "rgba(47,102,144,0.12)",
-          fill: true,
-          tension: 0.32,
-          pointRadius: 5,
-          pointBackgroundColor: "#d97706"
-        }]
-      },
-      options: {
-        plugins: {
-          title: { display: true, text: "3-Year Trend" }
-        },
-        scales: { y: { beginAtZero: true } }
-      }
-    });
+    const YEAR_COLORS = {
+      2566: "#2f6690",
+      2567: "#d97706",
+      2568: "#3aa17e"
+    };
 
-    new Chart(document.getElementById("zoneChart"), {
-      type: "doughnut",
-      data: {
-        labels: Object.keys(zoneYear2568),
-        datasets: [{
-          data: Object.values(zoneYear2568),
-          backgroundColor: ["#2f6690", "#d97706", "#3aa17e", "#8b5cf6", "#b42318", "#6b7280"]
-        }]
-      },
-      options: {
-        plugins: {
-          title: { display: true, text: "Zone Share FY 2568" },
-          legend: { position: "right" }
+    function toInt(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? Math.trunc(n) : null;
+    }
+
+    async function fetchJson(path) {
+      const res = await fetch(path);
+      if (!res.ok) {
+        throw new Error(`Cannot load ${path}`);
+      }
+      return res.json();
+    }
+
+    function groupPersistentHotspots(rows) {
+      const grouped = new Map();
+      rows.forEach((r) => {
+        const district = (r.district || "").toString().trim();
+        const road = (r.road || "").toString().trim();
+        if (!district || !road) {
+          return;
         }
+        const year = toInt(r.year);
+        const key = `${district}|${road}`;
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            district,
+            road,
+            count: 0,
+            years: new Set(),
+            lat: Number(r.latitude),
+            lon: Number(r.longitude)
+          });
+        }
+        const item = grouped.get(key);
+        item.count += 1;
+        if (year) {
+          item.years.add(year);
+        }
+      });
+
+      return Array.from(grouped.values())
+        .filter((x) => x.years.size >= 3)
+        .sort((a, b) => b.count - a.count);
+    }
+
+    function setKpi(id, value) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = String(value);
       }
-    });
+    }
 
-    const map = L.map("map").setView([13.7563, 100.5018], 11);
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution:
-        "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a> contributors"
-    }).addTo(map);
+    async function initDashboard() {
+      const [combinedRows, geoJson, corridors, lineage] = await Promise.all([
+        fetchJson("data/combined_data.json"),
+        fetchJson("data/all_points.geojson"),
+        fetchJson("data/sheets/11_Corridors.json"),
+        fetchJson("data/sheets/10_Spatial_Lineage.json")
+      ]);
 
-    chronicHotspots.forEach((h) => {
-      const marker = L.circleMarker([h.lat, h.lon], {
-        radius: 7,
-        fillOpacity: 0.88,
-        fillColor: "#b42318",
-        color: "#ffffff",
-        weight: 1
+      const byYearMap = { 2566: 0, 2567: 0, 2568: 0 };
+      combinedRows.forEach((r) => {
+        const y = toInt(r.year);
+        if (y && byYearMap[y] !== undefined) {
+          byYearMap[y] += 1;
+        }
+      });
+
+      const persistentHotspots = groupPersistentHotspots(combinedRows);
+
+      let dropTotal = 0;
+      let baseTotal = 0;
+      lineage.forEach((z) => {
+        dropTotal += toInt(z.dropout) || 0;
+        baseTotal += toInt(z.total) || 0;
+      });
+      const dropPct = baseTotal > 0 ? ((dropTotal / baseTotal) * 100).toFixed(1) : "0.0";
+
+      const persistentCorridors = corridors.filter((c) => Number(c.n_years) >= 3).length;
+
+      setKpi("kpi2566", byYearMap[2566]);
+      setKpi("kpi2567", byYearMap[2567]);
+      setKpi("kpi2568", byYearMap[2568]);
+      setKpi("kpiPersistent", persistentHotspots.length);
+      setKpi("kpiDrop", dropTotal);
+      setKpi("kpiCorridors", persistentCorridors);
+      document.getElementById("kpiDropHint").textContent = `${dropPct}%`;
+
+      const zoneLatest = {};
+      combinedRows.forEach((r) => {
+        const y = toInt(r.year);
+        if (y !== 2568) {
+          return;
+        }
+        const zone = (r.zone || "Unknown").toString();
+        zoneLatest[zone] = (zoneLatest[zone] || 0) + 1;
+      });
+
+      new Chart(document.getElementById("trendChart"), {
+        type: "line",
+        data: {
+          labels: ["FY 2566", "FY 2567", "FY 2568"],
+          datasets: [{
+            label: "Friction Points",
+            data: [byYearMap[2566], byYearMap[2567], byYearMap[2568]],
+            borderColor: "#2f6690",
+            backgroundColor: "rgba(47,102,144,0.12)",
+            fill: true,
+            tension: 0.32,
+            pointRadius: 5,
+            pointBackgroundColor: "#d97706"
+          }]
+        },
+        options: {
+          plugins: {
+            title: { display: true, text: "3-Year Trend" }
+          },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      new Chart(document.getElementById("zoneChart"), {
+        type: "doughnut",
+        data: {
+          labels: Object.keys(zoneLatest),
+          datasets: [{
+            data: Object.values(zoneLatest),
+            backgroundColor: ["#2f6690", "#d97706", "#3aa17e", "#8b5cf6", "#b42318", "#6b7280"]
+          }]
+        },
+        options: {
+          plugins: {
+            title: { display: true, text: "Zone Share FY 2568" },
+            legend: { position: "right" }
+          }
+        }
+      });
+
+      const map = L.map("map").setView([13.7563, 100.5018], 11);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a> contributors"
       }).addTo(map);
 
-      marker.bindPopup(
-        `<strong>${h.district} - ${h.road}</strong><br/>3-year points: ${h.n}<br/>Years: ${h.years}`
-      );
-    });
+      const yearLayers = {
+        2566: L.layerGroup(),
+        2567: L.layerGroup(),
+        2568: L.layerGroup()
+      };
 
-    const table = document.getElementById("hotspotTable");
-    let html = "<thead><tr><th>#</th><th>District</th><th>Road</th><th>3-Year Count</th><th>Years</th></tr></thead><tbody>";
-    chronicHotspots.forEach((h, i) => {
-      html += `<tr>
-        <td>${i + 1}</td>
-        <td>${h.district}</td>
-        <td>${h.road}</td>
-        <td><span class='tag tag-red'>${h.n}</span></td>
-        <td><span class='tag tag-amber'>${h.years}</span></td>
-      </tr>`;
+      geoJson.features.forEach((f) => {
+        if (!f || !f.geometry || !Array.isArray(f.geometry.coordinates)) {
+          return;
+        }
+        const props = f.properties || {};
+        const year = toInt(props.year);
+        const lon = Number(f.geometry.coordinates[0]);
+        const lat = Number(f.geometry.coordinates[1]);
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+          return;
+        }
+
+        const marker = L.circleMarker([lat, lon], {
+          radius: 4,
+          fillOpacity: 0.8,
+          fillColor: YEAR_COLORS[year] || "#6b7280",
+          color: "#ffffff",
+          weight: 1
+        });
+
+        marker.bindPopup(
+          `<strong>${props.point_name || "Unknown point"}</strong><br/>` +
+          `Year: ${props.year || "-"}<br/>` +
+          `District: ${props.district || "-"}<br/>` +
+          `Road: ${props.road || "-"}<br/>` +
+          `Zone: ${props.zone || "-"}`
+        );
+
+        if (yearLayers[year]) {
+          yearLayers[year].addLayer(marker);
+        }
+      });
+
+      Object.values(yearLayers).forEach((layer) => layer.addTo(map));
+
+      const filterEl = document.getElementById("mapYearFilter");
+      filterEl.addEventListener("change", (e) => {
+        const selected = e.target.value;
+        Object.entries(yearLayers).forEach(([y, layer]) => {
+          if (selected === "all" || selected === y) {
+            if (!map.hasLayer(layer)) {
+              map.addLayer(layer);
+            }
+          } else {
+            if (map.hasLayer(layer)) {
+              map.removeLayer(layer);
+            }
+          }
+        });
+      });
+
+      const table = document.getElementById("hotspotTable");
+      let html = "<thead><tr><th>#</th><th>District</th><th>Road</th><th>3-Year Count</th><th>Years</th></tr></thead><tbody>";
+      persistentHotspots.forEach((h, i) => {
+        html += `<tr>
+          <td>${i + 1}</td>
+          <td>${h.district}</td>
+          <td>${h.road}</td>
+          <td><span class='tag tag-red'>${h.count}</span></td>
+          <td><span class='tag tag-amber'>[${Array.from(h.years).sort().join(",")}]</span></td>
+        </tr>`;
+      });
+      html += "</tbody>";
+      table.innerHTML = html;
+    }
+
+    initDashboard().catch((err) => {
+      console.error(err);
+      alert("Failed to load data files. Please ensure data/*.json and data/*.geojson are available.");
     });
-    html += "</tbody>";
-    table.innerHTML = html;
   </script>
 </body>
 </html>

@@ -1,0 +1,102 @@
+[
+  {
+    "ป_2566_FY2023": "ปี 2567 — มาจาก 66",
+    "266": "66 (52%)",
+    "Total_inventory_points": "Carry-over ตามพิกัด ≤250m"
+  },
+  {
+    "ป_2566_FY2023": "ปี 2567 — จุดใหม่",
+    "266": "61 (48%)",
+    "Total_inventory_points": "จุดใหม่ที่เพิ่มเข้ามา"
+  },
+  {
+    "ป_2566_FY2023": "ปี 2568 — มาจาก 67",
+    "266": "51 (66%)",
+    "Total_inventory_points": "Carry-over จากปี 67"
+  },
+  {
+    "ป_2566_FY2023": "ปี 2568 — จุดใหม่",
+    "266": "8 (10%)",
+    "Total_inventory_points": "จุดใหม่ที่ค้นพบเพิ่ม"
+  },
+  {
+    "ป_2566_FY2023": "จุดเรื้อรังจริงๆ (3 ปี)",
+    "266": "23 จุด",
+    "Total_inventory_points": "อยู่ทั้ง 3 ปีตามพิกัด — Priority สูงสุด"
+  },
+  {
+    "ป_2566_FY2023": "Drop-out 66→67",
+    "266": "204 (76.7%)",
+    "Total_inventory_points": "ส่วนที่ไม่ถูกนำมาดำเนินการต่อ"
+  },
+  {
+    "ป_2566_FY2023": "Persistent Corridors",
+    "266": "25 corridors",
+    "Total_inventory_points": "corridor ที่มีจุดทั้ง 3 ปี (DBSCAN)"
+  },
+  {
+    "ป_2566_FY2023": "🔍 ข้อค้นพบใหม่ / Revised Findings (Spatial Lineage)",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "1. การลดลงของจำนวนจุด ส่วนใหญ่เป็นการคัดกรอง (filtering) ไม่ใช่การแก้ปัญหาทั้งหมด",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "   76.7% ของจุดในปี 66 ไม่ได้ถูกนำมาดำเนินการในปี 67 — อาจอยู่นอกขอบเขตวิศวกรรมจราจร",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "   หรือส่งต่อให้หน่วยงานอื่น (กรมทางหลวง ตำรวจ การประปา การรถไฟ ฯลฯ)",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "2. ใน 127 จุดของปี 67 — เกือบครึ่ง (48%, 61 จุด) เป็นจุดใหม่ที่ไม่อยู่ใน 66",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "   สะท้อนการ refine inventory ตามมิติวิศวกรรมจราจรอย่างมีระเบียบ",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "3. ปี 68 มีจุดใหม่เพียง 8 จุด (10%) — แสดงว่ารายการเริ่มเสถียร (mature)",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "4. จุดเรื้อรังจริง — 23 จุด อยู่ทั้ง 3 ปีตามพิกัด — Priority อันดับสูงสุด",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "   (เพิ่มจาก 14 ที่ได้จาก district+road เพราะ spatial match แม่นยำกว่า)",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "5. 25 Persistent Corridors (DBSCAN) เป็นพื้นที่ปัญหากระจุกตัว — เด่นๆ:",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "   ดุสิต-สามเสน, บางกอกน้อย-อรุณอมรินทร์, ปทุมวัน-พระรามที่ 1, บางบอน-เอกชัย",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "6. กรุงเทพตะวันออก มี drop-out rate สูงสุด (81.8%) — ต้องตรวจสอบว่า 54 จุดถูกส่งต่อให้ใคร",
+    "266": null,
+    "Total_inventory_points": null
+  },
+  {
+    "ป_2566_FY2023": "7. KDE Hot Zone — Core ของกรุงเทพชั้นใน (ปทุมวัน-ราชเทวี-ดุสิต-พญาไท) มี density สูงสุด",
+    "266": null,
+    "Total_inventory_points": null
+  }
+]

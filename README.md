@@ -22,6 +22,31 @@ Key topline values used in this portfolio:
 - Policy-oriented findings section in Thai and English
 - OpenStreetMap-based geospatial visualization for chronic congestion points
 - GitHub Pages-ready static site structure
+- Full production data export from source XLSX into JSON/GeoJSON files
+
+## Production Data Pipeline
+Source file used:
+
+- `data.xlsx` (copied from `BMA_Congestion_Analysis_2566-2568.xlsx`)
+
+Conversion script:
+
+- `scripts/convert_xlsx_to_data.ps1`
+
+Run conversion:
+
+```powershell
+./scripts/convert_xlsx_to_data.ps1 -InputPath ./data.xlsx -OutDir ./data
+```
+
+Generated outputs:
+
+- `data/manifest.json` (sheet inventory)
+- `data/combined_data.json` (full consolidated rows)
+- `data/all_points.geojson` (all geocoded points)
+- `data/sheets/*.json` (all worksheets exported separately)
+
+The dashboard (`index.html`) now reads these files directly at runtime.
 
 ## Methodology (High-level)
 1. Annual point inventory and engineering filtering

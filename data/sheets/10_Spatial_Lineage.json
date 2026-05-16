@@ -1,0 +1,50 @@
+[
+  {
+    "zone": "กรุงธนเหนือ",
+    "total": 35.0,
+    "carry": 7.0,
+    "dropout": 28.0,
+    "carry_rate_pct": 20.0,
+    "dropout_rate_pct": 80.0
+  },
+  {
+    "zone": "กรุงธนใต้",
+    "total": 37.0,
+    "carry": 10.0,
+    "dropout": 27.0,
+    "carry_rate_pct": 27.0,
+    "dropout_rate_pct": 73.0
+  },
+  {
+    "zone": "กรุงเทพกลาง",
+    "total": 33.0,
+    "carry": 8.0,
+    "dropout": 25.0,
+    "carry_rate_pct": 24.2,
+    "dropout_rate_pct": 75.8
+  },
+  {
+    "zone": "กรุงเทพตะวันออก",
+    "total": 66.0,
+    "carry": 12.0,
+    "dropout": 54.0,
+    "carry_rate_pct": 18.2,
+    "dropout_rate_pct": 81.8
+  },
+  {
+    "zone": "กรุงเทพเหนือ",
+    "total": 41.0,
+    "carry": 10.0,
+    "dropout": 31.0,
+    "carry_rate_pct": 24.4,
+    "dropout_rate_pct": 75.6
+  },
+  {
+    "zone": "กรุงเทพใต้",
+    "total": 54.0,
+    "carry": 15.0,
+    "dropout": 39.0,
+    "carry_rate_pct": 27.8,
+    "dropout_rate_pct": 72.2
+  }
+]

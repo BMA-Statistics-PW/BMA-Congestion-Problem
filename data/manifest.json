@@ -1,0 +1,67 @@
+{
+  "source_xlsx": "data.xlsx",
+  "generated_at_utc": "2569-05-16T17:26:58Z",
+  "total_sheets": 12,
+  "files": [
+    {
+      "sheet": "01_Executive Summary",
+      "file": "sheets/01_Executive_Summary.json",
+      "rows": 20
+    },
+    {
+      "sheet": "02_Overview by Year",
+      "file": "sheets/02_Overview_by_Year.json",
+      "rows": 10
+    },
+    {
+      "sheet": "03_Spatial Analysis",
+      "file": "sheets/03_Spatial_Analysis.json",
+      "rows": 96
+    },
+    {
+      "sheet": "04_Cause Analysis",
+      "file": "sheets/04_Cause_Analysis.json",
+      "rows": 20
+    },
+    {
+      "sheet": "05_Solution Analysis",
+      "file": "sheets/05_Solution_Analysis.json",
+      "rows": 14
+    },
+    {
+      "sheet": "06_Cluster Analysis",
+      "file": "sheets/06_Cluster_Analysis.json",
+      "rows": 21
+    },
+    {
+      "sheet": "07_Hotspots",
+      "file": "sheets/07_Hotspots.json",
+      "rows": 46
+    },
+    {
+      "sheet": "08_Combined Data",
+      "file": "sheets/08_Combined_Data.json",
+      "rows": 470
+    },
+    {
+      "sheet": "09_Recommendations",
+      "file": "sheets/09_Recommendations.json",
+      "rows": 8
+    },
+    {
+      "sheet": "10_Spatial Lineage",
+      "file": "sheets/10_Spatial_Lineage.json",
+      "rows": 6
+    },
+    {
+      "sheet": "11_Corridors",
+      "file": "sheets/11_Corridors.json",
+      "rows": 72
+    },
+    {
+      "sheet": "12_New & Dropout",
+      "file": "sheets/12_New___Dropout.json",
+      "rows": 123
+    }
+  ]
+}
