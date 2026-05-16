@@ -21,7 +21,9 @@
       --paper: #f5f7fa;
       --panel: #ffffff;
       --line: #d9e2ec;
-      --header-accent: #000080;
+      --header-accent: #0a1f44;
+      --header-accent-deep: #06152f;
+      --header-meta: #e8edf5;
     }
 
     * { box-sizing: border-box; }
@@ -39,42 +41,56 @@
     }
 
     .hero {
-      padding: 36px 24px;
-      background: #000080;
+      padding: 56px 32px 46px;
+      background: linear-gradient(180deg, var(--header-accent) 0%, var(--header-accent-deep) 100%);
       color: #ffffff;
-      box-shadow: 0 4px 18px rgba(16, 42, 67, 0.18);
-      border: 3px solid #000080;
+      box-shadow: 0 12px 30px rgba(6, 21, 47, 0.28);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .hero-inner {
+      max-width: 1280px;
+      margin: 0 auto;
     }
 
     .hero h1 {
       margin: 0;
       font-family: "Sarabun", sans-serif;
-      font-size: clamp(1.8rem, 2vw + 1rem, 2.6rem);
-      line-height: 1.25;
+      font-size: clamp(2rem, 2.2vw + 1rem, 2.9rem);
+      line-height: 1.22;
       letter-spacing: 0.2px;
       color: #ffffff;
+      font-weight: 700;
+      max-width: 980px;
     }
 
     .hero p {
-      margin: 12px 0 0;
+      margin: 18px 0 0;
       opacity: 0.98;
-      font-size: clamp(1rem, 0.7vw + 0.8rem, 1.15rem);
-      max-width: 980px;
-      color: #ffffff;
+      font-size: clamp(1rem, 0.7vw + 0.82rem, 1.16rem);
+      max-width: 900px;
+      color: rgba(255, 255, 255, 0.96);
+      line-height: 1.8;
     }
 
     .meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 14px;
-      font-size: clamp(0.82rem, 0.35vw + 0.75rem, 0.95rem);
-      opacity: 0.95;
-      color: #f5f7fa;
+      gap: 12px;
+      margin-top: 24px;
+      font-size: clamp(0.84rem, 0.35vw + 0.76rem, 0.96rem);
+      opacity: 1;
+      color: var(--header-meta);
     }
 
     .meta span {
-      color: #f5f7fa;
+      color: var(--header-meta);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      padding: 6px 12px;
+      line-height: 1.5;
+      backdrop-filter: blur(2px);
     }
 
     .container {
@@ -266,7 +282,7 @@
 
       .two-col { grid-template-columns: 1fr; }
       .hero {
-        padding: 30px 20px;
+        padding: 46px 24px 38px;
       }
       #map { height: 430px; }
       .container {
@@ -276,12 +292,13 @@
 
     @media (max-width: 768px) {
       .hero {
-        padding: 26px 18px;
+        padding: 38px 18px 30px;
       }
 
       .meta {
         gap: 10px;
         flex-direction: column;
+        align-items: flex-start;
       }
 
       .container {
@@ -309,7 +326,7 @@
       }
 
       .hero {
-        padding: 22px 16px;
+        padding: 32px 16px 26px;
       }
 
       .container {
@@ -340,12 +357,14 @@
 </head>
 <body>
   <header class="hero">
-    <h1>Dashboard วิเคราะห์จุดปัญหาการจราจรติดขัดในพื้นที่กรุงเทพมหานคร</h1>
-    <p>เพื่อใช้ประกอบการติดตามสถานการณ์ วางแผนแก้ไขปัญหา และสนับสนุนการตัดสินใจเชิงนโยบาย</p>
-    <div class="meta">
-      <span>วิเคราะห์และจัดทำโดย © Prapawadee_W. กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สำนักการจราจรและขนส่ง กรุงเทพมหานคร</span>
-      <span>ครอบคลุมพื้นที่ 50 เขต 6 โซน</span>
-      <span>เกณฑ์เชื่อมโยงข้อมูลเชิงพื้นที่ 250 เมตร</span>
+    <div class="hero-inner">
+      <h1>Dashboard วิเคราะห์จุดปัญหาการจราจรติดขัดในพื้นที่กรุงเทพมหานคร</h1>
+      <p>เพื่อใช้ประกอบการติดตามสถานการณ์ วางแผนแก้ไขปัญหา และสนับสนุนการตัดสินใจเชิงนโยบาย</p>
+      <div class="meta">
+        <span>วิเคราะห์และจัดทำโดย © Prapawadee_W. กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สำนักการจราจรและขนส่ง กรุงเทพมหานคร</span>
+        <span>ครอบคลุมพื้นที่ 50 เขต 6 โซน</span>
+        <span>เกณฑ์เชื่อมโยงข้อมูลเชิงพื้นที่ 250 เมตร</span>
+      </div>
     </div>
   </header>
 
