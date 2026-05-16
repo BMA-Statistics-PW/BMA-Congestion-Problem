@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BMA Traffic Congestion Portfolio Dashboard (FY 2566-2568)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Sora:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <style>
+    :root {
+      --ink: #102a43;
+      --steel: #486581;
+      --sky: #2f6690;
+      --mint: #3aa17e;
+      --amber: #d97706;
+      --danger: #b42318;
+      --paper: #f5f7fa;
+      --panel: #ffffff;
+      --line: #d9e2ec;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans Thai", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(47, 102, 144, 0.12), transparent 38%),
+        radial-gradient(circle at 85% 0%, rgba(58, 161, 126, 0.12), transparent 32%),
+        var(--paper);
+      line-height: 1.5;
+    }
+
+    .hero {
+      padding: 30px 22px;
+      background: linear-gradient(120deg, #0f3c5f, #2f6690 58%, #4f88b6);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(16, 42, 67, 0.28);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.2px;
+    }
+
+    .hero p {
+      margin: 8px 0 0;
+      opacity: 0.95;
+      font-size: 14px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 10px;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .kpi {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 1px 3px rgba(16, 42, 67, 0.06);
+    }
+
+    .kpi .label {
+      font-size: 12px;
+      color: var(--steel);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+    }
+
+    .kpi .value {
+      margin-top: 4px;
+      font-family: "Sora", sans-serif;
+      font-size: 30px;
+      color: var(--sky);
+    }
+
+    .kpi .hint {
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--steel);
+    }
+
+    .section {
+      margin-top: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06);
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: 18px;
+      color: var(--ink);
+    }
+
+    .section p.sub {
+      margin: 5px 0 12px;
+      color: var(--steel);
+      font-size: 13px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+
+    #map {
+      width: 100%;
+      height: 530px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      padding: 9px 8px;
+    }
+
+    th {
+      background: #edf4fb;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .tag-red { background: #fee4e2; color: var(--danger); }
+    .tag-amber { background: #fff3e8; color: var(--amber); }
+
+    .findings {
+      display: grid;
+      gap: 10px;
+    }
+
+    .finding {
+      border-left: 4px solid var(--amber);
+      background: #fffaeb;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    footer {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--steel);
+      padding-bottom: 22px;
+    }
+
+    @media (max-width: 980px) {
+      .two-col { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 21px; }
+      #map { height: 430px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <h1>BMA Traffic Congestion Dashboard</h1>
+    <p>ระบบนำเสนอข้อมูลจุดปัญหาจราจรติดขัด กรุงเทพมหานคร ปี 2566-2568 สำหรับผลงานเชิงนโยบายและพอร์ตโฟลิโอ</p>
+    <div class="meta">
+      <span>Scope: 50 Districts, 6 Zones</span>
+      <span>Spatial lineage threshold: 250m</span>
+      <span>Updated: 17 May 2026</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="kpi-grid" aria-label="key indicators">
+      <article class="kpi"><div class="label">FY 2566 Inventory</div><div class="value">266</div><div class="hint">จุดที่รวบรวมทั้งหมด</div></article>
+      <article class="kpi"><div class="label">FY 2567 Filtered</div><div class="value">127</div><div class="hint">Carry + จุดใหม่</div></article>
+      <article class="kpi"><div class="label">FY 2568 Continued</div><div class="value">77</div><div class="hint">Carry + Reactivated</div></article>
+      <article class="kpi"><div class="label">Persistent 3-Year</div><div class="value">23</div><div class="hint">Geo-matched top priority</div></article>
+      <article class="kpi"><div class="label">Drop-out 66->67</div><div class="value">204</div><div class="hint">76.7%</div></article>
+      <article class="kpi"><div class="label">Persistent Corridors</div><div class="value">25</div><div class="hint">DBSCAN-based</div></article>
+    </section>
+
+    <section class="section">
+      <h2>Overview Analytics</h2>
+      <p class="sub">ภาพรวมแนวโน้มจำนวนจุดและโครงสร้างตามโซน</p>
+      <div class="two-col">
+        <div class="card"><canvas id="trendChart" height="260"></canvas></div>
+        <div class="card"><canvas id="zoneChart" height="260"></canvas></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Hotspot Map (OpenStreetMap)</h2>
+      <p class="sub">แสดงจุดปัญหาเรื้อรัง 14 จุดที่พบต่อเนื่อง 3 ปี เพื่อจัดลำดับความสำคัญการแก้ไขเชิงโครงสร้าง</p>
+      <div id="map"></div>
+    </section>
+
+    <section class="section">
+      <h2>Chronic Hotspots (3-Year Persistent)</h2>
+      <p class="sub">สรุปจุดสำคัญสำหรับใช้กำหนดนโยบายในระดับ corridor-level</p>
+      <table id="hotspotTable"></table>
+    </section>
+
+    <section class="section">
+      <h2>Policy Findings</h2>
+      <div class="findings">
+        <div class="finding"><strong>1) การลดจำนวนจุด 266 -> 127 -> 77</strong> สะท้อนทั้งผลการแก้ไขและกระบวนการคัดกรองทางวิศวกรรม ไม่ควรตีความว่าแก้ไขสำเร็จทั้งหมดโดยอัตโนมัติ</div>
+        <div class="finding"><strong>2) Persistent 3-year (23 จุด)</strong> ต้องใช้มาตรการเชิงโครงสร้างร่วมกับการจัดการจราจรเฉพาะช่วงเวลา</div>
+        <div class="finding"><strong>3) Priority Zones</strong> โซนกรุงเทพใต้และกรุงเทพเหนือยังมีสัดส่วนจุดสูง ควรมีแผนรายโซนที่ชัดเจน</div>
+        <div class="finding"><strong>4) Corridor-based Intervention</strong> การแก้แบบรายจุดอย่างเดียวไม่พอใน corridor ที่เกิดซ้ำ ควรกำหนดแผนรวมทั้งแนวเส้นทาง</div>
+      </div>
+    </section>
+
+    <footer>
+      Data and tiles: OpenStreetMap contributors (ODbL) | Dashboard prepared for portfolio presentation<br />
+      Statistics and Research Group, Policy and Planning Division, Traffic and Transportation Department, BMA
+    </footer>
+  </main>
+
+  <script>
+    const byYear = [266, 127, 77];
+    const zoneYear2568 = {
+      "กรุงธนเหนือ": 10,
+      "กรุงธนใต้": 7,
+      "กรุงเทพกลาง": 18,
+      "กรุงเทพตะวันออก": 11,
+      "กรุงเทพเหนือ": 15,
+      "กรุงเทพใต้": 16
+    };
+
+    const chronicHotspots = [
+      { district: "บางบอน", road: "ถนนเอกชัย", n: 12, years: "[2566,2567,2568]", lat: 13.673869, lon: 100.425 },
+      { district: "สะพานสูง", road: "ถนนรามคำแหง", n: 9, years: "[2566,2567,2568]", lat: 13.781969, lon: 100.68284 },
+      { district: "จตุจักร", road: "ถนนกำแพงเพชร", n: 8, years: "[2566,2567,2568]", lat: 13.797452, lon: 100.54581 },
+      { district: "คลองเตย", road: "ถนนสุขุมวิท", n: 7, years: "[2566,2567,2568]", lat: 13.714488, lon: 100.592585 },
+      { district: "หนองแขม", road: "ถนนเพชรเกษม", n: 6, years: "[2566,2567,2568]", lat: 13.70686, lon: 100.36007 },
+      { district: "ปทุมวัน", road: "ถนนพระรามที่ 1", n: 5, years: "[2566,2567,2568]", lat: 13.74637, lon: 100.53267 },
+      { district: "ราชเทวี", road: "ถนนราชปรารภ", n: 5, years: "[2566,2567,2568]", lat: 13.750603, lon: 100.54114 },
+      { district: "ดุสิต", road: "ถนนสามเสน", n: 4, years: "[2566,2567,2568]", lat: 13.778319, lon: 100.508416 },
+      { district: "พญาไท", road: "ถนนพหลโยธิน", n: 4, years: "[2566,2567,2568]", lat: 13.790002, lon: 100.548558 },
+      { district: "มีนบุรี", road: "ถนนสีหบุรานุกิจ", n: 4, years: "[2566,2567,2568]", lat: 13.81534, lon: 100.73507 },
+      { district: "บางซื่อ", road: "ถนนประชาราษฎร์สาย 1", n: 3, years: "[2566,2567,2568]", lat: 13.801236, lon: 100.521324 },
+      { district: "สวนหลวง", road: "ถนนศรีนครินทร์", n: 3, years: "[2566,2567,2568]", lat: 13.7133, lon: 100.64345 },
+      { district: "สวนหลวง", road: "ถนนอ่อนนุช", n: 3, years: "[2566,2567,2568]", lat: 13.71141, lon: 100.60995 },
+      { district: "ห้วยขวาง", road: "ถนนเพชรบุรี", n: 3, years: "[2566,2567,2568]", lat: 13.742083, lon: 100.59625 }
+    ];
+
+    Chart.defaults.font.family = "IBM Plex Sans Thai";
+    Chart.defaults.color = "#102a43";
+
+    new Chart(document.getElementById("trendChart"), {
+      type: "line",
+      data: {
+        labels: ["FY 2566", "FY 2567", "FY 2568"],
+        datasets: [{
+          label: "Friction Points",
+          data: byYear,
+          borderColor: "#2f6690",
+          backgroundColor: "rgba(47,102,144,0.12)",
+          fill: true,
+          tension: 0.32,
+          pointRadius: 5,
+          pointBackgroundColor: "#d97706"
+        }]
+      },
+      options: {
+        plugins: {
+          title: { display: true, text: "3-Year Trend" }
+        },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    new Chart(document.getElementById("zoneChart"), {
+      type: "doughnut",
+      data: {
+        labels: Object.keys(zoneYear2568),
+        datasets: [{
+          data: Object.values(zoneYear2568),
+          backgroundColor: ["#2f6690", "#d97706", "#3aa17e", "#8b5cf6", "#b42318", "#6b7280"]
+        }]
+      },
+      options: {
+        plugins: {
+          title: { display: true, text: "Zone Share FY 2568" },
+          legend: { position: "right" }
+        }
+      }
+    });
+
+    const map = L.map("map").setView([13.7563, 100.5018], 11);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution:
+        "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a> contributors"
+    }).addTo(map);
+
+    chronicHotspots.forEach((h) => {
+      const marker = L.circleMarker([h.lat, h.lon], {
+        radius: 7,
+        fillOpacity: 0.88,
+        fillColor: "#b42318",
+        color: "#ffffff",
+        weight: 1
+      }).addTo(map);
+
+      marker.bindPopup(
+        `<strong>${h.district} - ${h.road}</strong><br/>3-year points: ${h.n}<br/>Years: ${h.years}`
+      );
+    });
+
+    const table = document.getElementById("hotspotTable");
+    let html = "<thead><tr><th>#</th><th>District</th><th>Road</th><th>3-Year Count</th><th>Years</th></tr></thead><tbody>";
+    chronicHotspots.forEach((h, i) => {
+      html += `<tr>
+        <td>${i + 1}</td>
+        <td>${h.district}</td>
+        <td>${h.road}</td>
+        <td><span class='tag tag-red'>${h.n}</span></td>
+        <td><span class='tag tag-amber'>${h.years}</span></td>
+      </tr>`;
+    });
+    html += "</tbody>";
+    table.innerHTML = html;
+  </script>
+</body>
+</html>
