@@ -38,7 +38,7 @@
 
     .hero {
       padding: 30px 22px;
-      background: linear-gradient(120deg, #0f3c5f, #2f6690 58%, #4f88b6);
+      background: #004d40;
       color: #fff;
       box-shadow: 0 4px 18px rgba(16, 42, 67, 0.28);
     }
@@ -189,6 +189,34 @@
       font-size: 13px;
     }
 
+    .area-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .area-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 8px;
+    }
+
+    .area-card .k {
+      font-size: 12px;
+      color: var(--steel);
+      font-weight: 600;
+    }
+
+    .area-card .v {
+      font-size: 22px;
+      color: var(--ink);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-top: 2px;
+    }
+
     footer {
       margin-top: 16px;
       text-align: center;
@@ -226,10 +254,15 @@
     </section>
 
     <section class="section">
-      <h2>Overview Analytics</h2>
-      <p class="sub">ภาพรวมแนวโน้มจำนวนจุดและโครงสร้างตามโซน</p>
+      <h2>Area Type Analytics</h2>
+      <p class="sub">สรุปลักษณะพื้นที่ที่เป็นจุดปัญหาจราจร และสัดส่วนตามโซนในปีล่าสุด</p>
       <div class="two-col">
-        <div class="card"><canvas id="trendChart" height="260"></canvas></div>
+        <div class="card">
+          <h3 style="margin:0 0 6px; font-size:15px;">ลักษณะพื้นที่จุดปัญหาจราจร</h3>
+          <p style="margin:0 0 10px; font-size:12px; color:#486581;">เช่น ทางแยก คอขวด สถานศึกษา/โรงเรียน และอื่นๆ (คำนวณจากข้อมูลเต็ม)</p>
+          <div id="areaTypeSummary" class="area-grid"></div>
+          <table id="areaTypeTable"></table>
+        </div>
         <div class="card"><canvas id="zoneChart" height="260"></canvas></div>
       </div>
     </section>
@@ -285,6 +318,56 @@
     function toInt(value) {
       const n = Number(value);
       return Number.isFinite(n) ? Math.trunc(n) : null;
+    }
+
+    function classifyAreaType(rawType) {
+      const t = (rawType || "").toString().toLowerCase();
+      if (!t.trim()) return "อื่นๆ";
+      if (t.includes("คอขวด")) return "คอขวด";
+      if (t.includes("ทางแยก")) return "ทางแยก";
+      if (t.includes("สถานศึกษา") || t.includes("โรงเรียน")) return "สถานศึกษา/โรงเรียน";
+      if (t.includes("ชุมชน") || t.includes("ตลาด")) return "ชุมชน/ตลาด";
+      if (t.includes("ช่วงถนน") || t.includes("จุดกลับรถ")) return "ช่วงถนน/จุดกลับรถ";
+      if (t.includes("สะพาน")) return "สะพาน";
+      if (t.includes("ห้าง") || t.includes("แหล่งดึงดูด")) return "ห้าง/แหล่งดึงดูด";
+      if (t.includes("ก่อสร้าง") || t.includes("ทางเบี่ยง")) return "ทางเบี่ยง/ก่อสร้าง";
+      return "อื่นๆ";
+    }
+
+    function buildAreaTypeCounts(rows) {
+      const counts = {
+        "ทางแยก": 0,
+        "คอขวด": 0,
+        "สถานศึกษา/โรงเรียน": 0,
+        "ชุมชน/ตลาด": 0,
+        "ช่วงถนน/จุดกลับรถ": 0,
+        "สะพาน": 0,
+        "ห้าง/แหล่งดึงดูด": 0,
+        "ทางเบี่ยง/ก่อสร้าง": 0,
+        "อื่นๆ": 0
+      };
+      rows.forEach((r) => {
+        const key = classifyAreaType(r.point_type);
+        counts[key] += 1;
+      });
+      return counts;
+    }
+
+    function renderAreaTypePanels(counts, totalRows) {
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      const summaryEl = document.getElementById("areaTypeSummary");
+      summaryEl.innerHTML = sorted.slice(0, 6).map(([name, count]) => {
+        return `<div class="area-card"><div class="k">${name}</div><div class="v">${count}</div></div>`;
+      }).join("");
+
+      const tableEl = document.getElementById("areaTypeTable");
+      let html = "<thead><tr><th>ลักษณะพื้นที่</th><th>จำนวน</th><th>สัดส่วน</th></tr></thead><tbody>";
+      sorted.forEach(([name, count]) => {
+        const pct = totalRows > 0 ? ((count / totalRows) * 100).toFixed(1) : "0.0";
+        html += `<tr><td>${name}</td><td>${count}</td><td>${pct}%</td></tr>`;
+      });
+      html += "</tbody>";
+      tableEl.innerHTML = html;
     }
 
     async function fetchJson(path) {
@@ -350,6 +433,9 @@
         }
       });
 
+      const areaTypeCounts = buildAreaTypeCounts(combinedRows);
+      renderAreaTypePanels(areaTypeCounts, combinedRows.length);
+
       const persistentHotspots = groupPersistentHotspots(combinedRows);
 
       let dropTotal = 0;
@@ -378,29 +464,6 @@
         }
         const zone = (r.zone || "Unknown").toString();
         zoneLatest[zone] = (zoneLatest[zone] || 0) + 1;
-      });
-
-      new Chart(document.getElementById("trendChart"), {
-        type: "line",
-        data: {
-          labels: ["FY 2566", "FY 2567", "FY 2568"],
-          datasets: [{
-            label: "Friction Points",
-            data: [byYearMap[2566], byYearMap[2567], byYearMap[2568]],
-            borderColor: "#2f6690",
-            backgroundColor: "rgba(47,102,144,0.12)",
-            fill: true,
-            tension: 0.32,
-            pointRadius: 5,
-            pointBackgroundColor: "#d97706"
-          }]
-        },
-        options: {
-          plugins: {
-            title: { display: true, text: "3-Year Trend" }
-          },
-          scales: { y: { beginAtZero: true } }
-        }
       });
 
       new Chart(document.getElementById("zoneChart"), {
