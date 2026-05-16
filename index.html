@@ -150,6 +150,11 @@
       background: #fbfdff;
     }
 
+    .chart-wrap {
+      position: relative;
+      min-height: 320px;
+    }
+
     #map {
       width: 100%;
       height: 530px;
@@ -281,6 +286,10 @@
         padding: 14px;
       }
 
+      .chart-wrap {
+        min-height: 280px;
+      }
+
       #map {
         height: 360px;
       }
@@ -311,6 +320,10 @@
         padding: 8px 6px;
       }
 
+      .chart-wrap {
+        min-height: 250px;
+      }
+
       #map {
         height: 300px;
       }
@@ -330,12 +343,12 @@
 
   <main class="container">
     <section class="kpi-grid" aria-label="key indicators">
-      <article class="kpi"><div class="label">FY 2566 Inventory</div><div class="value" id="kpi2566">-</div><div class="hint">จุดปัญหาที่รวบรวมทั้งหมด</div></article>
-      <article class="kpi"><div class="label">FY 2567 Filtered</div><div class="value" id="kpi2567">-</div><div class="hint">จุดต่อเนื่องและจุดใหม่</div></article>
-      <article class="kpi"><div class="label">FY 2568 Continued</div><div class="value" id="kpi2568">-</div><div class="hint">จุดต่อเนื่องและจุดกลับมาเกิดซ้ำ</div></article>
-      <article class="kpi"><div class="label">Persistent 3-Year</div><div class="value" id="kpiPersistent">-</div><div class="hint">จุดที่พบต่อเนื่อง 3 ปี</div></article>
-      <article class="kpi"><div class="label">Drop-out 66->67</div><div class="value" id="kpiDrop">-</div><div class="hint" id="kpiDropHint">-</div></article>
-      <article class="kpi"><div class="label">Persistent Corridors</div><div class="value" id="kpiCorridors">-</div><div class="hint">แนวถนนที่พบปัญหาต่อเนื่อง</div></article>
+      <article class="kpi"><div class="label">ปีงบประมาณ 2566</div><div class="value" id="kpi2566">-</div><div class="hint">จุดปัญหาที่รวบรวมทั้งหมด</div></article>
+      <article class="kpi"><div class="label">ปีงบประมาณ 2567</div><div class="value" id="kpi2567">-</div><div class="hint">จุดต่อเนื่องและจุดใหม่</div></article>
+      <article class="kpi"><div class="label">ปีงบประมาณ 2568</div><div class="value" id="kpi2568">-</div><div class="hint">จุดต่อเนื่องและจุดกลับมาเกิดซ้ำ</div></article>
+      <article class="kpi"><div class="label">จุดต่อเนื่อง 3 ปี</div><div class="value" id="kpiPersistent">-</div><div class="hint">จุดที่พบต่อเนื่อง 3 ปี</div></article>
+      <article class="kpi"><div class="label">จุดที่ลดลง 2566→2567</div><div class="value" id="kpiDrop">-</div><div class="hint" id="kpiDropHint">-</div></article>
+      <article class="kpi"><div class="label">แนวถนนต่อเนื่อง</div><div class="value" id="kpiCorridors">-</div><div class="hint">แนวถนนที่พบปัญหาต่อเนื่อง</div></article>
     </section>
 
     <section class="section">
@@ -348,7 +361,11 @@
           <div id="areaTypeSummary" class="area-grid"></div>
           <table id="areaTypeTable"></table>
         </div>
-        <div class="card"><canvas id="zoneChart" height="260"></canvas></div>
+        <div class="card">
+          <div class="chart-wrap">
+            <canvas id="zoneChart"></canvas>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -384,7 +401,7 @@
     </section>
 
     <footer>
-      Data and tiles: OpenStreetMap contributors (ODbL) | จัดทำเพื่อใช้ประกอบการนำเสนอและวิเคราะห์ข้อมูล<br />
+      ข้อมูลแผนที่และชั้นข้อมูลพื้นฐาน: OpenStreetMap contributors (ODbL) | จัดทำเพื่อใช้ประกอบการนำเสนอและวิเคราะห์ข้อมูล<br />
       จัดทำขึ้นเพื่อประโยชน์สาธารณะ ไม่อนุญาตให้นำไปใช้เพื่อแสวงหาผลประโยชน์เชิงพาณิชย์โดยไม่ได้รับอนุญาต
       <div class="footer-credit">
         © Prapawadee_W.<br />
@@ -398,21 +415,45 @@
     Chart.defaults.color = "#102a43";
 
     const YEAR_COLORS = {
-      2566: "#2f6690",
-      2567: "#d97706",
-      2568: "#3aa17e"
+      2566: "#00A8B5",
+      2567: "#0077B6",
+      2568: "#2F6690"
     };
 
     const PRESENTATION_COLORS = [
+      "#00A8B5",
       "#0077B6",
-      "#00B4D8",
-      "#90E0EF",
-      "#F4A261",
-      "#E76F51",
-      "#6D597A",
-      "#2A9D8F",
-      "#577590"
+      "#2F6690",
+      "#4D908E",
+      "#90BE6D",
+      "#F8961E",
+      "#577590",
+      "#7B6D8D"
     ];
+
+    const THAI_ZONE_LABELS = {
+      "North Bangkok": "กรุงเทพเหนือ",
+      "East Bangkok": "กรุงเทพตะวันออก",
+      "Central Bangkok": "กรุงเทพกลาง",
+      "South Bangkok": "กรุงเทพใต้",
+      "West Bangkok": "กรุงเทพตะวันตก",
+      "Thon Buri": "ธนบุรี",
+      "Unknown": "ไม่ระบุ"
+    };
+
+    function translateZoneLabel(label) {
+      return THAI_ZONE_LABELS[label] || label || "ไม่ระบุ";
+    }
+
+    function getContrastingTextColor(hexColor) {
+      const hex = (hexColor || "").replace("#", "");
+      if (hex.length !== 6) return "#102a43";
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      return luminance > 0.62 ? "#102a43" : "#ffffff";
+    }
 
     const doughnutLabelPlugin = {
       id: "doughnutLabelPlugin",
@@ -437,10 +478,9 @@
           const position = arc.tooltipPosition();
           const label = `${value} (${percentage.toFixed(1)}%)`;
           const bgColor = Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor[index] : "#0077B6";
-          const darkSliceColors = ["#0077B6", "#00B4D8", "#6D597A", "#577590", "#E76F51"];
-          const textColor = darkSliceColors.includes(bgColor) ? "#ffffff" : "#102a43";
+          const textColor = getContrastingTextColor(bgColor);
 
-          ctx.font = "600 11px Sarabun";
+          ctx.font = window.innerWidth <= 480 ? "600 10px Sarabun" : "600 11px Sarabun";
           ctx.fillStyle = textColor;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
@@ -459,7 +499,7 @@
 
     function classifyAreaType(rawType) {
       const t = (rawType || "").toString().toLowerCase();
-      if (!t.trim()) return "อื่นๆ";
+      if (!t.trim()) return "อื่น ๆ";
       if (t.includes("คอขวด")) return "คอขวด";
       if (t.includes("ทางแยก")) return "ทางแยก";
       if (t.includes("สถานศึกษา") || t.includes("โรงเรียน")) return "สถานศึกษา/โรงเรียน";
@@ -468,7 +508,7 @@
       if (t.includes("สะพาน")) return "สะพาน";
       if (t.includes("ห้าง") || t.includes("แหล่งดึงดูด")) return "ห้าง/แหล่งดึงดูด";
       if (t.includes("ก่อสร้าง") || t.includes("ทางเบี่ยง")) return "ทางเบี่ยง/ก่อสร้าง";
-      return "อื่นๆ";
+      return "อื่น ๆ";
     }
 
     function buildAreaTypeCounts(rows) {
@@ -481,7 +521,7 @@
         "สะพาน": 0,
         "ห้าง/แหล่งดึงดูด": 0,
         "ทางเบี่ยง/ก่อสร้าง": 0,
-        "อื่นๆ": 0
+        "อื่น ๆ": 0
       };
       rows.forEach((r) => {
         const key = classifyAreaType(r.point_type);
@@ -498,10 +538,10 @@
       }).join("");
 
       const tableEl = document.getElementById("areaTypeTable");
-      let html = "<thead><tr><th>ลักษณะพื้นที่</th><th>จำนวน</th><th>สัดส่วน</th></tr></thead><tbody>";
+      let html = "<thead><tr><th>ลักษณะพื้นที่</th><th>จำนวน (จุด)</th><th>ร้อยละ</th></tr></thead><tbody>";
       sorted.forEach(([name, count]) => {
         const pct = totalRows > 0 ? ((count / totalRows) * 100).toFixed(1) : "0.0";
-        html += `<tr><td>${name}</td><td>${count}</td><td>${pct}%</td></tr>`;
+        html += `<tr><td>${name}</td><td>${count}</td><td>${pct}</td></tr>`;
       });
       html += "</tbody>";
       tableEl.innerHTML = html;
@@ -599,7 +639,7 @@
         if (y !== 2568) {
           return;
         }
-        const zone = (r.zone || "Unknown").toString();
+        const zone = translateZoneLabel((r.zone || "Unknown").toString());
         zoneLatest[zone] = (zoneLatest[zone] || 0) + 1;
       });
 
@@ -629,7 +669,7 @@
           plugins: {
             title: {
               display: true,
-              text: "สัดส่วนจุดปัญหาจราจรตามโซน ปีงบประมาณ 2568",
+              text: "สัดส่วนจุดปัญหาการจราจรจำแนกตามโซน ปีงบประมาณ 2568",
               font: {
                 size: 16,
                 weight: "600"
@@ -655,7 +695,7 @@
                   const value = Number(context.raw || 0);
                   const total = context.dataset.data.reduce((sum, item) => sum + Number(item || 0), 0);
                   const pct = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
-                  return `${context.label}: ${value} จุด (${pct}%)`;
+                  return `${context.label}: ${value} จุด คิดเป็นร้อยละ ${pct}`;
                 }
               }
             }
@@ -692,17 +732,17 @@
         const marker = L.circleMarker([lat, lon], {
           radius: 4,
           fillOpacity: 0.8,
-          fillColor: YEAR_COLORS[year] || "#6b7280",
+          fillColor: YEAR_COLORS[year] || "#7B6D8D",
           color: "#ffffff",
           weight: 1
         });
 
         marker.bindPopup(
-          `<strong>${props.point_name || "Unknown point"}</strong><br/>` +
-          `Year: ${props.year || "-"}<br/>` +
-          `District: ${props.district || "-"}<br/>` +
-          `Road: ${props.road || "-"}<br/>` +
-          `Zone: ${props.zone || "-"}`
+          `<strong>${props.point_name || "ไม่ระบุชื่อจุด"}</strong><br/>` +
+          `ปีงบประมาณ: ${props.year || "-"}<br/>` +
+          `เขต: ${props.district || "-"}<br/>` +
+          `ถนน: ${props.road || "-"}<br/>` +
+          `โซน: ${translateZoneLabel(props.zone || "Unknown")}`
         );
 
         if (yearLayers[year]) {
@@ -729,14 +769,14 @@
       });
 
       const table = document.getElementById("hotspotTable");
-      let html = "<thead><tr><th>#</th><th>District</th><th>Road</th><th>3-Year Count</th><th>Years</th></tr></thead><tbody>";
+      let html = "<thead><tr><th>ลำดับ</th><th>เขต</th><th>ถนน</th><th>จำนวนปีที่พบ</th><th>ปีงบประมาณที่พบ</th></tr></thead><tbody>";
       persistentHotspots.forEach((h, i) => {
         html += `<tr>
           <td>${i + 1}</td>
           <td>${h.district}</td>
           <td>${h.road}</td>
           <td><span class='tag tag-red'>${h.count}</span></td>
-          <td><span class='tag tag-amber'>[${Array.from(h.years).sort().join(",")}]</span></td>
+          <td><span class='tag tag-amber'>${Array.from(h.years).sort().join(", ")}</span></td>
         </tr>`;
       });
       html += "</tbody>";
@@ -745,7 +785,7 @@
 
     initDashboard().catch((err) => {
       console.error(err);
-      alert("Failed to load data files. Please ensure data/*.json and data/*.geojson are available.");
+      alert("ไม่สามารถโหลดไฟล์ข้อมูลได้ กรุณาตรวจสอบว่าไฟล์ data/*.json และ data/*.geojson พร้อมใช้งาน");
     });
   </script>
 </body>
