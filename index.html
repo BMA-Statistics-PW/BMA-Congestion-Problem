@@ -2,7 +2,8 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0B3B6F" />
 <title>BMA Congestion Analysis | Spatial Lineage Dashboard (FY 2566–2568) — © Prapawadee_W.</title>
 <meta name="description" content="Portfolio dashboard for BMA traffic congestion analysis — spatial lineage, corridor clustering, and multi-agency intervention mapping by Prapawadee W., Statistics & Research Group, BMA Traffic and Transportation Department." />
 
@@ -58,14 +59,15 @@ body {
 /* ========== TOP BAR ========== */
 .topbar {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.95);
   backdrop-filter: saturate(180%) blur(12px);
   border-bottom: 1px solid var(--line);
+  height: 60px;
 }
 .topbar-inner {
   max-width: 1320px; margin: 0 auto;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 24px;
+  padding: 0 24px; height: 100%;
 }
 .brand-mark {
   display: flex; align-items: center; gap: 12px;
@@ -83,18 +85,20 @@ body {
 .brand-text { display: flex; flex-direction: column; line-height: 1.2; }
 .brand-text small { color: var(--muted); font-weight: 500; font-size: 0.78rem; }
 .top-nav {
-  display: flex; gap: 4px; flex-wrap: wrap;
+  display: flex; gap: 2px; flex-wrap: nowrap;
 }
 .top-nav a {
   text-decoration: none;
   color: var(--ink-soft);
-  padding: 8px 14px;
+  padding: 8px 12px;
   border-radius: 8px;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 500;
+  white-space: nowrap;
   transition: all 0.15s ease;
 }
 .top-nav a:hover { background: var(--line-soft); color: var(--brand); }
+@media (max-width: 900px) { .top-nav { display: none; } }
 
 /* ========== HERO ========== */
 .hero {
@@ -116,6 +120,9 @@ body {
   position: relative; z-index: 2;
   max-width: 1320px; margin: 0 auto;
   display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center;
+}
+@media (max-width: 1024px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 28px; max-width: 720px; }
 }
 .hero-tag {
   display: inline-flex; align-items: center; gap: 8px;
@@ -207,7 +214,7 @@ body {
 
 /* ========== TABS ========== */
 .tabs-wrap {
-  position: sticky; top: 61px; z-index: 90;
+  position: sticky; top: 60px; z-index: 90;
   background: var(--paper);
   border-bottom: 1px solid var(--line);
 }
@@ -217,7 +224,10 @@ body {
   display: flex; gap: 4px;
   overflow-x: auto;
   scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
+.tabs::-webkit-scrollbar { height: 4px; }
+.tabs::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
 .tab {
   border: none;
   background: transparent;
@@ -242,10 +252,13 @@ body {
 /* ========== KPI CARDS ========== */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 14px;
   margin-bottom: 28px;
 }
+@media (max-width: 1200px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 720px)  { .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+@media (max-width: 420px)  { .kpi-grid { grid-template-columns: 1fr; } }
 .kpi {
   background: white;
   border: 1px solid var(--line);
@@ -480,13 +493,45 @@ body {
   display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
 }
 .two-col.golden { grid-template-columns: 1.4fr 1fr; }
-@media (max-width: 900px) { .two-col, .two-col.golden { grid-template-columns: 1fr; } }
+@media (max-width: 1024px) { .two-col, .two-col.golden { grid-template-columns: 1fr; } }
 
-.chart-wrap { position: relative; min-height: 320px; }
-.chart-wrap.tall { min-height: 420px; }
+/* Chart container — aspect-ratio based for consistent proportions */
+.chart-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  min-height: 280px;
+  max-height: 380px;
+}
+.chart-wrap.tall {
+  aspect-ratio: 4 / 3;
+  min-height: 340px;
+  max-height: 460px;
+}
+.chart-wrap.square {
+  aspect-ratio: 1 / 1;
+  min-height: 260px;
+  max-height: 360px;
+}
+.chart-wrap canvas { max-width: 100%; }
+@media (max-width: 768px) {
+  .chart-wrap, .chart-wrap.tall, .chart-wrap.square {
+    aspect-ratio: 4 / 3;
+    min-height: 240px;
+    max-height: 320px;
+  }
+}
+@media (max-width: 480px) {
+  .chart-wrap, .chart-wrap.tall, .chart-wrap.square {
+    aspect-ratio: 1 / 1;
+    min-height: 280px;
+    max-height: 340px;
+  }
+}
 
 #map, #lineageMap, #corridorMap {
-  width: 100%; height: 540px;
+  width: 100%;
+  height: clamp(420px, 55vh, 600px);
   border-radius: 10px;
   border: 1px solid var(--line);
 }
@@ -604,10 +649,7 @@ table.standard tr:hover td { background: var(--line-soft); }
   font-weight: 500;
   color: var(--ink-soft);
 }
-@media (max-width: 760px) {
-  .about-card { grid-template-columns: 1fr; padding: 24px; }
-  .about-avatar { width: 140px; height: 140px; font-size: 3.5rem; margin: 0 auto; }
-}
+/* about-card responsive moved to global responsive block at bottom */
 
 /* ========== FOOTER ========== */
 footer {
@@ -636,19 +678,83 @@ footer {
   text-align: center;
   font-size: 0.8rem;
 }
-@media (max-width: 760px) {
-  .footer-inner { grid-template-columns: 1fr; gap: 24px; }
-  .hero-inner { grid-template-columns: 1fr; gap: 32px; }
-  .hero { padding: 60px 20px 48px; }
-  .topbar-inner { flex-direction: column; gap: 8px; align-items: flex-start; }
-  .top-nav { width: 100%; overflow-x: auto; }
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+/* Tablet landscape & smaller laptops */
+@media (max-width: 1024px) {
+  .hero { padding: 56px 24px 44px; }
+  .container { padding: 28px 20px; }
+  .agency-grid { grid-template-columns: repeat(2, 1fr); }
+  .method-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* Tablet portrait */
+@media (max-width: 768px) {
+  body { font-size: 15px; }
+  .hero { padding: 48px 20px 40px; }
+  .hero h1 { font-size: 1.7rem; }
+  .hero .lede { font-size: 0.95rem; }
+  .container { padding: 24px 18px; }
+  .section { padding: 20px 18px; }
+  .section-head { flex-direction: column; gap: 8px; }
+  .section-head h2 { font-size: 1.15rem; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .agency-grid { grid-template-columns: repeat(2, 1fr); }
+  .method-grid { grid-template-columns: 1fr; }
+  .flow { grid-template-columns: 1fr; }
+  .flow-card .num { font-size: 2rem; }
+  .about-card { grid-template-columns: 1fr; padding: 24px; text-align: center; }
+  .about-avatar { width: 130px; height: 130px; font-size: 3.2rem; margin: 0 auto; }
+  .about-skills { justify-content: center; }
+  .tabs { padding: 0 14px; }
+  .tab { padding: 12px 14px; font-size: 0.85rem; }
+  .kpi { padding: 14px 16px; }
+  .kpi .val { font-size: 1.7rem; }
+  .tl-item { padding-left: 56px; }
+  .timeline::before { left: 22px; }
+  .tl-dot { left: 10px; width: 22px; height: 22px; }
+  .tl-year { font-size: 1.2rem; }
+  .matrix th, .matrix td { padding: 8px 10px; font-size: 0.82rem; }
+}
+
+/* Mobile */
 @media (max-width: 540px) {
-  .container { padding: 20px 14px; }
-  .section { padding: 18px; }
-  #map, #lineageMap, #corridorMap { height: 420px; }
-  .kpi .val { font-size: 1.6rem; }
+  body { font-size: 14.5px; line-height: 1.65; }
+  .topbar-inner { padding: 0 14px; }
+  .brand-text small { display: none; }
+  .hero { padding: 36px 16px 32px; }
+  .hero h1 { font-size: 1.5rem; }
+  .hero-tag { font-size: 0.74rem; padding: 5px 10px; }
+  .hero-chip { font-size: 0.72rem; padding: 4px 9px; }
+  .hero-card { padding: 18px; }
+  .hero-cta { flex-direction: column; }
+  .hero-cta .btn { width: 100%; justify-content: center; }
+  .container { padding: 18px 12px; }
+  .section { padding: 16px 14px; border-radius: 10px; }
+  .section-head h2 { font-size: 1.05rem; }
+  .kpi { padding: 12px 14px; }
+  .kpi .val { font-size: 1.55rem; }
+  .agency-grid { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 20px; }
+  footer { padding: 24px 14px; }
+  .tabs { padding: 0 10px; }
+  .tab { padding: 11px 12px; font-size: 0.82rem; }
+  .matrix th, .matrix td { padding: 7px 8px; font-size: 0.78rem; }
+  table.standard th, table.standard td { padding: 8px 9px; font-size: 0.84rem; }
+  .tl-body { font-size: 0.88rem; padding: 12px 14px; }
+  .tl-stats { gap: 8px; }
+  .tl-stat { font-size: 0.78rem; padding: 3px 9px; }
+  .skill-chip { font-size: 0.75rem; padding: 4px 10px; }
+  .badge-row { gap: 6px; }
+  .tech-badge { font-size: 0.72rem; padding: 4px 9px; }
+}
+
+/* Small mobile */
+@media (max-width: 380px) {
+  .hero h1 { font-size: 1.35rem; }
+  .hero-meta { gap: 6px; }
+  .kpi-grid { gap: 8px; }
+  .kpi .val { font-size: 1.4rem; }
+  .section-head h2 { font-size: 0.98rem; }
 }
 </style>
 </head>
@@ -700,8 +806,8 @@ footer {
         <span class="hero-chip">📊 470 geo-located points</span>
       </div>
       <div class="hero-cta">
-        <a href="#timeline" class="btn btn-primary">ดู Timeline เรื่องราว →</a>
-        <a href="#methodology" class="btn btn-outline">Methodology</a>
+        <a href="#timeline" data-jump="timeline" class="btn btn-primary">ดู Timeline เรื่องราว →</a>
+        <a href="#methodology" data-jump="methodology" class="btn btn-outline">Methodology</a>
       </div>
     </div>
     <div class="hero-card">
@@ -761,13 +867,13 @@ footer {
         <div class="flow-card y66">
           <div class="num">266</div>
           <div class="lbl">FY 2566 · Inventory</div>
-          <div class="desc">รวบรวมจาก<strong>เรื่องร้องเรียน · บช.น. · สำนักงานเขต</strong> ครอบคลุมทั้งพื้นที่รับผิดชอบ กทม. และหน่วยงานภายนอก</div>
+          <div class="desc">รวบรวมจาก<strong>เรื่องร้องเรียน · บช.น. · สำนักงานเขต</strong> ครอบคลุมทั้งพื้นที่ กทม. และหน่วยงานภายนอก</div>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-card y67">
           <div class="num">127</div>
           <div class="lbl">FY 2567 · TE Filtered</div>
-          <div class="desc">วิเคราะห์ด้วย <strong>Traffic Engineering</strong> ร่วมกันระหว่าง <strong>สจส. × สนข.</strong> ครอบคลุมทั้งพื้นที่รับผิดชอบ กทม. และนอก กทม.</div>
+          <div class="desc">วิเคราะห์ด้วย <strong>Traffic Engineering</strong> ร่วมกันระหว่าง <strong>สจส. × สนข.</strong> ครอบคลุมทั้งพื้นที่ กทม. และนอก กทม.</div>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-card y68">
@@ -780,7 +886,7 @@ footer {
 
     <div class="two-col">
       <div class="section">
-        <div class="section-head"><div><h2>การกระจายตามโซน (FY 2568)<span class="en">Zone Distribution</span></h2></div></div>
+        <div class="section-head"><div><h2>การกระจายจุดตามโซน (FY 2568)<span class="en">Zone Distribution</span></h2></div></div>
         <div class="chart-wrap"><canvas id="zoneChart"></canvas></div>
       </div>
       <div class="section">
@@ -858,7 +964,7 @@ footer {
             <div class="tl-stats">
               <span class="tl-stat">📍 <strong>127</strong> จุด</span>
               <span class="tl-stat">🤝 <strong>2</strong> หน่วยงานหลัก</span>
-              <span class="tl-stat">🔄 <strong>52%</strong> จาก 2566</span>
+              <span class="tl-stat">🔄 <strong>52%</strong> สืบทอดจาก 2566</span>
               <span class="tl-stat">✨ <strong>48%</strong> จุดใหม่เพิ่มเติม</span>
             </div>
           </div>
@@ -877,8 +983,8 @@ footer {
             <div class="tl-stats">
               <span class="tl-stat">📍 <strong>77</strong> จุด</span>
               <span class="tl-stat">🎯 <strong>BMA-scope</strong></span>
-              <span class="tl-stat">🔄 <strong>66%</strong> จาก 2567</span>
-              <span class="tl-stat">⚠️ <strong>23</strong> จุดปัญหา 3 ปี</span>
+              <span class="tl-stat">🔄 <strong>66%</strong> สืบทอดจาก 2567</span>
+              <span class="tl-stat">⚠️ <strong>23</strong> จุดเรื้อรัง 3 ปี</span>
             </div>
           </div>
         </div>
@@ -886,7 +992,7 @@ footer {
     </div>
 
     <div class="section">
-      <div class="section-head"><div><h2>กราฟแสดงข้อมูล inventory<span class="en">Inventory Composition by Year</span></h2></div></div>
+      <div class="section-head"><div><h2>กราฟแสดงการสืบสาน inventory<span class="en">Inventory Composition by Year</span></h2></div></div>
       <div class="chart-wrap tall"><canvas id="lineageStack"></canvas></div>
     </div>
   </section>
@@ -930,8 +1036,8 @@ footer {
     <div class="section">
       <div class="section-head">
         <div>
-          <h2>Persistent Hotspots — บริเวณถนนที่พบปัญหาต่อเนื่อง<span class="en">Persistent Hotspots (3-year)</span></h2>
-          <div class="sub">จัดอันดับบริเวณถนนใน inventory ทั้ง 3 ปีงบประมาณ — Priority สำหรับการแก้ไขเชิงโครงสร้าง</div>
+          <h2>Persistent Hotspots — บริเวณถนนที่พบปัญหาต่อเนื่อง 3 ปี<span class="en">Persistent Hotspots (3-year)</span></h2>
+          <div class="sub">จัดอันดับบริเวณถนนที่ปรากฏใน inventory ทั้ง 3 ปีงบประมาณ — Priority สำหรับการแก้ไขเชิงโครงสร้าง</div>
         </div>
       </div>
       <table class="standard" id="hotspotTable"></table>
@@ -1270,6 +1376,14 @@ footer {
 // ============== UTILITIES ==============
 Chart.defaults.font.family = '"Sarabun", sans-serif';
 Chart.defaults.color = '#334155';
+Chart.defaults.font.size = 12;
+Chart.defaults.maintainAspectRatio = false;
+Chart.defaults.responsive = true;
+Chart.defaults.plugins.legend.labels.boxWidth = 14;
+Chart.defaults.plugins.legend.labels.boxHeight = 14;
+Chart.defaults.plugins.legend.labels.padding = 12;
+const IS_NARROW = () => window.innerWidth <= 768;
+const IS_MOBILE = () => window.innerWidth <= 540;
 
 const YEAR_COLORS = { 2566: '#6B7C93', 2567: '#1E5AA6', 2568: '#0B3B6F' };
 const ZONE_COLORS = ['#0B3B6F','#1E5AA6','#4A90E2','#1B8E5A','#D97706','#B91C1C'];
@@ -1419,8 +1533,12 @@ function renderZoneChart(rows) {
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      layout: { padding: 8 },
       plugins: {
-        legend: { position: 'right', labels: { font: { size: 12 }, padding: 12, usePointStyle: true } },
+        legend: {
+          position: IS_NARROW() ? 'bottom' : 'right',
+          labels: { font: { size: IS_MOBILE() ? 11 : 12 }, padding: 10, usePointStyle: true, boxWidth: 12 }
+        },
         tooltip: {
           callbacks: {
             label: ctx => {
@@ -1430,7 +1548,7 @@ function renderZoneChart(rows) {
           }
         }
       },
-      cutout: '50%'
+      cutout: IS_MOBILE() ? '55%' : '50%'
     }
   });
 }
@@ -1450,10 +1568,26 @@ function renderTrendChart(byYear) {
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      layout: { padding: { top: 24 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} จุด` } }
+      },
       scales: {
-        y: { beginAtZero: true, grid: { color: '#E2E8F0' } },
-        x: { grid: { display: false } }
+        y: { beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 11 : 12 } } },
+        x: { grid: { display: false }, ticks: { font: { size: IS_MOBILE() ? 11 : 13, weight: '600' } } }
+      },
+      animation: {
+        onComplete: function(){
+          const ctx = this.ctx;
+          ctx.font = (IS_MOBILE() ? '600 12px ' : '700 14px ') + '"Sarabun", sans-serif';
+          ctx.fillStyle = '#0B3B6F';
+          ctx.textAlign = 'center';
+          this.data.datasets[0].data.forEach((val, i) => {
+            const meta = this.getDatasetMeta(0).data[i];
+            ctx.fillText(val, meta.x, meta.y - 6);
+          });
+        }
       }
     }
   });
@@ -1475,12 +1609,24 @@ function renderLineageStack() {
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      layout: { padding: { top: 4 } },
       plugins: {
-        legend: { position: 'top', labels: { font: { size: 12 } } },
+        legend: {
+          position: 'top', align: 'start',
+          labels: { font: { size: IS_MOBILE() ? 10.5 : 12 }, padding: 10, boxWidth: 12, usePointStyle: true }
+        },
         tooltip: { mode: 'index', intersect: false },
-        title: { display: true, text: 'องค์ประกอบของ inventory ในแต่ละปี (เชิงประมาณ)' }
+        title: {
+          display: true,
+          text: 'องค์ประกอบของ inventory ในแต่ละปี (เชิงประมาณ)',
+          font: { size: IS_MOBILE() ? 12 : 14, weight: '600' },
+          padding: { bottom: 12 }
+        }
       },
-      scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: IS_MOBILE() ? 11 : 12, weight: '600' } } },
+        y: { stacked: true, beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 10 : 11 } } }
+      }
     }
   });
 }
@@ -1493,7 +1639,8 @@ function renderDistrictChart(rows) {
     if (!d) return;
     counts[d] = (counts[d]||0) + 1;
   });
-  const top = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 12);
+  const topN = IS_MOBILE() ? 8 : (IS_NARROW() ? 10 : 12);
+  const top = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, topN);
   new Chart(document.getElementById('districtChart'), {
     type: 'bar',
     data: {
@@ -1508,10 +1655,27 @@ function renderDistrictChart(rows) {
     options: {
       indexAxis: 'y',
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      layout: { padding: { right: 24 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${ctx.parsed.x} จุด` } }
+      },
       scales: {
-        x: { beginAtZero: true, grid: { color: '#E2E8F0' } },
-        y: { grid: { display: false } }
+        x: { beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 10 : 11 }, precision: 0 } },
+        y: { grid: { display: false }, ticks: { font: { size: IS_MOBILE() ? 11 : 12 } } }
+      },
+      animation: {
+        onComplete: function(){
+          const ctx = this.ctx;
+          ctx.font = '600 ' + (IS_MOBILE() ? '11px' : '12px') + ' "Sarabun", sans-serif';
+          ctx.fillStyle = '#0B3B6F';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          this.data.datasets[0].data.forEach((val, i) => {
+            const meta = this.getDatasetMeta(0).data[i];
+            ctx.fillText(val, meta.x + 5, meta.y);
+          });
+        }
       }
     }
   });
@@ -1598,6 +1762,15 @@ async function init() {
   }
 }
 init();
+
+// ============== RESIZE HANDLER ==============
+let _resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(() => {
+    if (window._map) window._map.invalidateSize();
+  }, 200);
+});
 </script>
 </body>
 </html>
