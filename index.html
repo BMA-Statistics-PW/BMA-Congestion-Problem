@@ -495,6 +495,36 @@ body {
 .two-col.golden { grid-template-columns: 1.4fr 1fr; }
 @media (max-width: 1024px) { .two-col, .two-col.golden { grid-template-columns: 1fr; } }
 
+/* Timeline + Inventory Composition layout */
+.timeline-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+.timeline-layout .section {
+  height: 100%;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+.timeline-layout .timeline { flex: 1; }
+.timeline-layout .timeline-chart-card .chart-wrap {
+  aspect-ratio: 5 / 4;
+  min-height: 360px;
+  max-height: 560px;
+}
+@media (max-width: 1024px) {
+  .timeline-layout { grid-template-columns: 1fr; }
+  .timeline-layout .section { margin-bottom: 18px; }
+  .timeline-layout .section:last-child { margin-bottom: 0; }
+  .timeline-layout .timeline-chart-card .chart-wrap {
+    aspect-ratio: 4 / 3;
+    min-height: 320px;
+    max-height: 460px;
+  }
+}
+
 /* Chart container — aspect-ratio based for consistent proportions */
 .chart-wrap {
   position: relative;
@@ -923,77 +953,79 @@ footer {
 
   <!-- ========== TAB: TIMELINE ========== -->
   <section class="tab-panel" id="timeline">
-    <div class="section">
-      <div class="section-head">
-        <div>
-          <h2>Timeline — วิวัฒนาการของ inventory<span class="en">Inventory Evolution Story</span></h2>
-          <div class="sub">เล่าเรื่องการเปลี่ยนแปลงของฐานข้อมูลและวิธีการวิเคราะห์ในแต่ละปีงบประมาณ</div>
+    <div class="timeline-layout">
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h2>Timeline — วิวัฒนาการของ inventory<span class="en">Inventory Evolution Story</span></h2>
+            <div class="sub">เล่าเรื่องการเปลี่ยนแปลงของฐานข้อมูลและวิธีการวิเคราะห์ในแต่ละปีงบประมาณ</div>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot y66"></div>
+            <div class="tl-header">
+              <span class="tl-year">FY 2566</span>
+              <span class="tl-badge">Source-driven Inventory</span>
+              <span class="tl-title">รวบรวมจุดปัญหาจากหลายแหล่งข้อมูล</span>
+            </div>
+            <div class="tl-body">
+              <strong>266 จุด</strong> ที่รวบรวมจากแหล่งข้อมูลหลัก ได้แก่ <strong>เรื่องร้องเรียน · กองบัญชาการตำรวจนครบาล (บช.น.) · สำนักงานเขตทั้ง 50 เขต</strong>
+              ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และพื้นที่ของหน่วยงานภายนอก (เช่น กรมทางหลวง, การรถไฟ ฯลฯ)
+              <div class="tl-stats">
+                <span class="tl-stat">📍 <strong>266</strong> จุด</span>
+                <span class="tl-stat">🏛 <strong>50</strong> เขต</span>
+                <span class="tl-stat">📂 <strong>3</strong> แหล่งข้อมูล</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <div class="tl-dot y67"></div>
+            <div class="tl-header">
+              <span class="tl-year">FY 2567</span>
+              <span class="tl-badge">TE Analysis (สจส. × สนข.)</span>
+              <span class="tl-title">วิเคราะห์ด้วย Traffic Engineering</span>
+            </div>
+            <div class="tl-body">
+              <strong>127 จุด</strong> ที่ผ่านการวิเคราะห์ตามมิติ <strong>Traffic Engineering</strong>
+              ภายใต้ความร่วมมือระหว่าง <strong>สำนักการจราจรและขนส่ง (สจส.)</strong> และ <strong>สำนักงานเขต (สนข.)</strong>
+              ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และหน่วยงานภายนอก
+              <div class="tl-stats">
+                <span class="tl-stat">📍 <strong>127</strong> จุด</span>
+                <span class="tl-stat">🤝 <strong>2</strong> หน่วยงานหลัก</span>
+                <span class="tl-stat">🔄 <strong>52%</strong> สืบทอดจาก 2566</span>
+                <span class="tl-stat">✨ <strong>48%</strong> จุดใหม่เพิ่มเติม</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <div class="tl-dot y68"></div>
+            <div class="tl-header">
+              <span class="tl-year">FY 2568</span>
+              <span class="tl-badge">TE Focused on BMA Scope</span>
+              <span class="tl-title">วิเคราะห์เพิ่มเติม เน้นพื้นที่ กทม.</span>
+            </div>
+            <div class="tl-body">
+              <strong>77 จุด</strong> ที่ได้รับการวิเคราะห์ Traffic Engineering <strong>เพิ่มเติม</strong>
+              โดยมุ่งเน้นเฉพาะ <strong>พื้นที่รับผิดชอบของ กทม.</strong> เพื่อให้แผนแก้ไขสามารถดำเนินการได้ภายใต้อำนาจหน้าที่
+              <div class="tl-stats">
+                <span class="tl-stat">📍 <strong>77</strong> จุด</span>
+                <span class="tl-stat">🎯 <strong>BMA-scope</strong></span>
+                <span class="tl-stat">🔄 <strong>66%</strong> สืบทอดจาก 2567</span>
+                <span class="tl-stat">⚠️ <strong>23</strong> จุดเรื้อรัง 3 ปี</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-dot y66"></div>
-          <div class="tl-header">
-            <span class="tl-year">FY 2566</span>
-            <span class="tl-badge">Source-driven Inventory</span>
-            <span class="tl-title">รวบรวมจุดปัญหาจากหลายแหล่งข้อมูล</span>
-          </div>
-          <div class="tl-body">
-            <strong>266 จุด</strong> ที่รวบรวมจากแหล่งข้อมูลหลัก ได้แก่ <strong>เรื่องร้องเรียน · กองบัญชาการตำรวจนครบาล (บช.น.) · สำนักงานเขตทั้ง 50 เขต</strong>
-            ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และพื้นที่ของหน่วยงานภายนอก (เช่น กรมทางหลวง, การรถไฟ ฯลฯ)
-            <div class="tl-stats">
-              <span class="tl-stat">📍 <strong>266</strong> จุด</span>
-              <span class="tl-stat">🏛 <strong>50</strong> เขต</span>
-              <span class="tl-stat">📂 <strong>3</strong> แหล่งข้อมูล</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot y67"></div>
-          <div class="tl-header">
-            <span class="tl-year">FY 2567</span>
-            <span class="tl-badge">TE Analysis (สจส. × สนข.)</span>
-            <span class="tl-title">วิเคราะห์ด้วย Traffic Engineering</span>
-          </div>
-          <div class="tl-body">
-            <strong>127 จุด</strong> ที่ผ่านการวิเคราะห์ตามมิติ <strong>Traffic Engineering</strong>
-            ภายใต้ความร่วมมือระหว่าง <strong>สำนักการจราจรและขนส่ง (สจส.)</strong> และ <strong>สำนักงานเขต (สนข.)</strong>
-            ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และหน่วยงานภายนอก
-            <div class="tl-stats">
-              <span class="tl-stat">📍 <strong>127</strong> จุด</span>
-              <span class="tl-stat">🤝 <strong>2</strong> หน่วยงานหลัก</span>
-              <span class="tl-stat">🔄 <strong>52%</strong> สืบทอดจาก 2566</span>
-              <span class="tl-stat">✨ <strong>48%</strong> จุดใหม่เพิ่มเติม</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot y68"></div>
-          <div class="tl-header">
-            <span class="tl-year">FY 2568</span>
-            <span class="tl-badge">TE Focused on BMA Scope</span>
-            <span class="tl-title">วิเคราะห์เพิ่มเติม เน้นพื้นที่ กทม.</span>
-          </div>
-          <div class="tl-body">
-            <strong>77 จุด</strong> ที่ได้รับการวิเคราะห์ Traffic Engineering <strong>เพิ่มเติม</strong>
-            โดยมุ่งเน้นเฉพาะ <strong>พื้นที่รับผิดชอบของ กทม.</strong> เพื่อให้แผนแก้ไขสามารถดำเนินการได้ภายใต้อำนาจหน้าที่
-            <div class="tl-stats">
-              <span class="tl-stat">📍 <strong>77</strong> จุด</span>
-              <span class="tl-stat">🎯 <strong>BMA-scope</strong></span>
-              <span class="tl-stat">🔄 <strong>66%</strong> สืบทอดจาก 2567</span>
-              <span class="tl-stat">⚠️ <strong>23</strong> จุดเรื้อรัง 3 ปี</span>
-            </div>
-          </div>
-        </div>
+      <div class="section timeline-chart-card">
+        <div class="section-head"><div><h2>กราฟแสดง inventory<span class="en">Inventory Composition by Year</span></h2></div></div>
+        <div class="chart-wrap tall"><canvas id="lineageStack"></canvas></div>
       </div>
-    </div>
-
-    <div class="section">
-      <div class="section-head"><div><h2>กราฟแสดง inventory<span class="en">Inventory Composition by Year</span></h2></div></div>
-      <div class="chart-wrap tall"><canvas id="lineageStack"></canvas></div>
     </div>
   </section>
 
