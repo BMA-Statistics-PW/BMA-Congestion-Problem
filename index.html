@@ -1,827 +1,1603 @@
 <!doctype html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard วิเคราะห์จุดปัญหาการจราจรติดขัด กรุงเทพมหานคร (ปีงบประมาณ 2566-2568)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <style>
-    :root {
-      --ink: #102a43;
-      --steel: #486581;
-      --sky: #2f6690;
-      --mint: #3aa17e;
-      --amber: #d97706;
-      --danger: #b42318;
-      --paper: #f5f7fa;
-      --panel: #ffffff;
-      --line: #d9e2ec;
-      --header-accent: #0a1f44;
-      --header-accent-deep: #06152f;
-      --header-meta: #e8edf5;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BMA Congestion Analysis | Spatial Lineage Dashboard (FY 2566–2568) — © Prapawadee_W.</title>
+<meta name="description" content="Portfolio dashboard for BMA traffic congestion analysis — spatial lineage, corridor clustering, and multi-agency intervention mapping by Prapawadee W., Statistics & Research Group, BMA Traffic and Transportation Department." />
 
-    * { box-sizing: border-box; }
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-    body {
-      margin: 0;
-      font-family: "Sarabun", sans-serif;
-      font-size: 16px;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at 15% 10%, rgba(47, 102, 144, 0.12), transparent 38%),
-        radial-gradient(circle at 85% 0%, rgba(58, 161, 126, 0.12), transparent 32%),
-        var(--paper);
-      line-height: 1.65;
-    }
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
-    .hero {
-      padding: 56px 32px 46px;
-      background: linear-gradient(180deg, var(--header-accent) 0%, var(--header-accent-deep) 100%);
-      color: #ffffff;
-      box-shadow: 0 12px 30px rgba(6, 21, 47, 0.28);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-    }
+<style>
+:root {
+  --ink: #0F172A;
+  --ink-soft: #334155;
+  --steel: #475569;
+  --muted: #64748B;
+  --line: #E2E8F0;
+  --line-soft: #F1F5F9;
+  --paper: #F8FAFC;
+  --panel: #FFFFFF;
 
-    .hero-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-    }
+  --brand: #0B3B6F;
+  --brand-2: #1E5AA6;
+  --brand-3: #4A90E2;
+  --accent: #E0A800;
+  --accent-soft: #FFF4D1;
+  --success: #1B8E5A;
+  --warning: #D97706;
+  --danger: #B91C1C;
 
-    .hero h1 {
-      margin: 0;
-      font-family: "Sarabun", sans-serif;
-      font-size: clamp(1.6rem, 1.5vw + 0.95rem, 2.2rem);
-      line-height: 1.3;
-      letter-spacing: 0.1px;
-      color: #ffffff;
-      font-weight: 700;
-      max-width: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  --y2566: #6B7C93;
+  --y2567: #1E5AA6;
+  --y2568: #0B3B6F;
 
-    .hero p {
-      margin: 18px 0 0;
-      opacity: 0.98;
-      font-size: clamp(0.92rem, 0.45vw + 0.8rem, 1.02rem);
-      max-width: 900px;
-      color: rgba(255, 255, 255, 0.96);
-      line-height: 1.75;
-    }
+  --shadow-sm: 0 1px 2px rgba(15,23,42,0.06), 0 1px 3px rgba(15,23,42,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15,23,42,0.08), 0 2px 4px -2px rgba(15,23,42,0.04);
+  --shadow-lg: 0 12px 24px -8px rgba(11,59,111,0.18), 0 4px 8px rgba(15,23,42,0.06);
+}
 
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 24px;
-      font-size: clamp(0.8rem, 0.22vw + 0.74rem, 0.9rem);
-      opacity: 1;
-      color: var(--header-meta);
-    }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: "Sarabun", sans-serif;
+  font-size: 15.5px;
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
 
-    .meta span {
-      color: var(--header-meta);
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 999px;
-      padding: 6px 12px;
-      line-height: 1.5;
-      backdrop-filter: blur(2px);
-    }
+/* ========== TOP BAR ========== */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.topbar-inner {
+  max-width: 1320px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 24px;
+}
+.brand-mark {
+  display: flex; align-items: center; gap: 12px;
+  font-weight: 700; color: var(--ink);
+  font-size: 0.95rem;
+}
+.brand-logo {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-3) 100%);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-text small { color: var(--muted); font-weight: 500; font-size: 0.78rem; }
+.top-nav {
+  display: flex; gap: 4px; flex-wrap: wrap;
+}
+.top-nav a {
+  text-decoration: none;
+  color: var(--ink-soft);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+.top-nav a:hover { background: var(--line-soft); color: var(--brand); }
 
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 24px;
-    }
+/* ========== HERO ========== */
+.hero {
+  position: relative;
+  padding: 80px 24px 64px;
+  background: linear-gradient(135deg, #06214A 0%, #0B3B6F 45%, #1E5AA6 100%);
+  color: white;
+  overflow: hidden;
+}
+.hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(74,144,226,0.25), transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(224,168,0,0.12), transparent 45%);
+  pointer-events: none;
+}
+.hero-inner {
+  position: relative; z-index: 2;
+  max-width: 1320px; margin: 0 auto;
+  display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 999px;
+  font-size: 0.82rem; font-weight: 500;
+  margin-bottom: 18px;
+}
+.hero-tag-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+.hero h1 {
+  margin: 0 0 16px;
+  font-size: clamp(1.8rem, 2vw + 1rem, 2.8rem);
+  font-weight: 700; line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.hero h1 .accent { color: #FFD96B; }
+.hero .lede {
+  font-size: clamp(0.95rem, 0.4vw + 0.85rem, 1.1rem);
+  opacity: 0.92;
+  margin: 0 0 28px;
+  max-width: 640px;
+}
+.hero-meta {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 24px;
+}
+.hero-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 6px;
+  font-size: 0.8rem; font-weight: 500;
+}
+.hero-cta {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 20px;
+  border-radius: 8px;
+  font-weight: 600; font-size: 0.92rem;
+  text-decoration: none;
+  border: none; cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-primary { background: #FFD96B; color: #0B3B6F; }
+.btn-primary:hover { background: white; transform: translateY(-1px); }
+.btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
+.btn-outline:hover { background: rgba(255,255,255,0.1); }
 
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-    }
+.hero-card {
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 16px;
+  padding: 24px;
+}
+.hero-card h3 {
+  margin: 0 0 16px;
+  font-size: 0.85rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+.profile-mini {
+  display: flex; align-items: center; gap: 14px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  margin-bottom: 18px;
+}
+.profile-avatar {
+  width: 56px; height: 56px;
+  background: linear-gradient(135deg, #FFD96B 0%, #E0A800 100%);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.4rem; color: #0B3B6F;
+}
+.profile-name { font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
+.profile-role { font-size: 0.82rem; opacity: 0.85; margin-top: 2px; }
+.hero-stat-list { display: grid; gap: 12px; }
+.hero-stat-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 0.9rem;
+}
+.hero-stat-row .label { opacity: 0.85; }
+.hero-stat-row .val { font-weight: 700; font-size: 1.05rem; color: #FFD96B; font-family: "JetBrains Mono", monospace; }
 
-    .kpi {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 1px 3px rgba(16, 42, 67, 0.06);
-    }
+/* ========== TABS ========== */
+.tabs-wrap {
+  position: sticky; top: 61px; z-index: 90;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.tabs {
+  max-width: 1320px; margin: 0 auto;
+  padding: 0 24px;
+  display: flex; gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.tab {
+  border: none;
+  background: transparent;
+  padding: 14px 18px;
+  font-family: inherit; font-size: 0.92rem; font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.tab:hover { color: var(--ink); }
+.tab.active { color: var(--brand); border-bottom-color: var(--brand); font-weight: 700; }
 
-    .kpi .label {
-      font-size: clamp(0.76rem, 0.3vw + 0.72rem, 0.9rem);
-      color: var(--steel);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.35px;
-    }
+.container {
+  max-width: 1320px; margin: 0 auto;
+  padding: 32px 24px;
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-    .kpi .value {
-      margin-top: 6px;
-      font-family: "Sarabun", sans-serif;
-      font-size: clamp(1.7rem, 1vw + 1.2rem, 2.2rem);
-      color: var(--sky);
-      line-height: 1.2;
-    }
+/* ========== KPI CARDS ========== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.kpi {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.kpi::before {
+  content: "";
+  position: absolute; top: 0; left: 0; bottom: 0;
+  width: 4px; background: var(--brand-2);
+}
+.kpi.success::before { background: var(--success); }
+.kpi.warning::before { background: var(--warning); }
+.kpi.danger::before { background: var(--danger); }
+.kpi .lbl {
+  font-size: 0.76rem; color: var(--muted);
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+.kpi .val {
+  font-size: 1.9rem; font-weight: 700; color: var(--brand);
+  font-family: "JetBrains Mono", monospace;
+  line-height: 1.1;
+}
+.kpi .hint { font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
 
-    .kpi .hint {
-      margin-top: 4px;
-      font-size: clamp(0.82rem, 0.3vw + 0.74rem, 0.95rem);
-      color: var(--steel);
-    }
+/* ========== SECTIONS ========== */
+.section {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px 26px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.section-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px; margin-bottom: 16px;
+}
+.section-head h2 {
+  margin: 0;
+  font-size: 1.3rem; font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.section-head .sub {
+  font-size: 0.9rem; color: var(--muted);
+  margin-top: 4px;
+}
+.section-head .en {
+  font-size: 0.78rem; font-style: italic; color: var(--muted); font-weight: 400;
+  margin-left: 6px;
+}
 
-    .section {
-      margin-top: 18px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(16, 42, 67, 0.06);
-    }
+/* ========== STORY TIMELINE ========== */
+.timeline {
+  position: relative;
+  padding: 8px 0;
+}
+.timeline::before {
+  content: "";
+  position: absolute; left: 32px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(180deg, var(--y2566) 0%, var(--y2567) 50%, var(--y2568) 100%);
+}
+.tl-item {
+  position: relative;
+  padding-left: 76px; padding-bottom: 28px;
+}
+.tl-dot {
+  position: absolute; left: 20px; top: 4px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid var(--brand-2);
+  box-shadow: var(--shadow-sm);
+}
+.tl-dot.y66 { border-color: var(--y2566); }
+.tl-dot.y67 { border-color: var(--y2567); }
+.tl-dot.y68 { border-color: var(--y2568); }
+.tl-header {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.tl-year {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1.4rem; font-weight: 700; color: var(--brand);
+}
+.tl-badge {
+  display: inline-block; padding: 3px 10px;
+  background: var(--accent-soft); color: var(--warning);
+  border-radius: 999px;
+  font-size: 0.78rem; font-weight: 600;
+}
+.tl-title { font-weight: 700; font-size: 1.05rem; color: var(--ink); }
+.tl-body {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  background: var(--line-soft);
+  padding: 14px 16px;
+  border-radius: 8px;
+  border-left: 3px solid var(--brand-2);
+}
+.tl-body strong { color: var(--brand); }
+.tl-stats {
+  display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap;
+}
+.tl-stat {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.tl-stat strong { color: var(--brand); font-family: "JetBrains Mono", monospace; }
 
-    .section h2 {
-      margin: 0;
-      font-size: clamp(1.2rem, 0.7vw + 1rem, 1.5rem);
-      color: var(--ink);
-      line-height: 1.35;
-    }
+/* ========== FLOW DIAGRAM ========== */
+.flow {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin: 20px 0;
+  position: relative;
+}
+.flow-card {
+  background: white;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  position: relative;
+}
+.flow-card.y66 { border-color: var(--y2566); }
+.flow-card.y67 { border-color: var(--y2567); background: linear-gradient(180deg, white 0%, #F0F6FC 100%); }
+.flow-card.y68 { border-color: var(--y2568); background: linear-gradient(180deg, white 0%, #E8F1FA 100%); }
+.flow-card .num {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 2.4rem; font-weight: 700;
+  color: var(--brand); line-height: 1;
+}
+.flow-card .lbl {
+  font-size: 0.85rem; color: var(--muted);
+  margin-top: 6px; font-weight: 600;
+}
+.flow-card .desc {
+  font-size: 0.82rem; color: var(--ink-soft);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  line-height: 1.5;
+}
+.flow-arrow {
+  display: none;
+}
+@media (min-width: 720px) {
+  .flow { grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; }
+  .flow-arrow {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; color: var(--brand-3); font-weight: 600;
+  }
+}
 
-    .section h3 {
-      line-height: 1.4;
-    }
+/* ========== AGENCY GRID ========== */
+.agency-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.agency-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex; flex-direction: column;
+}
+.agency-card .ag-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.7rem; font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  width: fit-content;
+}
+.ag-tag.gov { background: #E0F2FE; color: #0369A1; }
+.ag-tag.bma { background: #DBEAFE; color: #1E40AF; }
+.ag-tag.police { background: #FEE2E2; color: #B91C1C; }
+.ag-tag.local { background: #DCFCE7; color: #166534; }
+.agency-card .ag-name {
+  font-weight: 700; font-size: 1rem; color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.agency-card .ag-full {
+  font-size: 0.78rem; color: var(--muted);
+  margin-bottom: 10px;
+}
+.agency-card .ag-role {
+  font-size: 0.85rem; color: var(--ink-soft);
+  line-height: 1.55;
+}
 
-    .section p.sub {
-      margin: 8px 0 14px;
-      color: var(--steel);
-      font-size: clamp(0.92rem, 0.35vw + 0.84rem, 1rem);
-    }
+/* ========== RESP MATRIX ========== */
+.matrix {
+  overflow-x: auto;
+}
+.matrix table { min-width: 720px; }
+.matrix th {
+  background: var(--brand);
+  color: white;
+  font-weight: 600; font-size: 0.85rem;
+  padding: 10px 12px;
+  text-align: left;
+}
+.matrix td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.88rem;
+  vertical-align: top;
+}
+.matrix tr:nth-child(even) td { background: var(--line-soft); }
+.dot {
+  display: inline-block; width: 12px; height: 12px;
+  border-radius: 50%; vertical-align: middle;
+}
+.dot-r { background: var(--danger); }
+.dot-a { background: var(--accent); }
+.dot-c { background: var(--brand-3); }
+.dot-i { background: var(--steel); }
 
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
+/* ========== TWO-COL / charts ========== */
+.two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+}
+.two-col.golden { grid-template-columns: 1.4fr 1fr; }
+@media (max-width: 900px) { .two-col, .two-col.golden { grid-template-columns: 1fr; } }
 
-    .card {
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 14px;
-      background: #fbfdff;
-    }
+.chart-wrap { position: relative; min-height: 320px; }
+.chart-wrap.tall { min-height: 420px; }
 
-    .chart-wrap {
-      position: relative;
-      min-height: 320px;
-    }
+#map, #lineageMap, #corridorMap {
+  width: 100%; height: 540px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
 
-    #map {
-      width: 100%;
-      height: 530px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-    }
+table.standard { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+table.standard th {
+  background: var(--line-soft); color: var(--ink);
+  font-weight: 600; padding: 10px 12px;
+  text-align: left;
+  border-bottom: 2px solid var(--line);
+}
+table.standard td {
+  padding: 9px 12px; border-bottom: 1px solid var(--line);
+}
+table.standard tr:hover td { background: var(--line-soft); }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: clamp(0.9rem, 0.25vw + 0.84rem, 0.98rem);
-    }
+.tag {
+  display: inline-block; padding: 3px 9px;
+  border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+}
+.tag-red { background: #FEE2E2; color: var(--danger); }
+.tag-amber { background: var(--accent-soft); color: var(--warning); }
+.tag-green { background: #D1FAE5; color: var(--success); }
+.tag-blue { background: #DBEAFE; color: var(--brand-2); }
 
-    th, td {
-      border-bottom: 1px solid var(--line);
-      text-align: left;
-      padding: 10px 8px;
-      vertical-align: top;
-    }
+/* ========== METHODOLOGY ========== */
+.method-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+.method-card {
+  background: linear-gradient(180deg, white 0%, var(--line-soft) 100%);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+}
+.method-icon {
+  width: 40px; height: 40px;
+  background: var(--brand);
+  color: white;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+.method-name {
+  font-weight: 700; font-size: 1rem; color: var(--ink);
+  margin-bottom: 4px;
+}
+.method-tech {
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  background: var(--line-soft);
+  color: var(--ink-soft);
+  padding: 2px 8px; border-radius: 4px;
+  margin-bottom: 10px;
+}
+.method-desc { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; }
 
-    th {
-      background: #edf4fb;
-      color: var(--ink);
-      font-weight: 600;
-    }
+.badge-row {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 18px;
+}
+.tech-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  background: var(--line-soft);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+.tech-badge.lib { background: #FEF3C7; border-color: #FDE68A; color: #92400E; }
 
-    .tag {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: clamp(0.75rem, 0.2vw + 0.72rem, 0.86rem);
-      font-weight: 600;
-    }
+/* ========== ABOUT / FINDINGS ========== */
+.finding {
+  background: var(--accent-soft);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+.finding strong { color: var(--brand); }
 
-    .tag-red { background: #fee4e2; color: var(--danger); }
-    .tag-amber { background: #fff3e8; color: var(--amber); }
+.about-card {
+  display: grid; grid-template-columns: 220px 1fr; gap: 32px;
+  background: white; border: 1px solid var(--line);
+  border-radius: 14px; padding: 32px;
+  box-shadow: var(--shadow-md);
+}
+.about-avatar {
+  width: 200px; height: 200px;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-3) 100%);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 5rem;
+  box-shadow: var(--shadow-lg);
+}
+.about-name {
+  font-size: 1.5rem; font-weight: 700; color: var(--ink);
+  margin: 0 0 4px;
+}
+.about-role { color: var(--brand); font-weight: 600; font-size: 1.05rem; }
+.about-org { color: var(--muted); font-size: 0.92rem; margin-top: 2px; }
+.about-bio { margin-top: 18px; color: var(--ink-soft); font-size: 0.95rem; }
+.about-skills { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-chip {
+  padding: 5px 12px;
+  background: var(--line-soft);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+@media (max-width: 760px) {
+  .about-card { grid-template-columns: 1fr; padding: 24px; }
+  .about-avatar { width: 140px; height: 140px; font-size: 3.5rem; margin: 0 auto; }
+}
 
-    .findings {
-      display: grid;
-      gap: 10px;
-    }
+/* ========== FOOTER ========== */
+footer {
+  background: linear-gradient(180deg, #06214A 0%, #0B3B6F 100%);
+  color: rgba(255,255,255,0.85);
+  padding: 32px 24px;
+  margin-top: 40px;
+}
+.footer-inner {
+  max-width: 1320px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 32px;
+}
+.footer-inner h4 {
+  color: white;
+  font-size: 0.95rem;
+  margin: 0 0 12px;
+}
+.footer-inner p, .footer-inner li { font-size: 0.85rem; line-height: 1.7; }
+.footer-inner ul { padding-left: 0; list-style: none; margin: 0; }
+.footer-inner a { color: #FFD96B; text-decoration: none; }
+.footer-inner a:hover { text-decoration: underline; }
+.footer-bottom {
+  max-width: 1320px; margin: 24px auto 0;
+  border-top: 1px solid rgba(255,255,255,0.18);
+  padding-top: 18px;
+  text-align: center;
+  font-size: 0.8rem;
+}
+@media (max-width: 760px) {
+  .footer-inner { grid-template-columns: 1fr; gap: 24px; }
+  .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+  .hero { padding: 60px 20px 48px; }
+  .topbar-inner { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .top-nav { width: 100%; overflow-x: auto; }
+}
 
-    .finding {
-      border-left: 4px solid var(--amber);
-      background: #fffaeb;
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-size: clamp(0.92rem, 0.35vw + 0.84rem, 1rem);
-      line-height: 1.7;
-    }
-
-    .area-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .area-card {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #ffffff;
-      padding: 10px;
-    }
-
-    .area-card .k {
-      font-size: clamp(0.8rem, 0.22vw + 0.76rem, 0.9rem);
-      color: var(--steel);
-      font-weight: 600;
-    }
-
-    .area-card .v {
-      font-size: clamp(1.2rem, 0.7vw + 1rem, 1.5rem);
-      color: var(--ink);
-      font-weight: 700;
-      line-height: 1.2;
-      margin-top: 4px;
-    }
-
-    .footer-credit {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(72, 101, 129, 0.18);
-      font-size: clamp(0.84rem, 0.25vw + 0.8rem, 0.95rem);
-      color: var(--ink);
-      line-height: 1.7;
-    }
-
-    footer {
-      margin-top: 18px;
-      text-align: center;
-      font-size: clamp(0.82rem, 0.2vw + 0.78rem, 0.92rem);
-      color: var(--steel);
-      padding-bottom: 24px;
-    }
-
-    @media (max-width: 980px) {
-      body {
-        font-size: 15px;
-      }
-
-      .two-col { grid-template-columns: 1fr; }
-      .hero {
-        padding: 46px 24px 38px;
-      }
-      #map { height: 430px; }
-      .container {
-        padding: 20px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .hero {
-        padding: 38px 18px 30px;
-      }
-
-      .hero h1 {
-        white-space: normal;
-        overflow: visible;
-        text-overflow: clip;
-      }
-
-      .meta {
-        gap: 10px;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .container {
-        padding: 18px;
-      }
-
-      .section,
-      .kpi,
-      .card {
-        padding: 14px;
-      }
-
-      .chart-wrap {
-        min-height: 280px;
-      }
-
-      #map {
-        height: 360px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      body {
-        font-size: 14px;
-      }
-
-      .hero {
-        padding: 32px 16px 26px;
-      }
-
-      .container {
-        padding: 14px;
-      }
-
-      .kpi-grid {
-        grid-template-columns: 1fr;
-      }
-
-      table {
-        font-size: 0.86rem;
-      }
-
-      th, td {
-        padding: 8px 6px;
-      }
-
-      .chart-wrap {
-        min-height: 250px;
-      }
-
-      #map {
-        height: 300px;
-      }
-    }
-  </style>
+@media (max-width: 540px) {
+  .container { padding: 20px 14px; }
+  .section { padding: 18px; }
+  #map, #lineageMap, #corridorMap { height: 420px; }
+  .kpi .val { font-size: 1.6rem; }
+}
+</style>
 </head>
 <body>
-  <header class="hero">
-    <div class="hero-inner">
-      <h1>Dashboard วิเคราะห์จุดปัญหาการจราจรติดขัดในพื้นที่กรุงเทพมหานคร</h1>
-      <p>เพื่อใช้ประกอบการติดตามสถานการณ์ วางแผนแก้ไขปัญหา และสนับสนุนการตัดสินใจเชิงนโยบายด้านการจราจรของกรุงเทพมหานคร โดยใช้ข้อมูลที่มีการเชื่อมโยงเชิงพื้นที่และการวิเคราะห์แนวโน้มปัญหาในช่วงปีงบประมาณ 2566-2568</p>
-      <div class="meta">
-        <span>วิเคราะห์และจัดทำโดย © Prapawadee_W. กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สำนักการจราจรและขนส่ง กรุงเทพมหานคร</span>
-        <span>ครอบคลุมพื้นที่ 50 เขต 6 โซน</span>
-        <span>เกณฑ์เชื่อมโยงข้อมูลเชิงพื้นที่ 250 เมตร</span>
+
+<!-- ========== TOP BAR ========== -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-mark">
+      <div class="brand-logo">BMA</div>
+      <div class="brand-text">
+        <span>BMA Congestion Analysis</span>
+        <small>Statistics &amp; Research · FY 2566–2568</small>
       </div>
     </div>
-  </header>
+    <nav class="top-nav">
+      <a href="#overview" data-jump="overview">Overview</a>
+      <a href="#timeline" data-jump="timeline">Timeline</a>
+      <a href="#spatial" data-jump="spatial">Spatial</a>
+      <a href="#hotspots" data-jump="hotspots">Hotspots</a>
+      <a href="#agencies" data-jump="agencies">Agencies</a>
+      <a href="#methodology" data-jump="methodology">Methodology</a>
+      <a href="#about" data-jump="about">About</a>
+    </nav>
+  </div>
+</div>
 
-  <main class="container">
-    <section class="kpi-grid" aria-label="key indicators">
-      <article class="kpi"><div class="label">ปีงบประมาณ 2566</div><div class="value" id="kpi2566">-</div><div class="hint">จุดปัญหาที่รวบรวมจากข้อมูลปี 2566</div></article>
-      <article class="kpi"><div class="label">ปีงบประมาณ 2567</div><div class="value" id="kpi2567">-</div><div class="hint">จุดที่วิเคราะห์ทางพื้นที่ในปี 2567</div></article>
-      <article class="kpi"><div class="label">ปีงบประมาณ 2568</div><div class="value" id="kpi2568">-</div><div class="hint">จุดที่วิเคราะห์ทางพื้นที่ในปี 2568</div></article>
-      <article class="kpi"><div class="label">บริเวณถนนที่พบปัญหา</div><div class="value" id="kpiPersistent">-</div><div class="hint">บริเวณถนนที่พบปัญหาต่อเนื่องในช่วง 3 ปี</div></article>
-      <article class="kpi"><div class="label">แนวถนนต่อเนื่อง</div><div class="value" id="kpiCorridors">-</div><div class="hint">แนวถนนที่พบปัญหาต่อเนื่อง 3 ปี</div></article>
-    </section>
-
-    <section class="section">
-      <h2>การวิเคราะห์ตามลักษณะพื้นที่</h2>
-      <p class="sub">สรุปลักษณะพื้นที่ที่เกิดปัญหาจราจรติดขัด และแสดงสัดส่วนการกระจายของจุดปัญหาตามโซนพื้นที่ในปีงบประมาณ 2568</p>
-      <div class="two-col">
-        <div class="card">
-          <h3 style="margin:0 0 8px; font-size:clamp(1rem, 0.45vw + 0.92rem, 1.12rem);">ลักษณะพื้นที่ของจุดปัญหาจราจร</h3>
-          <p style="margin:0 0 12px; font-size:clamp(0.88rem, 0.25vw + 0.82rem, 0.96rem); color:#486581;">อาทิ ทางแยก คอขวด สถานศึกษา/โรงเรียน ชุมชน/ตลาด และพื้นที่ลักษณะอื่นที่เกี่ยวข้อง</p>
-          <div id="areaTypeSummary" class="area-grid"></div>
-          <table id="areaTypeTable"></table>
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">
+        <span class="hero-tag-dot"></span>
+        Portfolio Project · Data Analytics for Public Sector
+      </div>
+      <h1>
+        วิเคราะห์จุดปัญหา<span class="accent">จราจรติดขัด</span><br/>
+        กรุงเทพมหานคร 2566–2568
+      </h1>
+      <p class="lede">
+        งานวิเคราะห์ข้อมูลเชิงพื้นที่ (Spatial Analytics) เพื่อสนับสนุนการตัดสินใจเชิงนโยบาย
+        ครอบคลุมการสืบสาน inventory ข้ามปี, การจัดกลุ่ม corridor ด้วยอัลกอริทึม DBSCAN,
+        การคำนวณ Kernel Density Estimation และการวิเคราะห์รูปแบบมาตรการที่มีประสิทธิผลสูงสุด
+      </p>
+      <div class="hero-meta">
+        <span class="hero-chip">🏛️ 50 เขต · 6 กลุ่มเขต</span>
+        <span class="hero-chip">📍 Spatial threshold 250m</span>
+        <span class="hero-chip">🤝 Multi-agency intervention</span>
+        <span class="hero-chip">📊 470 geo-located points</span>
+      </div>
+      <div class="hero-cta">
+        <a href="#timeline" class="btn btn-primary">ดู Timeline เรื่องราว →</a>
+        <a href="#methodology" class="btn btn-outline">Methodology</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <h3>Analyst Profile</h3>
+      <div class="profile-mini">
+        <div class="profile-avatar">P</div>
+        <div>
+          <div class="profile-name">© Prapawadee W.</div>
+          <div class="profile-role">Professional-Level Statistician</div>
         </div>
-        <div class="card">
-          <div class="chart-wrap">
-            <canvas id="zoneChart"></canvas>
+      </div>
+      <div class="hero-stat-list">
+        <div class="hero-stat-row"><span class="label">FY 2566 — Inventory</span><span class="val" id="heroK1">266</span></div>
+        <div class="hero-stat-row"><span class="label">FY 2567 — TE Filtered</span><span class="val" id="heroK2">127</span></div>
+        <div class="hero-stat-row"><span class="label">FY 2568 — TE Focused</span><span class="val" id="heroK3">77</span></div>
+        <div class="hero-stat-row"><span class="label">Persistent (3-yr Geo)</span><span class="val" id="heroK4">23</span></div>
+        <div class="hero-stat-row"><span class="label">Persistent Corridors</span><span class="val" id="heroK5">25</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TABS ========== -->
+<div class="tabs-wrap">
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="overview">📊 ภาพรวม / Overview</button>
+    <button class="tab" data-tab="timeline">🗓 Timeline 3 ปี</button>
+    <button class="tab" data-tab="spatial">🗺 Spatial Analysis</button>
+    <button class="tab" data-tab="hotspots">⚠️ Hotspots &amp; Corridors</button>
+    <button class="tab" data-tab="agencies">🏛 Multi-agency</button>
+    <button class="tab" data-tab="methodology">🔬 Methodology</button>
+    <button class="tab" data-tab="about">👤 About the Analyst</button>
+  </div>
+</div>
+
+<main class="container">
+
+  <!-- ========== TAB: OVERVIEW ========== -->
+  <section class="tab-panel active" id="overview">
+    <div class="kpi-grid">
+      <div class="kpi"><div class="lbl">FY 2566 — Inventory</div><div class="val" id="kpi66">266</div><div class="hint">รวบรวมจากเรื่องร้องเรียน · บช.น. · สำนักงานเขต</div></div>
+      <div class="kpi success"><div class="lbl">FY 2567 — TE Filtered</div><div class="val" id="kpi67">127</div><div class="hint">วิเคราะห์ด้วย Traffic Engineering (สจส. × สนข.)</div></div>
+      <div class="kpi success"><div class="lbl">FY 2568 — TE Focused</div><div class="val" id="kpi68">77</div><div class="hint">เน้นพื้นที่รับผิดชอบของ กทม.</div></div>
+      <div class="kpi danger"><div class="lbl">Persistent 3-yr Geo</div><div class="val" id="kpiPers">23</div><div class="hint">อยู่ใน inventory ทั้ง 3 ปี (ตามพิกัด)</div></div>
+      <div class="kpi warning"><div class="lbl">Persistent Corridors</div><div class="val" id="kpiCorr">25</div><div class="hint">DBSCAN cluster active 3 ปี</div></div>
+      <div class="kpi"><div class="lbl">Spatial Coverage</div><div class="val">470</div><div class="hint">geo-located points · 50 เขต · 6 โซน</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>เรื่องราวข้อมูลทั้ง 3 ปี<span class="en">The 3-year Data Story</span></h2>
+          <div class="sub">การเปลี่ยนแปลงของ inventory จาก "การร้องเรียน" → "กรอง Traffic Engineering" → "เน้นพื้นที่ กทม."</div>
+        </div>
+      </div>
+      <div class="flow">
+        <div class="flow-card y66">
+          <div class="num">266</div>
+          <div class="lbl">FY 2566 · Inventory</div>
+          <div class="desc">รวบรวมจาก<strong>เรื่องร้องเรียน · บช.น. · สำนักงานเขต</strong> ครอบคลุมทั้งพื้นที่ กทม. และหน่วยงานภายนอก</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-card y67">
+          <div class="num">127</div>
+          <div class="lbl">FY 2567 · TE Filtered</div>
+          <div class="desc">วิเคราะห์ด้วย <strong>Traffic Engineering</strong> ร่วมกันระหว่าง <strong>สจส. × สนข.</strong> ครอบคลุมทั้งพื้นที่ กทม. และนอก กทม.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-card y68">
+          <div class="num">77</div>
+          <div class="lbl">FY 2568 · TE Focused</div>
+          <div class="desc">วิเคราะห์ Traffic Engineering <strong>เพิ่มเติม</strong> เน้น<strong>พื้นที่รับผิดชอบของ กทม.</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="section">
+        <div class="section-head"><div><h2>การกระจายจุดตามโซน (FY 2568)<span class="en">Zone Distribution</span></h2></div></div>
+        <div class="chart-wrap"><canvas id="zoneChart"></canvas></div>
+      </div>
+      <div class="section">
+        <div class="section-head"><div><h2>แนวโน้ม inventory<span class="en">Inventory Trend</span></h2></div></div>
+        <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>ข้อค้นพบเชิงนโยบาย<span class="en">Key Policy Findings</span></h2>
+        </div>
+      </div>
+      <div class="finding">
+        <strong>1. การกรองข้อมูลอย่างเป็นระบบ</strong> — จากการร้องเรียน 266 จุด เหลือ 127 จุดที่ตรงกับขอบเขต Traffic Engineering
+        และ 77 จุดที่อยู่ในพื้นที่รับผิดชอบ กทม. โดยตรง สะท้อนกระบวนการ refine inventory ที่ขับเคลื่อนด้วยข้อมูล
+      </div>
+      <div class="finding">
+        <strong>2. Persistent Hotspots — 23 จุด</strong> ปรากฏใน inventory ทั้ง 3 ปี ตามพิกัด (Spatial match ≤ 250m)
+        จุดเหล่านี้ต้องการ <strong>การแก้ไขเชิงโครงสร้าง (structural intervention)</strong> และความร่วมมือระหว่างหน่วยงานหลายฝ่าย
+      </div>
+      <div class="finding">
+        <strong>3. 25 Persistent Corridors</strong> ที่จัดกลุ่มด้วย DBSCAN เป็นพื้นที่ปัญหาเชิงเส้น (corridor) เช่น
+        ดุสิต–สามเสน, บางกอกน้อย–อรุณอมรินทร์, ปทุมวัน–พระรามที่ 1, บางบอน–เอกชัย
+        — เหมาะกับการแก้แบบ <strong>corridor-level intervention</strong> มากกว่าจุดเดี่ยว
+      </div>
+      <div class="finding">
+        <strong>4. ความร่วมมือหลายหน่วยงาน</strong> — การแก้ไขจริงต้องใช้ความร่วมมือของ สจส. · สนย. · สำนักเทศกิจ · สำนักงานเขต · บช.น.
+        ตามลักษณะ root cause ของแต่ละจุด
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TAB: TIMELINE ========== -->
+  <section class="tab-panel" id="timeline">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Timeline — วิวัฒนาการของ inventory<span class="en">Inventory Evolution Story</span></h2>
+          <div class="sub">เล่าเรื่องการเปลี่ยนแปลงของฐานข้อมูลและวิธีการวิเคราะห์ในแต่ละปีงบประมาณ</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot y66"></div>
+          <div class="tl-header">
+            <span class="tl-year">FY 2566</span>
+            <span class="tl-badge">Source-driven Inventory</span>
+            <span class="tl-title">รวบรวมจุดปัญหาจากหลายแหล่งข้อมูล</span>
+          </div>
+          <div class="tl-body">
+            <strong>266 จุด</strong> ที่รวบรวมจากแหล่งข้อมูลหลัก ได้แก่ <strong>เรื่องร้องเรียน · กองบัญชาการตำรวจนครบาล (บช.น.) · สำนักงานเขตทั้ง 50 เขต</strong>
+            ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และพื้นที่ของหน่วยงานภายนอก (เช่น กรมทางหลวง, การรถไฟ ฯลฯ)
+            <div class="tl-stats">
+              <span class="tl-stat">📍 <strong>266</strong> จุด</span>
+              <span class="tl-stat">🏛 <strong>50</strong> เขต</span>
+              <span class="tl-stat">📂 <strong>3</strong> แหล่งข้อมูล</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot y67"></div>
+          <div class="tl-header">
+            <span class="tl-year">FY 2567</span>
+            <span class="tl-badge">TE Analysis (สจส. × สนข.)</span>
+            <span class="tl-title">วิเคราะห์ด้วย Traffic Engineering</span>
+          </div>
+          <div class="tl-body">
+            <strong>127 จุด</strong> ที่ผ่านการวิเคราะห์ตามมิติ <strong>Traffic Engineering</strong>
+            ภายใต้ความร่วมมือระหว่าง <strong>สำนักการจราจรและขนส่ง (สจส.)</strong> และ <strong>สำนักงานเขต (สนข.)</strong>
+            ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และหน่วยงานภายนอก
+            <div class="tl-stats">
+              <span class="tl-stat">📍 <strong>127</strong> จุด</span>
+              <span class="tl-stat">🤝 <strong>2</strong> หน่วยงานหลัก</span>
+              <span class="tl-stat">🔄 <strong>52%</strong> สืบทอดจาก 2566</span>
+              <span class="tl-stat">✨ <strong>48%</strong> จุดใหม่เพิ่มเติม</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot y68"></div>
+          <div class="tl-header">
+            <span class="tl-year">FY 2568</span>
+            <span class="tl-badge">TE Focused on BMA Scope</span>
+            <span class="tl-title">วิเคราะห์เพิ่มเติม เน้นพื้นที่ กทม.</span>
+          </div>
+          <div class="tl-body">
+            <strong>77 จุด</strong> ที่ได้รับการวิเคราะห์ Traffic Engineering <strong>เพิ่มเติม</strong>
+            โดยมุ่งเน้นเฉพาะ <strong>พื้นที่รับผิดชอบของ กทม.</strong> เพื่อให้แผนแก้ไขสามารถดำเนินการได้ภายใต้อำนาจหน้าที่
+            <div class="tl-stats">
+              <span class="tl-stat">📍 <strong>77</strong> จุด</span>
+              <span class="tl-stat">🎯 <strong>BMA-scope</strong></span>
+              <span class="tl-stat">🔄 <strong>66%</strong> สืบทอดจาก 2567</span>
+              <span class="tl-stat">⚠️ <strong>23</strong> จุดเรื้อรัง 3 ปี</span>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="section">
-      <h2>แผนที่จุดปัญหาจราจร (OpenStreetMap)</h2>
-      <p class="sub">แสดงตำแหน่งจุดปัญหาการจราจรที่สำคัญ เพื่อใช้สนับสนุนการติดตามสถานการณ์เชิงพื้นที่</p>
-      <div class="card" style="margin-bottom:10px;">
-        <label for="mapYearFilter"><strong>เลือกปีงบประมาณ:</strong></label>
-        <select id="mapYearFilter" style="margin-left:8px; padding:7px 10px; border:1px solid #d9e2ec; border-radius:6px; font-size:0.95rem;">
-          <option value="all">ทั้งหมด</option>
-          <option value="2566">2566</option>
-          <option value="2567">2567</option>
-          <option value="2568">2568</option>
-        </select>
+    <div class="section">
+      <div class="section-head"><div><h2>กราฟแสดงการสืบสาน inventory<span class="en">Inventory Composition by Year</span></h2></div></div>
+      <div class="chart-wrap tall"><canvas id="lineageStack"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ========== TAB: SPATIAL ========== -->
+  <section class="tab-panel" id="spatial">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>แผนที่จุดปัญหาจราจร<span class="en">Interactive Map (OpenStreetMap)</span></h2>
+          <div class="sub">เลือกปีเพื่อกรองจุดบนแผนที่ — โทนสีเรียงตามปีงบประมาณ</div>
+        </div>
+        <div>
+          <label for="mapYear" style="font-size:.85rem; color: var(--muted); margin-right:6px;">ปีงบประมาณ:</label>
+          <select id="mapYear" style="padding:6px 10px; border:1px solid var(--line); border-radius:6px; font-family: inherit;">
+            <option value="all">ทั้งหมด</option>
+            <option value="2566">2566</option>
+            <option value="2567">2567</option>
+            <option value="2568">2568</option>
+          </select>
+        </div>
       </div>
       <div id="map"></div>
-    </section>
+    </div>
 
-    <section class="section">
-      <h2>"บริเวณถนนที่พบปัญหา"</h2>
-      <p class="sub">สรุปจุดปัญหาสำคัญที่ควรให้ความสำคัญเชิงนโยบายและการบริหารจัดการในลักษณะพื้นที่ถนน/แนวถนน</p>
-      <table id="hotspotTable"></table>
-    </section>
-
-    <section class="section">
-      <h2>ข้อค้นพบเชิงนโยบาย</h2>
-      <div class="findings">
-        <div class="finding"><strong>1) ต้องคัดกรองข้อมูลให้มีความเฉพาะเจาะจงเพิ่มขึ้น</strong></div>
-        <div class="finding"><strong>2) จุดปัญหาซ้ำซาก</strong> ควรได้รับการพิจารณามาตรการแก้ไขเชิงโครงสร้างและการจัดการจราจรอย่างต่อเนื่อง</div>
-        <div class="finding"><strong>3) </strong> ควรใช้ข้อมูลเชิงพื้นที่และข้อมูลพฤติกรรมร่วมกัน เพื่อยกระดับการวิเคราะห์สาเหตุของปัญหา</div>
-        <div class="finding"><strong>4) การแก้ไขตามแนวเส้นทาง (Corridor-based Intervention)</strong> เหมาะสำหรับพื้นที่ที่มีปัญหาต่อเนื่องหลายจุดในแนวถนนเดียวกัน</div>
+    <div class="two-col">
+      <div class="section">
+        <div class="section-head"><div><h2>ลักษณะพื้นที่ของจุดปัญหา<span class="en">Area Type Distribution</span></h2></div></div>
+        <div id="areaTypeSummary" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px;"></div>
+        <table class="standard" id="areaTypeTable"></table>
       </div>
-    </section>
-
-    <footer>
-      ข้อมูลแผนที่และชั้นข้อมูลพื้นฐาน: OpenStreetMap contributors (ODbL) | เพื่อใช้ประกอบการนำเสนอและวิเคราะห์เชิงนโยบายเท่านั้น
-      <br />จัดทำขึ้นเพื่อประโยชน์สาธารณะ ไม่อนุญาตให้นำไปใช้แสวงหาผลประโยชน์ส่วนบุคคล
-      <div class="footer-credit">
-        © Prapawadee_W.<br />
-        กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สำนักการจราจรและขนส่ง กรุงเทพมหานคร
+      <div class="section">
+        <div class="section-head"><div><h2>Top เขตที่มีจุดปัญหา<span class="en">Top Districts</span></h2></div></div>
+        <div class="chart-wrap tall"><canvas id="districtChart"></canvas></div>
       </div>
-    </footer>
-  </main>
+    </div>
+  </section>
 
-  <script>
-    Chart.defaults.font.family = "Sarabun";
-    Chart.defaults.color = "#102a43";
+  <!-- ========== TAB: HOTSPOTS ========== -->
+  <section class="tab-panel" id="hotspots">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Persistent Hotspots — บริเวณถนนที่พบปัญหาต่อเนื่อง 3 ปี<span class="en">Persistent Hotspots (3-year)</span></h2>
+          <div class="sub">จัดอันดับบริเวณถนนที่ปรากฏใน inventory ทั้ง 3 ปีงบประมาณ — Priority สำหรับการแก้ไขเชิงโครงสร้าง</div>
+        </div>
+      </div>
+      <table class="standard" id="hotspotTable"></table>
+    </div>
 
-    const YEAR_COLORS = {
-      2566: "#00A8B5",
-      2567: "#0077B6",
-      2568: "#2F6690"
-    };
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Persistent Corridors — แนวถนนต่อเนื่อง<span class="en">Persistent Corridors (DBSCAN clustering)</span></h2>
+          <div class="sub">จัดกลุ่มจุดปัญหาตามพิกัด (eps=400m, min_samples=3) — เห็นเป็น "corridor" ของปัญหาที่ต้องการการแก้แบบเชิงระบบ</div>
+        </div>
+      </div>
+      <table class="standard" id="corridorTable"></table>
+    </div>
+  </section>
 
-    const PRESENTATION_COLORS = [
-      "#00A8B5",
-      "#0077B6",
-      "#2F6690",
-      "#4D908E",
-      "#90BE6D",
-      "#F8961E",
-      "#577590",
-      "#7B6D8D"
-    ];
+  <!-- ========== TAB: AGENCIES ========== -->
+  <section class="tab-panel" id="agencies">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>หน่วยงานที่เกี่ยวข้อง<span class="en">Stakeholder Agencies</span></h2>
+          <div class="sub">การแก้ไขจุดปัญหาจราจรเป็นงานที่ต้องใช้ความร่วมมือของหลายหน่วยงาน ตามลักษณะ root cause ของแต่ละจุด</div>
+        </div>
+      </div>
+      <div class="agency-grid">
+        <div class="agency-card">
+          <span class="ag-tag bma">หน่วยหลัก · BMA</span>
+          <div class="ag-name">สำนักการจราจรและขนส่ง</div>
+          <div class="ag-full">สจส. · BMA Traffic and Transportation Department</div>
+          <div class="ag-role">วิเคราะห์ Traffic Engineering · บริหารจัดการระบบจราจร · ปรับจังหวะสัญญาณไฟ · ออกแบบกายภาพถนน · CCTV · Bus Bay / Bus Priority</div>
+        </div>
+        <div class="agency-card">
+          <span class="ag-tag bma">BMA</span>
+          <div class="ag-name">สำนักการโยธา</div>
+          <div class="ag-full">สนย. · BMA Public Works Department</div>
+          <div class="ag-role">ก่อสร้าง / ปรับปรุงโครงสร้างถนน · สะพาน · ทางเท้า · ผิวจราจร · งานโยธาเชิงโครงสร้าง</div>
+        </div>
+        <div class="agency-card">
+          <span class="ag-tag bma">BMA</span>
+          <div class="ag-name">สำนักเทศกิจ</div>
+          <div class="ag-full">BMA City Law Enforcement Department</div>
+          <div class="ag-role">กวดขันการจอด · หาบเร่แผงลอย · ความเป็นระเบียบทางเท้า · สนับสนุนจราจรในเขตพื้นที่</div>
+        </div>
+        <div class="agency-card">
+          <span class="ag-tag local">BMA District</span>
+          <div class="ag-name">สำนักงานเขต (50 เขต)</div>
+          <div class="ag-full">สนข. · BMA District Offices</div>
+          <div class="ag-role">รับเรื่องร้องเรียนพื้นที่ · ประสานงานในพื้นที่ · กวดขันท้องที่ · ดำเนินมาตรการระยะสั้น</div>
+        </div>
+        <div class="agency-card">
+          <span class="ag-tag police">Police</span>
+          <div class="ag-name">กองบัญชาการตำรวจนครบาล</div>
+          <div class="ag-full">บช.น. · Metropolitan Police Bureau</div>
+          <div class="ag-role">บังคับใช้กฎจราจร · กวดขันวินัยจราจร · จัดการจราจรในชั่วโมงเร่งด่วน · ความปลอดภัยจราจร</div>
+        </div>
+        <div class="agency-card">
+          <span class="ag-tag gov">External</span>
+          <div class="ag-name">หน่วยงานภายนอก</div>
+          <div class="ag-full">External Agencies (out of BMA scope)</div>
+          <div class="ag-role">กรมทางหลวง · การรถไฟแห่งประเทศไทย · รฟม. · กรมการขนส่งทางบก ฯลฯ (ในส่วนที่อยู่นอกขอบเขต กทม.)</div>
+        </div>
+      </div>
+    </div>
 
-    const THAI_ZONE_LABELS = {
-      "North Bangkok": "กรุงเทพเหนือ",
-      "East Bangkok": "กรุงเทพตะวันออก",
-      "Central Bangkok": "กรุงเทพกลาง",
-      "South Bangkok": "กรุงเทพใต้",
-      "West Bangkok": "กรุงเทพตะวันตก",
-      "Thon Buri": "ธนบุรี",
-      "Unknown": "ไม่ระบุ"
-    };
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Responsibility Matrix (RACI-style)<span class="en">Agency × Intervention Type</span></h2>
+          <div class="sub">
+            <span class="dot dot-r"></span> Responsible (รับผิดชอบหลัก)
+            &nbsp; <span class="dot dot-a"></span> Accountable (เจ้าของผลลัพธ์)
+            &nbsp; <span class="dot dot-c"></span> Consulted (ให้คำปรึกษา)
+            &nbsp; <span class="dot dot-i"></span> Informed (รับทราบ)
+          </div>
+        </div>
+      </div>
+      <div class="matrix">
+        <table>
+          <thead>
+            <tr>
+              <th>มาตรการ / Intervention</th>
+              <th>สจส.</th>
+              <th>สนย.</th>
+              <th>เทศกิจ</th>
+              <th>สนข.</th>
+              <th>บช.น.</th>
+              <th>หมายเหตุ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>ปรับสัญญาณไฟ / Adaptive Signal</strong></td>
+              <td><span class="dot dot-a"></span></td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="dot dot-i"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>สจส. ดูแลระบบสัญญาณไฟทั้งหมด · ปรึกษา บช.น. เรื่องจังหวะ</td>
+            </tr>
+            <tr>
+              <td><strong>ปรับลักษณะกายภาพ / Physical Design</strong></td>
+              <td><span class="dot dot-a"></span></td>
+              <td><span class="dot dot-r"></span></td>
+              <td>—</td>
+              <td><span class="dot dot-c"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>สจส. ออกแบบ · สนย. ดำเนินการก่อสร้าง</td>
+            </tr>
+            <tr>
+              <td><strong>กวดขันวินัยจราจร / Enforcement</strong></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>—</td>
+              <td><span class="dot dot-r"></span></td>
+              <td><span class="dot dot-r"></span></td>
+              <td><span class="dot dot-a"></span></td>
+              <td>บช.น. รับผิดชอบหลัก · เทศกิจ/เขตสนับสนุนในพื้นที่</td>
+            </tr>
+            <tr>
+              <td><strong>Bus Bay / Bus Priority</strong></td>
+              <td><span class="dot dot-a"></span></td>
+              <td><span class="dot dot-r"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td><span class="dot dot-i"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>สจส. ออกแบบ · สนย. ก่อสร้าง · เทศกิจกวดขันการจอดล้ำ</td>
+            </tr>
+            <tr>
+              <td><strong>CCTV / Smart Camera</strong></td>
+              <td><span class="dot dot-a"></span></td>
+              <td>—</td>
+              <td><span class="dot dot-i"></span></td>
+              <td><span class="dot dot-i"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>สจส. ดูแล · บช.น. ใช้ข้อมูลในการบังคับใช้กฎหมาย</td>
+            </tr>
+            <tr>
+              <td><strong>คอขวด / Bottleneck Removal</strong></td>
+              <td><span class="dot dot-a"></span></td>
+              <td><span class="dot dot-r"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>การประสานงานหลายฝ่าย</td>
+            </tr>
+            <tr>
+              <td><strong>รับเรื่องร้องเรียน / Complaint Intake</strong></td>
+              <td><span class="dot dot-i"></span></td>
+              <td>—</td>
+              <td><span class="dot dot-c"></span></td>
+              <td><span class="dot dot-a"></span></td>
+              <td><span class="dot dot-i"></span></td>
+              <td>สนข. เป็นด่านแรกในการรับเรื่องในพื้นที่</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
-    function translateZoneLabel(label) {
-      return THAI_ZONE_LABELS[label] || label || "ไม่ระบุ";
-    }
+  <!-- ========== TAB: METHODOLOGY ========== -->
+  <section class="tab-panel" id="methodology">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Methodology · กระบวนการวิเคราะห์ข้อมูล<span class="en">Analytical Methodology</span></h2>
+          <div class="sub">วิธีการเชิงสถิติและเครื่องมือที่ใช้ในการวิเคราะห์ข้อมูลทั้งโครงการ</div>
+        </div>
+      </div>
 
-    function getContrastingTextColor(hexColor) {
-      const hex = (hexColor || "").replace("#", "");
-      if (hex.length !== 6) return "#102a43";
-      const r = parseInt(hex.slice(0, 2), 16);
-      const g = parseInt(hex.slice(2, 4), 16);
-      const b = parseInt(hex.slice(4, 6), 16);
-      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-      return luminance > 0.62 ? "#102a43" : "#ffffff";
-    }
+      <h4 style="margin-bottom: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem;">เครื่องมือ &amp; เทคโนโลยี / Tech Stack</h4>
+      <div class="badge-row">
+        <span class="tech-badge lib">🐍 Python 3.10</span>
+        <span class="tech-badge lib">pandas</span>
+        <span class="tech-badge lib">numpy</span>
+        <span class="tech-badge lib">scikit-learn</span>
+        <span class="tech-badge lib">scipy</span>
+        <span class="tech-badge lib">openpyxl</span>
+        <span class="tech-badge">Chart.js</span>
+        <span class="tech-badge">Leaflet.js</span>
+        <span class="tech-badge">OpenStreetMap</span>
+        <span class="tech-badge">HTML/CSS/JS</span>
+      </div>
 
-    const doughnutLabelPlugin = {
-      id: "doughnutLabelPlugin",
-      afterDatasetsDraw(chart) {
-        const { ctx } = chart;
-        const dataset = chart.data.datasets[0];
-        const meta = chart.getDatasetMeta(0);
-        if (!dataset || !meta || !meta.data) return;
+      <h4 style="margin: 18px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem;">วิธีการเชิงสถิติ / Statistical Methods</h4>
+      <div class="method-grid">
+        <div class="method-card">
+          <div class="method-icon">📐</div>
+          <div class="method-name">Haversine Distance Matching</div>
+          <div class="method-tech">threshold = 250m</div>
+          <div class="method-desc">จับคู่จุดข้ามปีโดยใช้สูตรระยะทาง Great-Circle บนผิวโลก เพื่อระบุว่าจุดใดสืบทอดจากปีก่อน (carry-over) จุดใดเป็นจุดใหม่ (new) และจุดใดถูกตัดออก (drop-out)</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">🎯</div>
+          <div class="method-name">K-Means Clustering</div>
+          <div class="method-tech">k=6 · Silhouette = 0.46</div>
+          <div class="method-desc">จัดกลุ่มจุดปัญหาตามรูปแบบมาตรการที่ใช้ (6 มิติ: บริหารจัดการ · กวดขัน · สัญญาณไฟ · กายภาพ · BusBay · CCTV) เพื่อหา cluster ที่มีอัตราความสำเร็จสูงสุด</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">🛣️</div>
+          <div class="method-name">DBSCAN Corridor Clustering</div>
+          <div class="method-tech">eps=400m · min_samples=3</div>
+          <div class="method-desc">จัดกลุ่ม corridor ตามพิกัดจริง (ไม่ขึ้นกับขอบเขตการปกครอง) ด้วย Density-Based Spatial Clustering — ระบุได้ 45 corridors โดย 25 corridors active ทั้ง 3 ปี</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">🌡️</div>
+          <div class="method-name">Kernel Density Estimation</div>
+          <div class="method-tech">Gaussian · bw=0.05</div>
+          <div class="method-desc">คำนวณ density ของจุดปัญหาบน 60×60 grid ครอบคลุม กทม. เพื่อระบุ "hot zones" ที่ปัญหากระจุกตัวสูง โดยไม่ยึดติดกับขอบเขตการปกครอง</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">📊</div>
+          <div class="method-name">Inferential Statistics</div>
+          <div class="method-tech">Spearman · Kruskal-Wallis · χ²</div>
+          <div class="method-desc">ทดสอบสมมติฐาน — Spearman correlation (จำนวนมาตรการ ↔ ความสำเร็จ, ρ=0.141, p=0.044*) และ Kruskal-Wallis (ความสำเร็จ × โซน, H=19.83, p=0.001**)</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">🔄</div>
+          <div class="method-name">Data Pipeline &amp; ETL</div>
+          <div class="method-tech">pandas · openpyxl</div>
+          <div class="method-desc">รวม schema 3 ปี (ต่างกัน) ให้เป็นรูปแบบเดียวด้วยการ map columns, normalize zones/districts, จัดการ missing values และ export เป็น JSON/GeoJSON สำหรับ dashboard</div>
+        </div>
+      </div>
+    </div>
 
-        const data = dataset.data || [];
-        const total = data.reduce((sum, value) => sum + Number(value || 0), 0);
-        if (!total) return;
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Data Pipeline Flow<span class="en">From Raw to Insights</span></h2>
+        </div>
+      </div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: var(--ink); color: #E2E8F0; padding: 20px; border-radius: 10px; overflow-x: auto;">
+<pre style="margin: 0;">┌──────────────────────┐    ┌──────────────────────┐    ┌──────────────────────┐
+│  Raw Inventory       │ →  │  Standardization     │ →  │  Spatial Lineage     │
+│  • 3 CSV files       │    │  • Schema mapping    │    │  • Haversine 250m    │
+│  • 472 raw rows      │    │  • Zone normalization│    │  • Carry-over flags  │
+└──────────────────────┘    └──────────────────────┘    └──────────────────────┘
+                                                                    │
+                                                                    ▼
+┌──────────────────────┐    ┌──────────────────────┐    ┌──────────────────────┐
+│  Dashboard           │ ←  │  Clustering          │ ←  │  Statistical Tests   │
+│  • HTML/JS/Leaflet   │    │  • K-Means (k=6)     │    │  • Spearman ρ        │
+│  • JSON/GeoJSON      │    │  • DBSCAN corridors  │    │  • Kruskal-Wallis    │
+│  • Interactive maps  │    │  • KDE hot zones     │    │  • Chi-square        │
+└──────────────────────┘    └──────────────────────┘    └──────────────────────┘</pre>
+      </div>
+    </div>
+  </section>
 
-        ctx.save();
-        meta.data.forEach((arc, index) => {
-          const value = Number(data[index] || 0);
-          if (!value) return;
+  <!-- ========== TAB: ABOUT ========== -->
+  <section class="tab-panel" id="about">
+    <div class="about-card">
+      <div class="about-avatar">PW</div>
+      <div>
+        <h2 class="about-name">© Prapawadee Wongthong</h2>
+        <div class="about-role">Professional-Level Statistician</div>
+        <div class="about-org">กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน<br/>สำนักการจราจรและขนส่ง กรุงเทพมหานคร</div>
+        <p class="about-bio">
+          นักสถิติระดับชำนาญการ ที่มุ่งเน้นการนำข้อมูลและวิทยาศาสตร์ข้อมูล (Data Science)
+          มาประยุกต์ใช้กับงานนโยบายภาครัฐ โดยเฉพาะด้านการจราจรและขนส่ง
+          สนใจการวิเคราะห์เชิงพื้นที่ (Spatial Analytics), การออกแบบโครงการวิจัย,
+          และการเล่าเรื่องด้วยข้อมูล (Data Storytelling)
+          เพื่อสนับสนุนการตัดสินใจเชิงนโยบายของกรุงเทพมหานครให้มีประสิทธิภาพและโปร่งใส
+        </p>
+        <div class="about-skills">
+          <span class="skill-chip">📊 Statistical Analysis</span>
+          <span class="skill-chip">🐍 Python (pandas/numpy)</span>
+          <span class="skill-chip">📈 Data Visualization</span>
+          <span class="skill-chip">🗺 Spatial Analytics</span>
+          <span class="skill-chip">📐 Survey &amp; Research Design</span>
+          <span class="skill-chip">📝 Official Reports (Thai)</span>
+          <span class="skill-chip">🎨 Graphic Design / Infographics</span>
+          <span class="skill-chip">🌐 HTML / CSS</span>
+        </div>
+      </div>
+    </div>
 
-          const percentage = (value / total) * 100;
-          if (percentage < 4) return;
+    <div class="section" style="margin-top: 20px;">
+      <div class="section-head">
+        <div>
+          <h2>เกี่ยวกับโครงการนี้<span class="en">About This Project</span></h2>
+        </div>
+      </div>
+      <p style="color: var(--ink-soft);">
+        Dashboard นี้เป็นส่วนหนึ่งของงานวิเคราะห์ข้อมูลจุดปัญหาการจราจรติดขัดในกรุงเทพมหานคร
+        ปีงบประมาณ 2566–2568 โดยใช้กระบวนการทางสถิติและการวิเคราะห์เชิงพื้นที่
+        เพื่อเสนอภาพรวมการเปลี่ยนแปลงของ inventory, การระบุ Persistent Hotspots
+        และการแนะแนวทางการแก้ไขที่ต้องอาศัยความร่วมมือของหลายหน่วยงาน
+      </p>
+      <p style="color: var(--ink-soft); margin-top: 12px;">
+        ข้อมูลและการวิเคราะห์จัดทำขึ้นเพื่อประโยชน์สาธารณะและการสนับสนุนการตัดสินใจเชิงนโยบาย
+        ไม่อนุญาตให้นำไปใช้แสวงหาผลประโยชน์ส่วนบุคคล
+      </p>
+    </div>
+  </section>
 
-          const position = arc.tooltipPosition();
-          const label = `${value} (${percentage.toFixed(1)}%)`;
-          const bgColor = Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor[index] : "#0077B6";
-          const textColor = getContrastingTextColor(bgColor);
+</main>
 
-          ctx.font = window.innerWidth <= 480 ? "600 10px Sarabun" : "600 11px Sarabun";
-          ctx.fillStyle = textColor;
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText(label, position.x, position.y);
-        });
-        ctx.restore();
-      }
-    };
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <h4>© Prapawadee_W.</h4>
+      <p>
+        กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน<br/>
+        สำนักการจราจรและขนส่ง กรุงเทพมหานคร<br/>
+        <em>Statistics &amp; Research Group, Policy &amp; Planning Division,<br/>
+        Traffic and Transportation Department, BMA</em>
+      </p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#timeline">Timeline</a></li>
+        <li><a href="#hotspots">Hotspots</a></li>
+        <li><a href="#methodology">Methodology</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Data &amp; Compliance</h4>
+      <ul>
+        <li>Map tiles: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> (ODbL)</li>
+        <li>Spatial threshold: 250m (Haversine)</li>
+        <li>Public Sector — Non-commercial use only</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div style="font-weight: 600; margin-bottom: 6px;">ใช้เพื่อประโยชน์สาธารณะ ไม่อนุญาตให้นำไปใช้แสวงหาประโยชน์ส่วนตัว</div>
+    © 2026 Prapawadee W. · For BMA public-sector use · Built with Python, Chart.js, and Leaflet
+  </div>
+</footer>
 
-    Chart.register(doughnutLabelPlugin);
+<script>
+// ============== UTILITIES ==============
+Chart.defaults.font.family = '"Sarabun", sans-serif';
+Chart.defaults.color = '#334155';
 
-    function toInt(value) {
-      const n = Number(value);
-      return Number.isFinite(n) ? Math.trunc(n) : null;
-    }
+const YEAR_COLORS = { 2566: '#6B7C93', 2567: '#1E5AA6', 2568: '#0B3B6F' };
+const ZONE_COLORS = ['#0B3B6F','#1E5AA6','#4A90E2','#1B8E5A','#D97706','#B91C1C'];
+const THAI_ZONE = {
+  'North Bangkok':'กรุงเทพเหนือ', 'East Bangkok':'กรุงเทพตะวันออก',
+  'Central Bangkok':'กรุงเทพกลาง', 'South Bangkok':'กรุงเทพใต้',
+  'West Bangkok':'กรุงเทพตะวันตก', 'Thon Buri':'ธนบุรี', 'Unknown':'ไม่ระบุ'
+};
+const translateZone = z => THAI_ZONE[z] || z || 'ไม่ระบุ';
+const toInt = v => { const n=Number(v); return Number.isFinite(n) ? Math.trunc(n) : null; };
 
-    function classifyAreaType(rawType) {
-      const t = (rawType || "").toString().toLowerCase();
-      if (!t.trim()) return "อื่น ๆ";
-      if (t.includes("คอขวด")) return "คอขวด";
-      if (t.includes("ทางแยก")) return "ทางแยก";
-      if (t.includes("สถานศึกษา") || t.includes("โรงเรียน")) return "สถานศึกษา/โรงเรียน";
-      if (t.includes("ชุมชน") || t.includes("ตลาด")) return "ชุมชน/ตลาด";
-      if (t.includes("ช่วงถนน") || t.includes("จุดกลับรถ")) return "ช่วงถนน/จุดกลับรถ";
-      if (t.includes("สะพาน")) return "สะพาน";
-      if (t.includes("ห้าง") || t.includes("แหล่งดึงดูด")) return "ห้างสรรพสินค้า";
-      if (t.includes("ก่อสร้าง") || t.includes("ทางเบี่ยง")) return "ทางเบี่ยง/ก่อสร้าง";
-      return "อื่น ๆ";
-    }
+async function fetchJson(path){
+  const res = await fetch(path);
+  if (!res.ok) throw new Error('Cannot load '+path);
+  return res.json();
+}
 
-    function buildAreaTypeCounts(rows) {
-      const counts = {
-        "ทางแยก": 0,
-        "คอขวด": 0,
-        "สถานศึกษา/โรงเรียน": 0,
-        "ชุมชน/ตลาด": 0,
-        "ช่วงถนน/จุดกลับรถ": 0,
-        "สะพาน": 0,
-        "ห้างสรรพสินค้า": 0,
-        "ทางเบี่ยง/ก่อสร้าง": 0,
-        "อื่น ๆ": 0
-      };
-      rows.forEach((r) => {
-        const key = classifyAreaType(r.point_type);
-        counts[key] += 1;
-      });
-      return counts;
-    }
+// ============== TAB SWITCH ==============
+function activateTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === id));
+  // map resize
+  setTimeout(() => { if (window._map) window._map.invalidateSize(); }, 100);
+  window.scrollTo({ top: document.querySelector('.tabs-wrap').offsetTop - 60, behavior: 'smooth' });
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => activateTab(t.dataset.tab)));
+document.querySelectorAll('[data-jump]').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault(); activateTab(a.dataset.jump);
+}));
 
-    function renderAreaTypePanels(counts, totalRows) {
-      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-      const summaryEl = document.getElementById("areaTypeSummary");
-      summaryEl.innerHTML = sorted.slice(0, 6).map(([name, count]) => {
-        return `<div class="area-card"><div class="k">${name}</div><div class="v">${count}</div></div>`;
-      }).join("");
+// ============== AREA TYPE CLASSIFIER ==============
+function classifyAreaType(rawType) {
+  const t = (rawType || '').toString().toLowerCase();
+  if (!t.trim()) return 'อื่น ๆ';
+  if (t.includes('คอขวด')) return 'คอขวด';
+  if (t.includes('ทางแยก')) return 'ทางแยก';
+  if (t.includes('สถานศึกษา') || t.includes('โรงเรียน')) return 'สถานศึกษา/โรงเรียน';
+  if (t.includes('ชุมชน') || t.includes('ตลาด')) return 'ชุมชน/ตลาด';
+  if (t.includes('ช่วงถนน') || t.includes('จุดกลับรถ')) return 'ช่วงถนน/จุดกลับรถ';
+  if (t.includes('สะพาน')) return 'สะพาน';
+  if (t.includes('ห้าง') || t.includes('แหล่งดึงดูด')) return 'ห้างสรรพสินค้า';
+  if (t.includes('ก่อสร้าง') || t.includes('ทางเบี่ยง')) return 'ทางเบี่ยง/ก่อสร้าง';
+  return 'อื่น ๆ';
+}
 
-      const tableEl = document.getElementById("areaTypeTable");
-      let html = "<thead><tr><th>ลักษณะพื้นที่</th><th>จำนวน (จุด)</th><th>ร้อยละ</th></tr></thead><tbody>";
-      sorted.forEach(([name, count]) => {
-        const pct = totalRows > 0 ? ((count / totalRows) * 100).toFixed(1) : "0.0";
-        html += `<tr><td>${name}</td><td>${count}</td><td>${pct}</td></tr>`;
-      });
-      html += "</tbody>";
-      tableEl.innerHTML = html;
-    }
+function renderAreaType(rows) {
+  const counts = {};
+  rows.forEach(r => {
+    const k = classifyAreaType(r.point_type);
+    counts[k] = (counts[k]||0) + 1;
+  });
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  const total = rows.length;
 
-    async function fetchJson(path) {
-      const res = await fetch(path);
-      if (!res.ok) {
-        throw new Error(`Cannot load ${path}`);
-      }
-      return res.json();
-    }
+  // Summary cards
+  const sumEl = document.getElementById('areaTypeSummary');
+  sumEl.innerHTML = sorted.slice(0,4).map(([n,c]) =>
+    `<div style="background:var(--line-soft); padding:10px 14px; border-radius:8px;">
+      <div style="font-size:.78rem; color:var(--muted); font-weight:600;">${n}</div>
+      <div style="font-size:1.3rem; font-weight:700; color:var(--brand); font-family:'JetBrains Mono',monospace;">${c}</div>
+    </div>`
+  ).join('');
 
-    function groupPersistentHotspots(rows) {
-      const grouped = new Map();
-      rows.forEach((r) => {
-        const district = (r.district || "").toString().trim();
-        const road = (r.road || "").toString().trim();
-        if (!district || !road) {
-          return;
-        }
-        const year = toInt(r.year);
-        const key = `${district}|${road}`;
-        if (!grouped.has(key)) {
-          grouped.set(key, {
-            district,
-            road,
-            count: 0,
-            years: new Set(),
-            lat: Number(r.latitude),
-            lon: Number(r.longitude)
-          });
-        }
-        const item = grouped.get(key);
-        item.count += 1;
-        if (year) {
-          item.years.add(year);
-        }
-      });
+  // Table
+  const t = document.getElementById('areaTypeTable');
+  let html = '<thead><tr><th>ลักษณะพื้นที่</th><th style="text-align:right;">จำนวน</th><th style="text-align:right;">ร้อยละ</th></tr></thead><tbody>';
+  sorted.forEach(([n,c]) => {
+    const pct = ((c/total)*100).toFixed(1);
+    html += `<tr><td>${n}</td><td style="text-align:right; font-family:'JetBrains Mono',monospace;">${c}</td><td style="text-align:right;">${pct}%</td></tr>`;
+  });
+  html += '</tbody>';
+  t.innerHTML = html;
+}
 
-      return Array.from(grouped.values())
-        .filter((x) => x.years.size >= 3)
-        .sort((a, b) => b.count - a.count);
-    }
+// ============== HOTSPOTS (group by district+road, 3-year) ==============
+function buildHotspots(rows) {
+  const grouped = new Map();
+  rows.forEach(r => {
+    const d = (r.district||'').trim(), rd = (r.road||'').trim();
+    if (!d || !rd) return;
+    const y = toInt(r.year);
+    const key = `${d}|${rd}`;
+    if (!grouped.has(key)) grouped.set(key, { district:d, road:rd, count:0, years:new Set() });
+    const it = grouped.get(key);
+    it.count += 1;
+    if (y) it.years.add(y);
+  });
+  return Array.from(grouped.values())
+    .filter(x => x.years.size >= 3)
+    .sort((a,b) => b.count - a.count);
+}
 
-    function setKpi(id, value) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.textContent = String(value);
-      }
-    }
+function renderHotspots(rows) {
+  const hs = buildHotspots(rows);
+  let html = '<thead><tr><th>#</th><th>เขต</th><th>ถนน</th><th style="text-align:right;">จำนวน</th><th>ปีที่พบ</th></tr></thead><tbody>';
+  hs.forEach((h, i) => {
+    html += `<tr>
+      <td>${i+1}</td>
+      <td>${h.district}</td>
+      <td>${h.road}</td>
+      <td style="text-align:right;"><span class="tag tag-red">${h.count}</span></td>
+      <td><span class="tag tag-amber">${Array.from(h.years).sort().join(', ')}</span></td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('hotspotTable').innerHTML = html;
+}
 
-    async function initDashboard() {
-      const [combinedRows, geoJson, corridors, lineage] = await Promise.all([
-        fetchJson("data/combined_data.json"),
-        fetchJson("data/all_points.geojson"),
-        fetchJson("data/sheets/11_Corridors.json"),
-        fetchJson("data/sheets/10_Spatial_Lineage.json")
-      ]);
+// ============== CORRIDORS ==============
+function renderCorridors(corrs) {
+  const persistent = corrs.filter(c => Number(c.n_years) >= 3)
+    .sort((a,b) => Number(b.n_points) - Number(a.n_points));
+  let html = '<thead><tr><th>#</th><th>เขตหลัก</th><th>โซน</th><th>ถนนหลัก</th><th style="text-align:right;">จุด</th><th>ปี</th></tr></thead><tbody>';
+  persistent.forEach((c, i) => {
+    const road = String(c.top_road||'').replace(/\n/g,' ');
+    html += `<tr>
+      <td>${i+1}</td>
+      <td>${c.top_district||'-'}</td>
+      <td>${c.top_zone||'-'}</td>
+      <td>${road}</td>
+      <td style="text-align:right;"><span class="tag tag-blue">${c.n_points}</span></td>
+      <td><span class="tag tag-green">3 ปี</span></td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('corridorTable').innerHTML = html;
+}
 
-      const byYearMap = { 2566: 0, 2567: 0, 2568: 0 };
-      combinedRows.forEach((r) => {
-        const y = toInt(r.year);
-        if (y && byYearMap[y] !== undefined) {
-          byYearMap[y] += 1;
-        }
-      });
-
-      const areaTypeCounts = buildAreaTypeCounts(combinedRows);
-      renderAreaTypePanels(areaTypeCounts, combinedRows.length);
-
-      const persistentHotspots = groupPersistentHotspots(combinedRows);
-
-      let dropTotal = 0;
-      let baseTotal = 0;
-      lineage.forEach((z) => {
-        dropTotal += toInt(z.dropout) || 0;
-        baseTotal += toInt(z.total) || 0;
-      });
-      const dropPct = baseTotal > 0 ? ((dropTotal / baseTotal) * 100).toFixed(1) : "0.0";
-
-      const persistentCorridors = corridors.filter((c) => Number(c.n_years) >= 3).length;
-
-      setKpi("kpi2566", byYearMap[2566]);
-      setKpi("kpi2567", byYearMap[2567]);
-      setKpi("kpi2568", byYearMap[2568]);
-      setKpi("kpiPersistent", persistentHotspots.length);
-      setKpi("kpiDrop", dropTotal);
-      setKpi("kpiCorridors", persistentCorridors);
-      document.getElementById("kpiDropHint").textContent = `${dropPct}%`;
-
-      const zoneLatest = {};
-      combinedRows.forEach((r) => {
-        const y = toInt(r.year);
-        if (y !== 2568) {
-          return;
-        }
-        const zone = translateZoneLabel((r.zone || "Unknown").toString());
-        zoneLatest[zone] = (zoneLatest[zone] || 0) + 1;
-      });
-
-      const zoneEntries = Object.entries(zoneLatest).sort((a, b) => b[1] - a[1]);
-      const zoneLabels = zoneEntries.map(([label]) => label);
-      const zoneValues = zoneEntries.map(([, value]) => value);
-      const zoneColors = zoneLabels.map((_, index) => PRESENTATION_COLORS[index % PRESENTATION_COLORS.length]);
-
-      new Chart(document.getElementById("zoneChart"), {
-        type: "doughnut",
-        data: {
-          labels: zoneLabels,
-          datasets: [{
-            data: zoneValues,
-            backgroundColor: zoneColors,
-            borderColor: "#ffffff",
-            borderWidth: 2,
-            hoverOffset: 10
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          layout: {
-            padding: 12
-          },
-          plugins: {
-            title: {
-              display: true,
-              text: "สัดส่วนจุดปัญหาการจราจรจำแนกตามโซน ปีงบประมาณ 2568",
-              font: {
-                size: 16,
-                weight: "600"
-              },
-              padding: {
-                bottom: 12
-              }
-            },
-            legend: {
-              position: window.innerWidth <= 768 ? "bottom" : "right",
-              labels: {
-                usePointStyle: true,
-                pointStyle: "circle",
-                padding: 14,
-                font: {
-                  size: window.innerWidth <= 480 ? 11 : 12
-                }
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label(context) {
-                  const value = Number(context.raw || 0);
-                  const total = context.dataset.data.reduce((sum, item) => sum + Number(item || 0), 0);
-                  const pct = total > 0 ? ((value / total) * 100).toFixed(1) : "0.0";
-                  return `${context.label}: ${value} จุด คิดเป็นร้อยละ ${pct}`;
-                }
-              }
-            }
-          },
-          cutout: "42%"
-        }
-      });
-
-      const map = L.map("map").setView([13.7563, 100.5018], 11);
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution:
-          "&copy; <a href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener'>OpenStreetMap</a> contributors"
-      }).addTo(map);
-
-      const yearLayers = {
-        2566: L.layerGroup(),
-        2567: L.layerGroup(),
-        2568: L.layerGroup()
-      };
-
-      geoJson.features.forEach((f) => {
-        if (!f || !f.geometry || !Array.isArray(f.geometry.coordinates)) {
-          return;
-        }
-        const props = f.properties || {};
-        const year = toInt(props.year);
-        const lon = Number(f.geometry.coordinates[0]);
-        const lat = Number(f.geometry.coordinates[1]);
-        if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
-          return;
-        }
-
-        const marker = L.circleMarker([lat, lon], {
-          radius: 7,
-          fillOpacity: 0.8,
-          fillColor: YEAR_COLORS[year] || "#7B6D8D",
-          color: "#ffffff",
-          weight: 1
-        });
-
-        marker.bindPopup(
-          `<strong>${props.point_name || "ไม่ระบุชื่อจุด"}</strong><br/>` +
-          `ปีงบประมาณ: ${props.year || "-"}<br/>` +
-          `เขต: ${props.district || "-"}<br/>` +
-          `ถนน: ${props.road || "-"}<br/>` +
-          `โซน: ${translateZoneLabel(props.zone || "Unknown")}`
-        );
-
-        if (yearLayers[year]) {
-          yearLayers[year].addLayer(marker);
-        }
-      });
-
-      Object.values(yearLayers).forEach((layer) => layer.addTo(map));
-
-      const filterEl = document.getElementById("mapYearFilter");
-      filterEl.addEventListener("change", (e) => {
-        const selected = e.target.value;
-        Object.entries(yearLayers).forEach(([y, layer]) => {
-          if (selected === "all" || selected === y) {
-            if (!map.hasLayer(layer)) {
-              map.addLayer(layer);
-            }
-          } else {
-            if (map.hasLayer(layer)) {
-              map.removeLayer(layer);
+// ============== ZONE CHART ==============
+function renderZoneChart(rows) {
+  const zone68 = {};
+  rows.forEach(r => {
+    if (toInt(r.year) !== 2568) return;
+    const z = translateZone((r.zone||'Unknown').toString());
+    zone68[z] = (zone68[z]||0) + 1;
+  });
+  const entries = Object.entries(zone68).sort((a,b) => b[1]-a[1]);
+  new Chart(document.getElementById('zoneChart'), {
+    type: 'doughnut',
+    data: {
+      labels: entries.map(e => e[0]),
+      datasets: [{
+        data: entries.map(e => e[1]),
+        backgroundColor: ZONE_COLORS,
+        borderColor: '#fff', borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { font: { size: 12 }, padding: 12, usePointStyle: true } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const v = ctx.raw, total = ctx.dataset.data.reduce((s,x) => s+x, 0);
+              return `${ctx.label}: ${v} จุด (${((v/total)*100).toFixed(1)}%)`;
             }
           }
-        });
-      });
-
-      const table = document.getElementById("hotspotTable");
-      let html = "<thead><tr><th>ลำดับ</th><th>เขต</th><th>ถนน</th><th>จำนวน</th><th>ปีที่พบ</th></tr></thead><tbody>";
-      persistentHotspots.forEach((h, i) => {
-        html += `<tr>
-          <td>${i + 1}</td>
-          <td>${h.district}</td>
-          <td>${h.road}</td>
-          <td><span class='tag tag-red'>${h.count}</span></td>
-          <td><span class='tag tag-amber'>${Array.from(h.years).sort().join(", ")}</span></td>
-        </tr>`;
-      });
-      html += "</tbody>";
-      table.innerHTML = html;
+        }
+      },
+      cutout: '50%'
     }
+  });
+}
 
-    initDashboard().catch((err) => {
-      console.error(err);
-      alert("ไม่สามารถโหลดไฟล์ข้อมูลได้ กรุณาตรวจสอบว่าไฟล์ data/*.json และ data/*.geojson พร้อมใช้งาน");
+// ============== TREND CHART ==============
+function renderTrendChart(byYear) {
+  new Chart(document.getElementById('trendChart'), {
+    type: 'bar',
+    data: {
+      labels: ['FY 2566','FY 2567','FY 2568'],
+      datasets: [{
+        label: 'จุดปัญหา',
+        data: [byYear[2566]||0, byYear[2567]||0, byYear[2568]||0],
+        backgroundColor: [YEAR_COLORS[2566], YEAR_COLORS[2567], YEAR_COLORS[2568]],
+        borderRadius: 8, borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#E2E8F0' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ============== LINEAGE STACK ==============
+function renderLineageStack() {
+  // Fixed estimates based on analysis
+  new Chart(document.getElementById('lineageStack'), {
+    type: 'bar',
+    data: {
+      labels: ['FY 2566','FY 2567','FY 2568'],
+      datasets: [
+        { label: 'จุดที่อยู่ทั้ง 3 ปี', data: [23, 23, 23], backgroundColor: '#B91C1C' },
+        { label: 'จุดที่ดำเนินการต่อจากปีก่อน', data: [0, 43, 28], backgroundColor: '#1E5AA6' },
+        { label: 'จุดใหม่ที่เพิ่มเข้ามาในปี', data: [243, 61, 8], backgroundColor: '#FFD96B' },
+        { label: 'จุดที่ไม่ดำเนินการต่อ', data: [0, 0, 18], backgroundColor: '#94A3B8' },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 12 } } },
+        tooltip: { mode: 'index', intersect: false },
+        title: { display: true, text: 'องค์ประกอบของ inventory ในแต่ละปี (เชิงประมาณ)' }
+      },
+      scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+    }
+  });
+}
+
+// ============== DISTRICT CHART (Top 12) ==============
+function renderDistrictChart(rows) {
+  const counts = {};
+  rows.forEach(r => {
+    const d = (r.district||'').trim();
+    if (!d) return;
+    counts[d] = (counts[d]||0) + 1;
+  });
+  const top = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 12);
+  new Chart(document.getElementById('districtChart'), {
+    type: 'bar',
+    data: {
+      labels: top.map(e => e[0]),
+      datasets: [{
+        label: 'จุดปัญหารวม 3 ปี',
+        data: top.map(e => e[1]),
+        backgroundColor: '#1E5AA6',
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, grid: { color: '#E2E8F0' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ============== MAP ==============
+function renderMap(geoJson) {
+  const map = L.map('map').setView([13.7563, 100.5018], 11);
+  window._map = map;
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  const yearLayers = { 2566: L.layerGroup(), 2567: L.layerGroup(), 2568: L.layerGroup() };
+  geoJson.features.forEach(f => {
+    if (!f.geometry || !Array.isArray(f.geometry.coordinates)) return;
+    const props = f.properties || {};
+    const year = toInt(props.year);
+    const [lon, lat] = f.geometry.coordinates;
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+    const marker = L.circleMarker([lat, lon], {
+      radius: 6, fillOpacity: 0.85,
+      fillColor: YEAR_COLORS[year] || '#94A3B8',
+      color: '#fff', weight: 1
     });
-  </script>
+    marker.bindPopup(
+      `<strong>${props.point_name || 'ไม่ระบุ'}</strong><br/>`
+      + `ปี: <b>${props.year || '-'}</b><br/>`
+      + `เขต: ${props.district || '-'}<br/>`
+      + `ถนน: ${props.road || '-'}<br/>`
+      + `โซน: ${translateZone(props.zone || 'Unknown')}`
+    );
+    if (yearLayers[year]) yearLayers[year].addLayer(marker);
+  });
+  Object.values(yearLayers).forEach(l => l.addTo(map));
+
+  document.getElementById('mapYear').addEventListener('change', e => {
+    const sel = e.target.value;
+    Object.entries(yearLayers).forEach(([y, layer]) => {
+      if (sel === 'all' || sel === y) {
+        if (!map.hasLayer(layer)) map.addLayer(layer);
+      } else {
+        if (map.hasLayer(layer)) map.removeLayer(layer);
+      }
+    });
+  });
+}
+
+// ============== INIT ==============
+async function init() {
+  try {
+    const [combinedRows, geoJson, corridors] = await Promise.all([
+      fetchJson('data/combined_data.json'),
+      fetchJson('data/all_points.geojson'),
+      fetchJson('data/sheets/11_Corridors.json'),
+    ]);
+
+    const byYear = { 2566: 0, 2567: 0, 2568: 0 };
+    combinedRows.forEach(r => {
+      const y = toInt(r.year);
+      if (y && byYear[y] !== undefined) byYear[y] += 1;
+    });
+
+    // KPIs
+    document.getElementById('kpi66').textContent = byYear[2566];
+    document.getElementById('kpi67').textContent = byYear[2567];
+    document.getElementById('kpi68').textContent = byYear[2568];
+    document.getElementById('heroK1').textContent = byYear[2566];
+    document.getElementById('heroK2').textContent = byYear[2567];
+    document.getElementById('heroK3').textContent = byYear[2568];
+
+    renderAreaType(combinedRows);
+    renderHotspots(combinedRows);
+    renderCorridors(corridors);
+    renderZoneChart(combinedRows);
+    renderTrendChart(byYear);
+    renderLineageStack();
+    renderDistrictChart(combinedRows);
+    renderMap(geoJson);
+  } catch (err) {
+    console.error(err);
+    alert('ไม่สามารถโหลดไฟล์ข้อมูลได้ — ตรวจสอบว่า data/combined_data.json, data/all_points.geojson, data/sheets/11_Corridors.json พร้อมใช้งาน');
+  }
+}
+init();
+</script>
 </body>
 </html>
