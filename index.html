@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#0B3B6F" />
 <title>BMA Congestion Analysis | Spatial Lineage Dashboard (FY 2566–2568) — © Prapawadee_W.</title>
-<meta name="description" content="Portfolio dashboard for BMA traffic congestion analysis — spatial lineage, corridor clustering, and multi-agency intervention mapping by Prapawadee W., Statistic[...]
+<meta name="description" content="Portfolio dashboard for BMA traffic congestion analysis — spatial lineage, corridor clustering, and multi-agency intervention mapping by Prapawadee W., Statistics & Research Group, BMA Traffic and Transportation Department." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -377,6 +377,34 @@ body {
   border-radius: 6px;
 }
 .tl-stat strong { color: var(--brand); font-family: "JetBrains Mono", monospace; }
+.tl-title-line {
+  font-weight: 700; font-size: 1.02rem; color: var(--ink);
+  margin-bottom: 8px;
+}
+
+/* Timeline tab — 2-col layout (timeline left, chart right) */
+.tl-grid { grid-template-columns: 1.15fr 1fr; align-items: start; }
+.tl-chart-section {
+  position: sticky;
+  top: 130px;
+  align-self: start;
+}
+.tl-legend-note {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--line-soft);
+  border-radius: 8px;
+  display: grid; gap: 6px;
+  font-size: 0.84rem; color: var(--ink-soft);
+}
+.tl-sw {
+  display: inline-block; width: 12px; height: 12px;
+  border-radius: 3px; margin-right: 8px; vertical-align: -2px;
+}
+@media (max-width: 1024px) {
+  .tl-grid { grid-template-columns: 1fr; }
+  .tl-chart-section { position: static; }
+}
 
 /* ========== FLOW DIAGRAM ========== */
 .flow {
@@ -529,11 +557,11 @@ body {
   }
 }
 
-#map, #lineageMap, #corridorMap {
+#map {
   width: 100%;
   height: clamp(420px, 55vh, 600px);
   border-radius: 10px;
-  border:  1px solid var(--line);
+  border: 1px solid var(--line);
 }
 
 table.standard { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
@@ -611,7 +639,7 @@ table.standard tr:hover td { background: var(--line-soft); }
 .finding {
   background: var(--accent-soft);
   border-left: 4px solid var(--accent);
-  border-radius:  8px;
+  border-radius: 8px;
   padding: 14px 18px;
   margin-bottom: 10px;
   font-size: 0.95rem;
@@ -628,13 +656,13 @@ table.standard tr:hover td { background: var(--line-soft); }
 .about-avatar {
   width: 200px; height: 200px;
   background: linear-gradient(135deg, var(--brand) 0%, var(--brand-3) 100%);
-  border-radius:  16px;
+  border-radius: 16px;
   display: flex; align-items: center; justify-content: center;
   color: white; font-weight: 700; font-size: 5rem;
   box-shadow: var(--shadow-lg);
 }
 .about-name {
-  font-size:  1.5rem; font-weight: 700; color: var(--ink);
+  font-size: 1.5rem; font-weight: 700; color: var(--ink);
   margin: 0 0 4px;
 }
 .about-role { color: var(--brand); font-weight: 600; font-size: 1.05rem; }
@@ -642,14 +670,13 @@ table.standard tr:hover td { background: var(--line-soft); }
 .about-bio { margin-top: 18px; color: var(--ink-soft); font-size: 0.95rem; }
 .about-skills { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
 .skill-chip {
-  padding:  5px 12px;
+  padding: 5px 12px;
   background: var(--line-soft);
-  border-radius:  6px;
+  border-radius: 6px;
   font-size: 0.82rem;
   font-weight: 500;
   color: var(--ink-soft);
 }
-/* about-card responsive moved to global responsive block at bottom */
 
 /* ========== FOOTER ========== */
 footer {
@@ -795,9 +822,9 @@ footer {
         กรุงเทพมหานคร 2566–2568
       </h1>
       <p class="lede">
-        งานวิเคราะห์ข้อมูลเชิงพื้นที่ (Spatial Analytics) เพื่อสนับสนุนการตัดสินใจเช�[...]
-        ครอบคลุมการวิเคราะห์ inventory ข้ามปี, การจัดกลุ่ม corridor ด้วยอัลกอริทึม DBSCAN,
-        การคำนวณ Kernel Density Estimation และการวิเคราะห์รูปแบบมาตรการที่มีประสิทธิผลสู�[...]
+        งานวิเคราะห์ข้อมูลเชิงพื้นที่ (Spatial Analytics) เพื่อสนับสนุนการตัดสินใจเชิงนโยบาย
+        ครอบคลุมการวิเคราะห์ inventory รายปี การจัดกลุ่ม corridor
+        การคำนวณและการวิเคราะห์รูปแบบมาตรการที่มีประสิทธิผลสูงสุด
       </p>
       <div class="hero-meta">
         <span class="hero-chip">🏛️ 50 เขต · 6 กลุ่มเขต</span>
@@ -848,10 +875,10 @@ footer {
   <!-- ========== TAB: OVERVIEW ========== -->
   <section class="tab-panel active" id="overview">
     <div class="kpi-grid">
-      <div class="kpi"><div class="lbl">FY 2566 — Inventory</div><div class="val" id="kpi66">266</div><div class="hint">รวบรวมจากเรื่องร้องเรียน [...]
-      <div class="kpi success"><div class="lbl">FY 2567 — TE Filtered</div><div class="val" id="kpi67">127</div><div class="hint">วิเคราะห์ด้วย Traffic Engineering (��[...]
-      <div class="kpi success"><div class="lbl">FY 2568 — TE Focused</div><div class="val" id="kpi68">77</div><div class="hint">เน้นพื้นที่รับผิดชอบข��[...]
-      <div class="kpi danger"><div class="lbl">Persistent 3-yr Geo</div><div class="val" id="kpiPers">23</div><div class="hint">อยู่ใน inventory ทั้ง 3 ปี (ตามพิ[...]
+      <div class="kpi"><div class="lbl">FY 2566 — Inventory</div><div class="val" id="kpi66">266</div><div class="hint">รวบรวมจากเรื่องร้องเรียน · บช.น. · สำนักงานเขต</div></div>
+      <div class="kpi success"><div class="lbl">FY 2567 — TE Filtered</div><div class="val" id="kpi67">127</div><div class="hint">วิเคราะห์ด้วย Traffic Engineering โดยความร่วมมือของ สจส. และ OTP</div></div>
+      <div class="kpi success"><div class="lbl">FY 2568 — TE Focused</div><div class="val" id="kpi68">77</div><div class="hint">เน้นพื้นที่รับผิดชอบของ กทม.</div></div>
+      <div class="kpi danger"><div class="lbl">Persistent 3-yr Geo</div><div class="val" id="kpiPers">23</div><div class="hint">อยู่ใน inventory ทั้ง 3 ปี (ตามพิกัด)</div></div>
       <div class="kpi warning"><div class="lbl">Persistent Corridors</div><div class="val" id="kpiCorr">25</div><div class="hint">DBSCAN cluster active 3 ปี</div></div>
       <div class="kpi"><div class="lbl">Spatial Coverage</div><div class="val">470</div><div class="hint">geo-located points · 50 เขต · 6 โซน</div></div>
     </div>
@@ -860,26 +887,26 @@ footer {
       <div class="section-head">
         <div>
           <h2>เรื่องราวข้อมูลทั้ง 3 ปี<span class="en">The 3-year Data Story</span></h2>
-          <div class="sub">การเปลี่ยนแปลงของ inventory จาก "การร้องเรียน" → "กรอง Traffic Engineering" → "เน้น�[...]
+          <div class="sub">การเปลี่ยนแปลงของ inventory จาก "การร้องเรียน" → "กรอง Traffic Engineering" → "เน้นพื้นที่ กทม."</div>
         </div>
       </div>
       <div class="flow">
         <div class="flow-card y66">
           <div class="num">266</div>
           <div class="lbl">FY 2566 · Inventory</div>
-          <div class="desc">รวบรวมจาก<strong>เรื่องร้องเรียน · บช.น. · สำนักงานเขต</strong> ครอบคลุม�[...]
+          <div class="desc">รวบรวมจาก<strong>เรื่องร้องเรียน · บช.น. · สำนักงานเขต</strong> ครอบคลุมทั้งพื้นที่ กทม. และหน่วยงานภายนอก</div>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-card y67">
           <div class="num">127</div>
           <div class="lbl">FY 2567 · TE Filtered</div>
-          <div class="desc">วิเคราะห์ด้วย <strong>Traffic Engineering</strong> โดยบูรณาการความร่วมมือระหว่าง <strong>สจส. × OTP</strong> (สำนักงานนโยบายและแผนการขนส่งและจราจร) ครอบคลุมทั้งพื้นที่กรุงเทพมหานครและพื้นที่นอกกรุงเทพมหานคร</div>
+          <div class="desc">วิเคราะห์ด้วย <strong>Traffic Engineering</strong> โดยความร่วมมือของ <strong>สจส. และ OTP</strong> ครอบคลุมทั้งพื้นที่ กทม. และนอก กทม.</div>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-card y68">
           <div class="num">77</div>
           <div class="lbl">FY 2568 · TE Focused</div>
-          <div class="desc">วิเคราะห์ Traffic Engineering <strong>เพิ่มเติม</strong> เน้น<strong>พื้นที่รับผิดชอบขอ[...]
+          <div class="desc">วิเคราะห์ Traffic Engineering <strong>เพิ่มเติม</strong> เน้น<strong>พื้นที่รับผิดชอบของ กทม.</strong></div>
         </div>
       </div>
     </div>
@@ -902,20 +929,20 @@ footer {
         </div>
       </div>
       <div class="finding">
-        <strong>1. การกรองข้อมูลอย่างเป็นระบบ</strong> — จากการร้องเรียน 266 จุด เหลือ 127 จ�[...]
-        และ 77 จุดที่อยู่ในพื้นที่รับผิดชอบ กทม. โดยตรง สะท้อนกระบวนการ refine invent[...]
+        <strong>1. การกรองข้อมูลอย่างเป็นระบบ</strong> — จากการร้องเรียน 266 จุด เหลือ 127 จุดที่ตรงกับขอบเขต Traffic Engineering
+        และ 77 จุดที่อยู่ในพื้นที่รับผิดชอบ กทม. โดยตรง สะท้อนกระบวนการ refine inventory ที่ขับเคลื่อนด้วยข้อมูล
       </div>
       <div class="finding">
         <strong>2. Persistent Hotspots — 23 จุด</strong> ปรากฏใน inventory ทั้ง 3 ปี ตามพิกัด (Spatial match ≤ 250m)
-        จุดเหล่านี้ต้องการ <strong>การแก้ไขเชิงโครงสร้าง (structural intervention)</strong> และความร�[...]
+        จุดเหล่านี้ต้องการ <strong>การแก้ไขเชิงโครงสร้าง (structural intervention)</strong> และความร่วมมือระหว่างหน่วยงานหลายฝ่าย
       </div>
       <div class="finding">
-        <strong>3. 25 Persistent Corridors</strong> ที่จัดกลุ่มด้วย DBSCAN เป็นพื้นที่ปัญหาเชิงเส้น (corridor) เช[...]
-        ดุสิต–สามเสน, บางกอกน้อย–อรุณอมรินทร์, ปทุมวัน–พระรามที่ 1, บางบอน–��[...]
+        <strong>3. 25 Persistent Corridors</strong> ที่จัดกลุ่มด้วย DBSCAN เป็นพื้นที่ปัญหาเชิงเส้น (corridor) เช่น
+        ดุสิต–สามเสน, บางกอกน้อย–อรุณอมรินทร์, ปทุมวัน–พระรามที่ 1, บางบอน–เอกชัย
         — เหมาะกับการแก้แบบ <strong>corridor-level intervention</strong> มากกว่าจุดเดี่ยว
       </div>
       <div class="finding">
-        <strong>4. ความร่วมมือหลายหน่วยงาน</strong> — การแก้ไขจริงต้องใช้ความร่วมมือข[...]
+        <strong>4. ความร่วมมือหลายหน่วยงาน</strong> — การแก้ไขจริงต้องใช้ความร่วมมือของ สจส. · สนย. · สำนักเทศกิจ · สำนักงานเขต · บช.น.
         ตามลักษณะ root cause ของแต่ละจุด
       </div>
     </div>
@@ -923,79 +950,916 @@ footer {
 
   <!-- ========== TAB: TIMELINE ========== -->
   <section class="tab-panel" id="timeline">
-    <div class="section">
-      <div class="section-head">
-        <div>
-          <h2>Timeline — วิวัฒนาการของ inventory<span class="en">Inventory Evolution Story</span></h2>
-          <div class="sub">เล่าเรื่องการเปลี่ยนแปลงของฐานข้อมูลและวิธีการวิเคราะห์ใ[...]
+    <div class="two-col tl-grid">
+      <!-- LEFT: Timeline -->
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h2>Timeline — วิวัฒนาการของ inventory<span class="en">Inventory Evolution Story</span></h2>
+            <div class="sub">เล่าเรื่องการเปลี่ยนแปลงของฐานข้อมูลและวิธีการวิเคราะห์ในแต่ละปีงบประมาณ</div>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot y66"></div>
+            <div class="tl-header">
+              <span class="tl-year">FY 2566</span>
+              <span class="tl-badge">Source-driven Inventory</span>
+            </div>
+            <div class="tl-title-line">รวบรวมจุดปัญหาจากหลายแหล่งข้อมูล</div>
+            <div class="tl-body">
+              <strong>266 จุด</strong> ที่รวบรวมจากแหล่งข้อมูลหลัก ได้แก่ <strong>เรื่องร้องเรียน · กองบัญชาการตำรวจนครบาล (บช.น.) · สำนักงานเขตทั้ง 50 เขต</strong>
+              ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และพื้นที่ของหน่วยงานภายนอก (เช่น กรมทางหลวง, การรถไฟ ฯลฯ)
+              <div class="tl-stats">
+                <span class="tl-stat">📍 <strong>266</strong> จุด</span>
+                <span class="tl-stat">🏛 <strong>50</strong> เขต</span>
+                <span class="tl-stat">📂 <strong>3</strong> แหล่งข้อมูล</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <div class="tl-dot y67"></div>
+            <div class="tl-header">
+              <span class="tl-year">FY 2567</span>
+              <span class="tl-badge">TE Analysis (สจส. และ OTP)</span>
+            </div>
+            <div class="tl-title-line">วิเคราะห์ด้วย Traffic Engineering</div>
+            <div class="tl-body">
+              <strong>127 จุด</strong> ที่ผ่านการวิเคราะห์ตามมิติ <strong>Traffic Engineering</strong>
+              ภายใต้ความร่วมมือระหว่าง <strong>สำนักการจราจรและขนส่ง (สจส.)</strong> และ <strong>สำนักงานเขต</strong>
+              ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และหน่วยงานภายนอก
+              <div class="tl-stats">
+                <span class="tl-stat">📍 <strong>127</strong> จุด</span>
+                <span class="tl-stat">🤝 <strong>2</strong> หน่วยงานหลัก</span>
+                <span class="tl-stat">🔄 <strong>52%</strong> สืบทอดจาก 2566</span>
+                <span class="tl-stat">✨ <strong>48%</strong> จุดใหม่เพิ่มเติม</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tl-item">
+            <div class="tl-dot y68"></div>
+            <div class="tl-header">
+              <span class="tl-year">FY 2568</span>
+              <span class="tl-badge">TE Focused on BMA Scope</span>
+            </div>
+            <div class="tl-title-line">วิเคราะห์เพิ่มเติม เน้นพื้นที่ กทม.</div>
+            <div class="tl-body">
+              <strong>77 จุด</strong> ที่ได้รับการวิเคราะห์ Traffic Engineering <strong>เพิ่มเติม</strong>
+              โดยมุ่งเน้นเฉพาะ <strong>พื้นที่รับผิดชอบของ กทม.</strong> เพื่อให้แผนแก้ไขสามารถดำเนินการได้ภายใต้อำนาจหน้าที่
+              <div class="tl-stats">
+                <span class="tl-stat">📍 <strong>77</strong> จุด</span>
+                <span class="tl-stat">🎯 <strong>BMA-scope</strong></span>
+                <span class="tl-stat">🔄 <strong>66%</strong> สืบทอดจาก 2567</span>
+                <span class="tl-stat">⚠️ <strong>23</strong> จุดเรื้อรัง 3 ปี</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="timeline">
-        <div class="tl-item">
-          <div class="tl-dot y66"></div>
-          <div class="tl-header">
-            <span class="tl-year">FY 2566</span>
-            <span class="tl-badge">Source-driven Inventory</span>
-            <span class="tl-title">รวบรวมจุดปัญหาจากหลายแหล่งข้อมูล</span>
-          </div>
-          <div class="tl-body">
-            <strong>266 จุด</strong> ที่รวบรวมจากแหล่งข้อมูลหลัก ได้แก่ <strong>เรื่องร้องเรีย�[...]
-            ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และพื้นที่ของหน่วยงานภายนอ[...]
-            <div class="tl-stats">
-              <span class="tl-stat">📍 <strong>266</strong> จุด</span>
-              <span class="tl-stat">🏛 <strong>50</strong> เขต</span>
-              <span class="tl-stat">📂 <strong>3</strong> แหล่งข้อมูล</span>
-            </div>
+      <!-- RIGHT: Chart (sticky) -->
+      <div class="section tl-chart-section">
+        <div class="section-head">
+          <div>
+            <h2>กราฟแสดง inventory<span class="en">Inventory Composition by Year</span></h2>
+            <div class="sub">เลื่อนเมาส์/แตะที่กราฟเพื่อดูรายละเอียดแต่ละองค์ประกอบของ inventory</div>
           </div>
         </div>
-
-        <div class="tl-item">
-          <div class="tl-dot y67"></div>
-          <div class="tl-header">
-            <span class="tl-year">FY 2567</span>
-            <span class="tl-badge">TE Analysis (สจส. × สนข.)</span>
-            <span class="tl-title">วิเคราะห์ด้วย Traffic Engineering</span>
-          </div>
-          <div class="tl-body">
-            <strong>127 จุด</strong> ที่ผ่านการวิเคราะห์ตามมิติ <strong>Traffic Engineering</strong>
-            ภายใต้ความร่วมมือระหว่าง <strong>สำนักการจราจรและขนส่ง (สจส.)</strong> และ <stron[...]
-            ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และหน่วยงานภายนอก
-            <div class="tl-stats">
-              <span class="tl-stat">📍 <strong>127</strong> จุด</span>
-              <span class="tl-stat">🤝 <strong>2</strong> หน่วยงานหลัก</span>
-              <span class="tl-stat">🔄 <strong>52%</strong> สืบทอดจาก 2566</span>
-              <span class="tl-stat">✨ <strong>48%</strong> จุดใหม่เพิ่มเติม</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot y68"></div>
-          <div class="tl-header">
-            <span class="tl-year">FY 2568</span>
-            <span class="tl-badge">TE Focused on BMA Scope</span>
-            <span class="tl-title">วิเคราะห์เพิ่มเติม เน้นพื้นที่ กทม.</span>
-          </div>
-          <div class="tl-body">
-            <strong>77 จุด</strong> ที่ได้รับการวิเคราะห์ Traffic Engineering <strong>เพิ่มเติม</strong>
-            โดยมุ่งเน้นเฉพาะ <strong>พื้นที่รับผิดชอบของ กทม.</strong> เพื่อให้แผนแก้ไข[...]
-            <div class="tl-stats">
-              <span class="tl-stat">📍 <strong>77</strong> จุด</span>
-              <span class="tl-stat">🎯 <strong>BMA-scope</strong></span>
-              <span class="tl-stat">🔄 <strong>66%</strong> สืบทอดจาก 2567</span>
-              <span class="tl-stat">⚠️ <strong>23</strong> จุดเรื้อรัง 3 ปี</span>
-            </div>
-          </div>
+        <div class="chart-wrap tall"><canvas id="lineageStack"></canvas></div>
+        <div class="tl-legend-note">
+          <div><span class="tl-sw" style="background:#B91C1C"></span> จุดเรื้อรังทั้ง 3 ปี — Priority สูงสุด</div>
+          <div><span class="tl-sw" style="background:#1E5AA6"></span> จุดที่ดำเนินการต่อจากปีก่อน</div>
+          <div><span class="tl-sw" style="background:#FFD96B"></span> จุดใหม่ที่เพิ่มเข้ามา</div>
+          <div><span class="tl-sw" style="background:#94A3B8"></span> จุดที่ไม่ดำเนินการต่อ</div>
         </div>
       </div>
-    </div>
-
-    <div class="section">
-      <div class="section-head"><div><h2>กราฟแสดง inventory<span class="en">Inventory Composition by Year</span></h2></div></div>
-      <div class="chart-wrap tall"><canvas id="lineageStack"></canvas></div>
     </div>
   </section>
 
   <!-- ========== TAB: SPATIAL ========== -->
-[...]
+  <section class="tab-panel" id="spatial">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>แผนที่จุดปัญหาจราจร<span class="en">Interactive Map (OpenStreetMap)</span></h2>
+          <div class="sub">เลือกปีเพื่อกรองจุดบนแผนที่ — โทนสีเรียงตามปีงบประมาณ</div>
+        </div>
+        <div>
+          <label for="mapYear" style="font-size:.85rem; color: var(--muted); margin-right:6px;">ปีงบประมาณ:</label>
+          <select id="mapYear" style="padding:6px 10px; border:1px solid var(--line); border-radius:6px; font-family: inherit;">
+            <option value="all">ทั้งหมด</option>
+            <option value="2566">2566</option>
+            <option value="2567">2567</option>
+            <option value="2568">2568</option>
+          </select>
+        </div>
+      </div>
+      <div id="map"></div>
+    </div>
+
+    <div class="two-col">
+      <div class="section">
+        <div class="section-head"><div><h2>ลักษณะพื้นที่ของจุดปัญหา<span class="en">Area Type Distribution</span></h2></div></div>
+        <div id="areaTypeSummary" style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px;"></div>
+        <table class="standard" id="areaTypeTable"></table>
+      </div>
+      <div class="section">
+        <div class="section-head"><div><h2>Top เขตที่มีจุดปัญหา<span class="en">Top Districts</span></h2></div></div>
+        <div class="chart-wrap tall"><canvas id="districtChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TAB: HOTSPOTS ========== -->
+  <section class="tab-panel" id="hotspots">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Persistent Hotspots — บริเวณถนนที่พบปัญหาต่อเนื่อง 3 ปี<span class="en">Persistent Hotspots (3-year)</span></h2>
+          <div class="sub">จัดอันดับบริเวณถนนที่ปรากฏใน inventory ทั้ง 3 ปีงบประมาณ — Priority สำหรับการแก้ไขเชิงโครงสร้าง</div>
+        </div>
+      </div>
+      <table class="standard" id="hotspotTable"></table>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Persistent Corridors — แนวถนนต่อเนื่อง<span class="en">Persistent Corridors (DBSCAN clustering)</span></h2>
+          <div class="sub">จัดกลุ่มจุดปัญหาตามพิกัด (eps=400m, min_samples=3) — เห็นเป็น "corridor" ของปัญหาที่ต้องการการแก้แบบเชิงระบบ</div>
+        </div>
+      </div>
+      <table class="standard" id="corridorTable"></table>
+    </div>
+  </section>
+
+  <!-- ========== TAB: AGENCIES ========== -->
+  <section class="tab-panel" id="agencies">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>หน่วยงานที่เกี่ยวข้อง<span class="en">Stakeholder Agencies</span></h2>
+          <div class="sub">การแก้ไขจุดปัญหาจราจรเป็นงานที่ต้องใช้ความร่วมมือของหลายหน่วยงาน ตามลักษณะ root cause ของแต่ละจุด</div>
+        </div>
+      </div>
+      <div class="agency-grid">
+        <div class="agency-card">
+          <span class="ag-tag bma">หน่วยหลัก · BMA</span>
+          <div class="ag-name">สำนักการจราจรและขนส่ง</div>
+          <div class="ag-full">สจส. · BMA Traffic and Transportation Department</div>
+          <div class="ag-role">วิเคราะห์ Traffic Engineering · บริหารจัดการระบบจราจร · ปรับจังหวะสัญญาณไฟ · ออกแบบกายภาพถนน · CCTV · Bus Bay / Bus Priority</div>
+        </div>
+        <div class="agency-card">
+          <span class="ag-tag bma">BMA</span>
+          <div class="ag-name">สำนักการโยธา</div>
+          <div class="ag-full">สนย. · BMA Public Works Department</div>
+          <div class="ag-role">ก่อสร้าง / ปรับปรุงโครงสร้างถนน · สะพาน · ทางเท้า · ผิวจราจร · งานโยธาเชิงโครงสร้าง</div>
+        </div>
+        <div class="agency-card">
+          <span class="ag-tag bma">BMA</span>
+          <div class="ag-name">สำนักเทศกิจ</div>
+          <div class="ag-full">BMA City Law Enforcement Department</div>
+          <div class="ag-role">กวดขันการจอด · หาบเร่แผงลอย · ความเป็นระเบียบทางเท้า · สนับสนุนจราจรในเขตพื้นที่</div>
+        </div>
+        <div class="agency-card">
+          <span class="ag-tag local">BMA District</span>
+          <div class="ag-name">สำนักงานเขต (50 เขต)</div>
+          <div class="ag-full">สนข. · BMA District Offices</div>
+          <div class="ag-role">รับเรื่องร้องเรียนพื้นที่ · ประสานงานในพื้นที่ · กวดขันท้องที่ · ดำเนินมาตรการระยะสั้น</div>
+        </div>
+        <div class="agency-card">
+          <span class="ag-tag police">Police</span>
+          <div class="ag-name">กองบัญชาการตำรวจนครบาล</div>
+          <div class="ag-full">บช.น. · Metropolitan Police Bureau</div>
+          <div class="ag-role">บังคับใช้กฎจราจร · กวดขันวินัยจราจร · จัดการจราจรในชั่วโมงเร่งด่วน · ความปลอดภัยจราจร</div>
+        </div>
+        <div class="agency-card">
+          <span class="ag-tag gov">External</span>
+          <div class="ag-name">หน่วยงานภายนอก</div>
+          <div class="ag-full">External Agencies (out of BMA scope)</div>
+          <div class="ag-role">กรมทางหลวง · การรถไฟแห่งประเทศไทย · รฟม. · กรมการขนส่งทางบก ฯลฯ (ในส่วนที่อยู่นอกขอบเขต กทม.)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Responsibility Matrix (RACI-style)<span class="en">Agency × Intervention Type</span></h2>
+          <div class="sub">
+            <span class="dot dot-r"></span> Responsible (รับผิดชอบหลัก)
+            &nbsp; <span class="dot dot-a"></span> Accountable (เจ้าของผลลัพธ์)
+            &nbsp; <span class="dot dot-c"></span> Consulted (ให้คำปรึกษา)
+            &nbsp; <span class="dot dot-i"></span> Informed (รับทราบ)
+          </div>
+        </div>
+      </div>
+      <div class="matrix">
+        <table>
+          <thead>
+            <tr>
+              <th>มาตรการ / Intervention</th>
+              <th>สจส.</th>
+              <th>สนย.</th>
+              <th>เทศกิจ</th>
+              <th>สนข.</th>
+              <th>บช.น.</th>
+              <th>หมายเหตุ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>ปรับสัญญาณไฟ / Adaptive Signal</strong></td>
+              <td><span class="dot dot-a"></span></td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="dot dot-i"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>สจส. ดูแลระบบสัญญาณไฟทั้งหมด · ปรึกษา บช.น. เรื่องจังหวะ</td>
+            </tr>
+            <tr>
+              <td><strong>ปรับลักษณะกายภาพ / Physical Design</strong></td>
+              <td><span class="dot dot-a"></span></td>
+              <td><span class="dot dot-r"></span></td>
+              <td>—</td>
+              <td><span class="dot dot-c"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>สจส. ออกแบบ · สนย. ดำเนินการก่อสร้าง</td>
+            </tr>
+            <tr>
+              <td><strong>กวดขันวินัยจราจร / Enforcement</strong></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>—</td>
+              <td><span class="dot dot-r"></span></td>
+              <td><span class="dot dot-r"></span></td>
+              <td><span class="dot dot-a"></span></td>
+              <td>บช.น. รับผิดชอบหลัก · เทศกิจ/เขตสนับสนุนในพื้นที่</td>
+            </tr>
+            <tr>
+              <td><strong>Bus Bay / Bus Priority</strong></td>
+              <td><span class="dot dot-a"></span></td>
+              <td><span class="dot dot-r"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td><span class="dot dot-i"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>สจส. ออกแบบ · สนย. ก่อสร้าง · เทศกิจกวดขันการจอดล้ำ</td>
+            </tr>
+            <tr>
+              <td><strong>CCTV / Smart Camera</strong></td>
+              <td><span class="dot dot-a"></span></td>
+              <td>—</td>
+              <td><span class="dot dot-i"></span></td>
+              <td><span class="dot dot-i"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>สจส. ดูแล · บช.น. ใช้ข้อมูลในการบังคับใช้กฎหมาย</td>
+            </tr>
+            <tr>
+              <td><strong>คอขวด / Bottleneck Removal</strong></td>
+              <td><span class="dot dot-a"></span></td>
+              <td><span class="dot dot-r"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td><span class="dot dot-c"></span></td>
+              <td>การประสานงานหลายฝ่าย</td>
+            </tr>
+            <tr>
+              <td><strong>รับเรื่องร้องเรียน / Complaint Intake</strong></td>
+              <td><span class="dot dot-i"></span></td>
+              <td>—</td>
+              <td><span class="dot dot-c"></span></td>
+              <td><span class="dot dot-a"></span></td>
+              <td><span class="dot dot-i"></span></td>
+              <td>สนข. เป็นด่านแรกในการรับเรื่องในพื้นที่</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TAB: METHODOLOGY ========== -->
+  <section class="tab-panel" id="methodology">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Methodology · กระบวนการวิเคราะห์ข้อมูล<span class="en">Analytical Methodology</span></h2>
+          <div class="sub">วิธีการเชิงสถิติและเครื่องมือที่ใช้ในการวิเคราะห์ข้อมูลทั้งโครงการ</div>
+        </div>
+      </div>
+
+      <h4 style="margin-bottom: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem;">เครื่องมือ &amp; เทคโนโลยี / Tech Stack</h4>
+      <div class="badge-row">
+        <span class="tech-badge lib">🐍 Python 3.10</span>
+        <span class="tech-badge lib">pandas</span>
+        <span class="tech-badge lib">numpy</span>
+        <span class="tech-badge lib">scikit-learn</span>
+        <span class="tech-badge lib">scipy</span>
+        <span class="tech-badge lib">openpyxl</span>
+        <span class="tech-badge">Chart.js</span>
+        <span class="tech-badge">Leaflet.js</span>
+        <span class="tech-badge">OpenStreetMap</span>
+        <span class="tech-badge">HTML/CSS/JS</span>
+      </div>
+
+      <h4 style="margin: 18px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem;">วิธีการเชิงสถิติ / Statistical Methods</h4>
+      <div class="method-grid">
+        <div class="method-card">
+          <div class="method-icon">📐</div>
+          <div class="method-name">Haversine Distance Matching</div>
+          <div class="method-tech">threshold = 250m</div>
+          <div class="method-desc">จับคู่จุดข้ามปีโดยใช้สูตรระยะทาง Great-Circle บนผิวโลก เพื่อระบุว่าจุดใดสืบทอดจากปีก่อน (carry-over) จุดใดเป็นจุดใหม่ (new) และจุดใดถูกตัดออก (drop-out)</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">🎯</div>
+          <div class="method-name">K-Means Clustering</div>
+          <div class="method-tech">k=6 · Silhouette = 0.46</div>
+          <div class="method-desc">จัดกลุ่มจุดปัญหาตามรูปแบบมาตรการที่ใช้ (6 มิติ: บริหารจัดการ · กวดขัน · สัญญาณไฟ · กายภาพ · BusBay · CCTV) เพื่อหา cluster ที่มีอัตราความสำเร็จสูงสุด</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">🛣️</div>
+          <div class="method-name">DBSCAN Corridor Clustering</div>
+          <div class="method-tech">eps=400m · min_samples=3</div>
+          <div class="method-desc">จัดกลุ่ม corridor ตามพิกัดจริง (ไม่ขึ้นกับขอบเขตการปกครอง) ด้วย Density-Based Spatial Clustering — ระบุได้ 45 corridors โดย 25 corridors active ทั้ง 3 ปี</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">🌡️</div>
+          <div class="method-name">Kernel Density Estimation</div>
+          <div class="method-tech">Gaussian · bw=0.05</div>
+          <div class="method-desc">คำนวณ density ของจุดปัญหาบน 60×60 grid ครอบคลุม กทม. เพื่อระบุ "hot zones" ที่ปัญหากระจุกตัวสูง โดยไม่ยึดติดกับขอบเขตการปกครอง</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">📊</div>
+          <div class="method-name">Inferential Statistics</div>
+          <div class="method-tech">Spearman · Kruskal-Wallis · χ²</div>
+          <div class="method-desc">ทดสอบสมมติฐาน — Spearman correlation (จำนวนมาตรการ ↔ ความสำเร็จ, ρ=0.141, p=0.044*) และ Kruskal-Wallis (ความสำเร็จ × โซน, H=19.83, p=0.001**)</div>
+        </div>
+        <div class="method-card">
+          <div class="method-icon">🔄</div>
+          <div class="method-name">Data Pipeline &amp; ETL</div>
+          <div class="method-tech">pandas · openpyxl</div>
+          <div class="method-desc">รวม schema 3 ปี (ต่างกัน) ให้เป็นรูปแบบเดียวด้วยการ map columns, normalize zones/districts, จัดการ missing values และ export เป็น JSON/GeoJSON สำหรับ dashboard</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Data Pipeline Flow<span class="en">From Raw to Insights</span></h2>
+        </div>
+      </div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; background: var(--ink); color: #E2E8F0; padding: 20px; border-radius: 10px; overflow-x: auto;">
+<pre style="margin: 0;">┌──────────────────────┐    ┌──────────────────────┐    ┌──────────────────────┐
+│  Raw Inventory       │ →  │  Standardization     │ →  │  Spatial Lineage     │
+│  • 3 CSV files       │    │  • Schema mapping    │    │  • Haversine 250m    │
+│  • 472 raw rows      │    │  • Zone normalization│    │  • Carry-over flags  │
+└──────────────────────┘    └──────────────────────┘    └──────────────────────┘
+                                                                    │
+                                                                    ▼
+┌──────────────────────┐    ┌──────────────────────┐    ┌──────────────────────┐
+│  Dashboard           │ ←  │  Clustering          │ ←  │  Statistical Tests   │
+│  • HTML/JS/Leaflet   │    │  • K-Means (k=6)     │    │  • Spearman ρ        │
+│  • JSON/GeoJSON      │    │  • DBSCAN corridors  │    │  • Kruskal-Wallis    │
+│  • Interactive maps  │    │  • KDE hot zones     │    │  • Chi-square        │
+└──────────────────────┘    └──────────────────────┘    └──────────────────────┘</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TAB: ABOUT ========== -->
+  <section class="tab-panel" id="about">
+    <div class="about-card">
+      <div class="about-avatar">PW</div>
+      <div>
+        <h2 class="about-name">© Prapawadee Wachiraput</h2>
+        <div class="about-role">Professional-Level Statistician</div>
+        <div class="about-org">กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน<br/>สำนักการจราจรและขนส่ง กรุงเทพมหานคร</div>
+        <p class="about-bio">
+          นักสถิติระดับชำนาญการ ที่มุ่งเน้นการนำข้อมูลและวิทยาศาสตร์ข้อมูล (Data Science)
+          มาประยุกต์ใช้กับงานนโยบายภาครัฐ โดยเฉพาะด้านการจราจรและขนส่ง
+          สนใจการวิเคราะห์เชิงพื้นที่ (Spatial Analytics), การออกแบบโครงการวิจัย,
+          และการเล่าเรื่องด้วยข้อมูล (Data Storytelling)
+          เพื่อสนับสนุนการตัดสินใจเชิงนโยบายของกรุงเทพมหานครให้มีประสิทธิภาพและโปร่งใส
+        </p>
+        <div class="about-skills">
+          <span class="skill-chip">📊 Statistical Analysis</span>
+          <span class="skill-chip">🐍 Python (pandas/numpy)</span>
+          <span class="skill-chip">📈 Data Visualization</span>
+          <span class="skill-chip">🗺 Spatial Analytics</span>
+          <span class="skill-chip">📐 Survey &amp; Research Design</span>
+          <span class="skill-chip">📝 Official Reports (Thai)</span>
+          <span class="skill-chip">🎨 Graphic Design / Infographics</span>
+          <span class="skill-chip">🌐 HTML / CSS</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" style="margin-top: 20px;">
+      <div class="section-head">
+        <div>
+          <h2>เกี่ยวกับโครงการนี้<span class="en">About This Project</span></h2>
+        </div>
+      </div>
+      <p style="color: var(--ink-soft);">
+        Dashboard นี้เป็นส่วนหนึ่งของงานวิเคราะห์ข้อมูลจุดปัญหาการจราจรติดขัดในกรุงเทพมหานคร
+        ปีงบประมาณ 2566–2568 โดยใช้กระบวนการทางสถิติและการวิเคราะห์เชิงพื้นที่
+        เพื่อเสนอภาพรวมการเปลี่ยนแปลงของ inventory, การระบุ Persistent Hotspots
+        และการแนะแนวทางการแก้ไขที่ต้องอาศัยความร่วมมือของหลายหน่วยงาน
+      </p>
+      <p style="color: var(--ink-soft); margin-top: 12px;">
+        ข้อมูลและการวิเคราะห์จัดทำขึ้นเพื่อประโยชน์สาธารณะและการสนับสนุนการตัดสินใจเชิงนโยบาย
+        ไม่อนุญาตให้นำไปใช้แสวงหาผลประโยชน์ส่วนบุคคล
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <h4>© Prapawadee_W.</h4>
+      <p>
+        กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน<br/>
+        สำนักการจราจรและขนส่ง กรุงเทพมหานคร<br/>
+        <em>Statistics &amp; Research Group, Policy &amp; Planning Division,<br/>
+        Traffic and Transportation Department, BMA</em>
+      </p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#timeline">Timeline</a></li>
+        <li><a href="#hotspots">Hotspots</a></li>
+        <li><a href="#methodology">Methodology</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Data &amp; Compliance</h4>
+      <ul>
+        <li>Map tiles: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> (ODbL)</li>
+        <li>Spatial threshold: 250m (Haversine)</li>
+        <li>Public Sector — Non-commercial use only</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div style="font-weight: 600; margin-bottom: 6px;">ใช้เพื่อประโยชน์สาธารณะ ไม่อนุญาตให้นำไปใช้แสวงหาประโยชน์ส่วนตัว</div>
+    © 2026 Prapawadee W. · For BMA public-sector use · Built with Python, Chart.js, and Leaflet
+  </div>
+</footer>
+
+<script>
+// ============== UTILITIES ==============
+Chart.defaults.font.family = '"Sarabun", sans-serif';
+Chart.defaults.color = '#334155';
+Chart.defaults.font.size = 12;
+Chart.defaults.maintainAspectRatio = false;
+Chart.defaults.responsive = true;
+Chart.defaults.plugins.legend.labels.boxWidth = 14;
+Chart.defaults.plugins.legend.labels.boxHeight = 14;
+Chart.defaults.plugins.legend.labels.padding = 12;
+const IS_NARROW = () => window.innerWidth <= 768;
+const IS_MOBILE = () => window.innerWidth <= 540;
+
+const YEAR_COLORS = { 2566: '#6B7C93', 2567: '#1E5AA6', 2568: '#0B3B6F' };
+const ZONE_COLORS = ['#0B3B6F','#1E5AA6','#4A90E2','#1B8E5A','#D97706','#B91C1C'];
+const THAI_ZONE = {
+  'North Bangkok':'กรุงเทพเหนือ', 'East Bangkok':'กรุงเทพตะวันออก',
+  'Central Bangkok':'กรุงเทพกลาง', 'South Bangkok':'กรุงเทพใต้',
+  'West Bangkok':'กรุงเทพตะวันตก', 'Thon Buri':'ธนบุรี', 'Unknown':'ไม่ระบุ'
+};
+const translateZone = z => THAI_ZONE[z] || z || 'ไม่ระบุ';
+const toInt = v => { const n=Number(v); return Number.isFinite(n) ? Math.trunc(n) : null; };
+
+async function fetchJson(path){
+  const res = await fetch(path);
+  if (!res.ok) throw new Error('Cannot load '+path);
+  return res.json();
+}
+
+// ============== TAB SWITCH ==============
+function activateTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === id));
+  // map resize
+  setTimeout(() => { if (window._map) window._map.invalidateSize(); }, 100);
+  window.scrollTo({ top: document.querySelector('.tabs-wrap').offsetTop - 60, behavior: 'smooth' });
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => activateTab(t.dataset.tab)));
+document.querySelectorAll('[data-jump]').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault(); activateTab(a.dataset.jump);
+}));
+
+// ============== AREA TYPE CLASSIFIER ==============
+function classifyAreaType(rawType) {
+  const t = (rawType || '').toString().toLowerCase();
+  if (!t.trim()) return 'อื่น ๆ';
+  if (t.includes('คอขวด')) return 'คอขวด';
+  if (t.includes('ทางแยก')) return 'ทางแยก';
+  if (t.includes('สถานศึกษา') || t.includes('โรงเรียน')) return 'สถานศึกษา/โรงเรียน';
+  if (t.includes('ชุมชน') || t.includes('ตลาด')) return 'ชุมชน/ตลาด';
+  if (t.includes('ช่วงถนน') || t.includes('จุดกลับรถ')) return 'ช่วงถนน/จุดกลับรถ';
+  if (t.includes('สะพาน')) return 'สะพาน';
+  if (t.includes('ห้าง') || t.includes('แหล่งดึงดูด')) return 'ห้างสรรพสินค้า';
+  if (t.includes('ก่อสร้าง') || t.includes('ทางเบี่ยง')) return 'ทางเบี่ยง/ก่อสร้าง';
+  return 'อื่น ๆ';
+}
+
+function renderAreaType(rows) {
+  const counts = {};
+  rows.forEach(r => {
+    const k = classifyAreaType(r.point_type);
+    counts[k] = (counts[k]||0) + 1;
+  });
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  const total = rows.length;
+
+  // Summary cards
+  const sumEl = document.getElementById('areaTypeSummary');
+  sumEl.innerHTML = sorted.slice(0,4).map(([n,c]) =>
+    `<div style="background:var(--line-soft); padding:10px 14px; border-radius:8px;">
+      <div style="font-size:.78rem; color:var(--muted); font-weight:600;">${n}</div>
+      <div style="font-size:1.3rem; font-weight:700; color:var(--brand); font-family:'JetBrains Mono',monospace;">${c}</div>
+    </div>`
+  ).join('');
+
+  // Table
+  const t = document.getElementById('areaTypeTable');
+  let html = '<thead><tr><th>ลักษณะพื้นที่</th><th style="text-align:right;">จำนวน</th><th style="text-align:right;">ร้อยละ</th></tr></thead><tbody>';
+  sorted.forEach(([n,c]) => {
+    const pct = ((c/total)*100).toFixed(1);
+    html += `<tr><td>${n}</td><td style="text-align:right; font-family:'JetBrains Mono',monospace;">${c}</td><td style="text-align:right;">${pct}%</td></tr>`;
+  });
+  html += '</tbody>';
+  t.innerHTML = html;
+}
+
+// ============== HOTSPOTS (group by district+road, 3-year) ==============
+function buildHotspots(rows) {
+  const grouped = new Map();
+  rows.forEach(r => {
+    const d = (r.district||'').trim(), rd = (r.road||'').trim();
+    if (!d || !rd) return;
+    const y = toInt(r.year);
+    const key = `${d}|${rd}`;
+    if (!grouped.has(key)) grouped.set(key, { district:d, road:rd, count:0, years:new Set() });
+    const it = grouped.get(key);
+    it.count += 1;
+    if (y) it.years.add(y);
+  });
+  return Array.from(grouped.values())
+    .filter(x => x.years.size >= 3)
+    .sort((a,b) => b.count - a.count);
+}
+
+function renderHotspots(rows) {
+  const hs = buildHotspots(rows);
+  let html = '<thead><tr><th>#</th><th>เขต</th><th>ถนน</th><th style="text-align:right;">จำนวน</th><th>ปีที่พบ</th></tr></thead><tbody>';
+  hs.forEach((h, i) => {
+    html += `<tr>
+      <td>${i+1}</td>
+      <td>${h.district}</td>
+      <td>${h.road}</td>
+      <td style="text-align:right;"><span class="tag tag-red">${h.count}</span></td>
+      <td><span class="tag tag-amber">${Array.from(h.years).sort().join(', ')}</span></td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('hotspotTable').innerHTML = html;
+}
+
+// ============== CORRIDORS ==============
+function renderCorridors(corrs) {
+  const persistent = corrs.filter(c => Number(c.n_years) >= 3)
+    .sort((a,b) => Number(b.n_points) - Number(a.n_points));
+  let html = '<thead><tr><th>#</th><th>เขตหลัก</th><th>โซน</th><th>ถนนหลัก</th><th style="text-align:right;">จุด</th><th>ปี</th></tr></thead><tbody>';
+  persistent.forEach((c, i) => {
+    const road = String(c.top_road||'').replace(/\n/g,' ');
+    html += `<tr>
+      <td>${i+1}</td>
+      <td>${c.top_district||'-'}</td>
+      <td>${c.top_zone||'-'}</td>
+      <td>${road}</td>
+      <td style="text-align:right;"><span class="tag tag-blue">${c.n_points}</span></td>
+      <td><span class="tag tag-green">3 ปี</span></td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('corridorTable').innerHTML = html;
+}
+
+// ============== ZONE CHART ==============
+function renderZoneChart(rows) {
+  const zone68 = {};
+  rows.forEach(r => {
+    if (toInt(r.year) !== 2568) return;
+    const z = translateZone((r.zone||'Unknown').toString());
+    zone68[z] = (zone68[z]||0) + 1;
+  });
+  const entries = Object.entries(zone68).sort((a,b) => b[1]-a[1]);
+  new Chart(document.getElementById('zoneChart'), {
+    type: 'doughnut',
+    data: {
+      labels: entries.map(e => e[0]),
+      datasets: [{
+        data: entries.map(e => e[1]),
+        backgroundColor: ZONE_COLORS,
+        borderColor: '#fff', borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      layout: { padding: 8 },
+      plugins: {
+        legend: {
+          position: IS_NARROW() ? 'bottom' : 'right',
+          labels: { font: { size: IS_MOBILE() ? 11 : 12 }, padding: 10, usePointStyle: true, boxWidth: 12 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const v = ctx.raw, total = ctx.dataset.data.reduce((s,x) => s+x, 0);
+              return `${ctx.label}: ${v} จุด (${((v/total)*100).toFixed(1)}%)`;
+            }
+          }
+        }
+      },
+      cutout: IS_MOBILE() ? '55%' : '50%'
+    }
+  });
+}
+
+// ============== TREND CHART ==============
+function renderTrendChart(byYear) {
+  new Chart(document.getElementById('trendChart'), {
+    type: 'bar',
+    data: {
+      labels: ['FY 2566','FY 2567','FY 2568'],
+      datasets: [{
+        label: 'จุดปัญหา',
+        data: [byYear[2566]||0, byYear[2567]||0, byYear[2568]||0],
+        backgroundColor: [YEAR_COLORS[2566], YEAR_COLORS[2567], YEAR_COLORS[2568]],
+        borderRadius: 8, borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      layout: { padding: { top: 24 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} จุด` } }
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 11 : 12 } } },
+        x: { grid: { display: false }, ticks: { font: { size: IS_MOBILE() ? 11 : 13, weight: '600' } } }
+      },
+      animation: {
+        onComplete: function(){
+          const ctx = this.ctx;
+          ctx.font = (IS_MOBILE() ? '600 12px ' : '700 14px ') + '"Sarabun", sans-serif';
+          ctx.fillStyle = '#0B3B6F';
+          ctx.textAlign = 'center';
+          this.data.datasets[0].data.forEach((val, i) => {
+            const meta = this.getDatasetMeta(0).data[i];
+            ctx.fillText(val, meta.x, meta.y - 6);
+          });
+        }
+      }
+    }
+  });
+}
+
+// ============== LINEAGE STACK ==============
+function renderLineageStack() {
+  // Fixed estimates based on analysis
+  new Chart(document.getElementById('lineageStack'), {
+    type: 'bar',
+    data: {
+      labels: ['FY 2566','FY 2567','FY 2568'],
+      datasets: [
+        { label: 'จุดที่อยู่ทั้ง 3 ปี', data: [23, 23, 23], backgroundColor: '#B91C1C' },
+        { label: 'จุดที่ดำเนินการต่อจากปีก่อน', data: [0, 43, 28], backgroundColor: '#1E5AA6' },
+        { label: 'จุดใหม่ที่เพิ่มเข้ามาในปี', data: [243, 61, 8], backgroundColor: '#FFD96B' },
+        { label: 'จุดที่ไม่ดำเนินการต่อ', data: [0, 0, 18], backgroundColor: '#94A3B8' },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      layout: { padding: { top: 4 } },
+      interaction: { mode: 'index', intersect: false, axis: 'x' },
+      plugins: {
+        legend: {
+          position: 'top', align: 'start',
+          labels: { font: { size: IS_MOBILE() ? 10.5 : 12 }, padding: 10, boxWidth: 12, usePointStyle: true }
+        },
+        tooltip: {
+          enabled: true,
+          backgroundColor: 'rgba(11, 59, 111, 0.97)',
+          titleColor: '#FFD96B',
+          titleFont: { size: 13, weight: '700', family: '"Sarabun",sans-serif' },
+          bodyColor: '#fff',
+          bodyFont: { size: 12.5, family: '"Sarabun",sans-serif' },
+          padding: 14,
+          cornerRadius: 8,
+          borderColor: '#FFD96B',
+          borderWidth: 1,
+          boxPadding: 6,
+          usePointStyle: true,
+          callbacks: {
+            title: (items) => items[0].label + ' · รวม inventory',
+            label: (ctx) => {
+              const total = ctx.chart.data.datasets.reduce((s, ds) => s + (Number(ds.data[ctx.dataIndex]) || 0), 0);
+              const v = Number(ctx.parsed.y) || 0;
+              const pct = total > 0 ? ((v / total) * 100).toFixed(1) : '0.0';
+              return ` ${ctx.dataset.label}: ${v} จุด (${pct}%)`;
+            },
+            footer: (items) => {
+              const total = items[0].chart.data.datasets.reduce((s, ds) => s + (Number(ds.data[items[0].dataIndex]) || 0), 0);
+              return '\nรวมทั้งหมด: ' + total + ' จุด';
+            }
+          },
+          footerColor: '#FFD96B',
+          footerFont: { size: 12, weight: '700', family: '"Sarabun",sans-serif' }
+        },
+        title: {
+          display: true,
+          text: 'องค์ประกอบของ inventory ในแต่ละปี (เชิงประมาณ)',
+          font: { size: IS_MOBILE() ? 12 : 14, weight: '600' },
+          padding: { bottom: 12 }
+        }
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: IS_MOBILE() ? 11 : 12, weight: '600' } } },
+        y: { stacked: true, beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 10 : 11 } } }
+      },
+      onHover: (event, elements) => {
+        event.native.target.style.cursor = elements.length ? 'pointer' : 'default';
+      }
+    }
+  });
+}
+
+// ============== DISTRICT CHART (Top 12) ==============
+function renderDistrictChart(rows) {
+  const counts = {};
+  rows.forEach(r => {
+    const d = (r.district||'').trim();
+    if (!d) return;
+    counts[d] = (counts[d]||0) + 1;
+  });
+  const topN = IS_MOBILE() ? 8 : (IS_NARROW() ? 10 : 12);
+  const top = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, topN);
+  new Chart(document.getElementById('districtChart'), {
+    type: 'bar',
+    data: {
+      labels: top.map(e => e[0]),
+      datasets: [{
+        label: 'จุดปัญหารวม 3 ปี',
+        data: top.map(e => e[1]),
+        backgroundColor: '#1E5AA6',
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      layout: { padding: { right: 24 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${ctx.parsed.x} จุด` } }
+      },
+      scales: {
+        x: { beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 10 : 11 }, precision: 0 } },
+        y: { grid: { display: false }, ticks: { font: { size: IS_MOBILE() ? 11 : 12 } } }
+      },
+      animation: {
+        onComplete: function(){
+          const ctx = this.ctx;
+          ctx.font = '600 ' + (IS_MOBILE() ? '11px' : '12px') + ' "Sarabun", sans-serif';
+          ctx.fillStyle = '#0B3B6F';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          this.data.datasets[0].data.forEach((val, i) => {
+            const meta = this.getDatasetMeta(0).data[i];
+            ctx.fillText(val, meta.x + 5, meta.y);
+          });
+        }
+      }
+    }
+  });
+}
+
+// ============== MAP ==============
+function renderMap(geoJson) {
+  const map = L.map('map').setView([13.7563, 100.5018], 11);
+  window._map = map;
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  const yearLayers = { 2566: L.layerGroup(), 2567: L.layerGroup(), 2568: L.layerGroup() };
+  geoJson.features.forEach(f => {
+    if (!f.geometry || !Array.isArray(f.geometry.coordinates)) return;
+    const props = f.properties || {};
+    const year = toInt(props.year);
+    const [lon, lat] = f.geometry.coordinates;
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+    const marker = L.circleMarker([lat, lon], {
+      radius: 6, fillOpacity: 0.85,
+      fillColor: YEAR_COLORS[year] || '#94A3B8',
+      color: '#fff', weight: 1
+    });
+    marker.bindPopup(
+      `<strong>${props.point_name || 'ไม่ระบุ'}</strong><br/>`
+      + `ปี: <b>${props.year || '-'}</b><br/>`
+      + `เขต: ${props.district || '-'}<br/>`
+      + `ถนน: ${props.road || '-'}<br/>`
+      + `โซน: ${translateZone(props.zone || 'Unknown')}`
+    );
+    if (yearLayers[year]) yearLayers[year].addLayer(marker);
+  });
+  Object.values(yearLayers).forEach(l => l.addTo(map));
+
+  const sel = document.getElementById('mapYear');
+  if (sel) sel.addEventListener('change', e => {
+    const v = e.target.value;
+    Object.entries(yearLayers).forEach(([y, layer]) => {
+      if (v === 'all' || v === y) {
+        if (!map.hasLayer(layer)) map.addLayer(layer);
+      } else {
+        if (map.hasLayer(layer)) map.removeLayer(layer);
+      }
+    });
+  });
+}
+
+// ============== INIT ==============
+async function init() {
+  try {
+    const [combinedRows, geoJson, corridors] = await Promise.all([
+      fetchJson('data/combined_data.json'),
+      fetchJson('data/all_points.geojson'),
+      fetchJson('data/sheets/11_Corridors.json'),
+    ]);
+
+    const byYear = { 2566: 0, 2567: 0, 2568: 0 };
+    combinedRows.forEach(r => {
+      const y = toInt(r.year);
+      if (y && byYear[y] !== undefined) byYear[y] += 1;
+    });
+
+    // KPIs — Year counts (from data)
+    document.getElementById('kpi66').textContent = byYear[2566];
+    document.getElementById('kpi67').textContent = byYear[2567];
+    document.getElementById('kpi68').textContent = byYear[2568];
+    document.getElementById('heroK1').textContent = byYear[2566];
+    document.getElementById('heroK2').textContent = byYear[2567];
+    document.getElementById('heroK3').textContent = byYear[2568];
+
+    // KPIs — Persistent hotspots (3-year cross-coordinate match)
+    const persistentHotspots = buildHotspots(combinedRows);
+    const persEl = document.getElementById('kpiPers');
+    if (persEl) persEl.textContent = persistentHotspots.length;
+    const heroK4 = document.getElementById('heroK4');
+    if (heroK4) heroK4.textContent = persistentHotspots.length;
+
+    // KPIs — Persistent corridors (DBSCAN clusters active 3 years)
+    const persistentCorridors = corridors.filter(c => Number(c.n_years) >= 3).length;
+    const corrEl = document.getElementById('kpiCorr');
+    if (corrEl) corrEl.textContent = persistentCorridors;
+    const heroK5 = document.getElementById('heroK5');
+    if (heroK5) heroK5.textContent = persistentCorridors;
+
+    renderAreaType(combinedRows);
+    renderHotspots(combinedRows);
+    renderCorridors(corridors);
+    renderZoneChart(combinedRows);
+    renderTrendChart(byYear);
+    renderLineageStack();
+    renderDistrictChart(combinedRows);
+    renderMap(geoJson);
+  } catch (err) {
+    console.error(err);
+    alert('ไม่สามารถโหลดไฟล์ข้อมูลได้ — ตรวจสอบว่า data/combined_data.json, data/all_points.geojson, data/sheets/11_Corridors.json พร้อมใช้งาน');
+  }
+}
+init();
+
+// ============== RESIZE HANDLER ==============
+let _resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeTimer);
+  _resizeTimer = setTimeout(() => {
+    if (window._map) window._map.invalidateSize();
+  }, 200);
+});
+</script>
+</body>
+</html>
