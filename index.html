@@ -1428,7 +1428,9 @@ const IS_NARROW = () => window.innerWidth <= 768;
 const IS_MOBILE = () => window.innerWidth <= 540;
 
 const YEAR_COLORS = { 2566: '#6B7C93', 2567: '#1E5AA6', 2568: '#0B3B6F' };
-const ZONE_COLORS = ['#0B3B6F','#1E5AA6','#4A90E2','#1B8E5A','#D97706','#B91C1C'];
+// Professional pastel palette — muted tones suitable for official reports
+const ZONE_COLORS = ['#7BA7C9','#A8C5DA','#9DB7CC','#C2D4B8','#E8C8A0','#D4A8A8'];
+const ZONE_BORDER = ['#5A8AB0','#7FA5C2','#7298B4','#A4BC95','#CFAA80','#B98686'];
 const THAI_ZONE = {
   'North Bangkok':'กรุงเทพเหนือ', 'East Bangkok':'กรุงเทพตะวันออก',
   'Central Bangkok':'กรุงเทพกลาง', 'South Bangkok':'กรุงเทพใต้',
@@ -1563,6 +1565,40 @@ function renderZoneChart(rows) {
     zone68[z] = (zone68[z]||0) + 1;
   });
   const entries = Object.entries(zone68).sort((a,b) => b[1]-a[1]);
+  const totalZone = entries.reduce((s, e) => s + e[1], 0);
+
+  // Custom plugin: draw % labels on arcs
+  const percentLabelPlugin = {
+    id: 'percentLabel',
+    afterDatasetsDraw(chart) {
+      const { ctx } = chart;
+      const ds = chart.data.datasets[0];
+      const meta = chart.getDatasetMeta(0);
+      if (!ds || !meta || !meta.data) return;
+      const totalAll = ds.data.reduce((s, v) => s + Number(v || 0), 0);
+      if (!totalAll) return;
+      ctx.save();
+      meta.data.forEach((arc, i) => {
+        const v = Number(ds.data[i] || 0);
+        if (!v) return;
+        const pct = (v / totalAll) * 100;
+        if (pct < 5) return; // hide small slivers
+        const pos = arc.tooltipPosition();
+        ctx.font = '700 ' + (IS_MOBILE() ? '11px' : '13px') + ' "Sarabun", sans-serif';
+        ctx.fillStyle = '#0B3B6F';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        // White outline for legibility on pastel
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(255,255,255,0.92)';
+        const txt = pct.toFixed(1) + '%';
+        ctx.strokeText(txt, pos.x, pos.y);
+        ctx.fillText(txt, pos.x, pos.y);
+      });
+      ctx.restore();
+    }
+  };
+
   new Chart(document.getElementById('zoneChart'), {
     type: 'doughnut',
     data: {
@@ -1570,28 +1606,60 @@ function renderZoneChart(rows) {
       datasets: [{
         data: entries.map(e => e[1]),
         backgroundColor: ZONE_COLORS,
-        borderColor: '#fff', borderWidth: 2,
+        borderColor: ZONE_BORDER,
+        borderWidth: 1.5,
+        hoverBorderColor: '#0B3B6F',
+        hoverBorderWidth: 2,
+        hoverOffset: 8,
       }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      layout: { padding: 8 },
+      layout: { padding: 14 },
       plugins: {
         legend: {
           position: IS_NARROW() ? 'bottom' : 'right',
-          labels: { font: { size: IS_MOBILE() ? 11 : 12 }, padding: 10, usePointStyle: true, boxWidth: 12 }
+          labels: {
+            font: { size: IS_MOBILE() ? 11 : 12, weight: '500' },
+            padding: 12, usePointStyle: true, boxWidth: 10,
+            color: '#334155',
+            generateLabels(chart) {
+              const data = chart.data;
+              return data.labels.map((label, i) => {
+                const v = data.datasets[0].data[i];
+                const pct = totalZone > 0 ? ((v / totalZone) * 100).toFixed(1) : '0.0';
+                return {
+                  text: `${label}  ·  ${pct}%`,
+                  fillStyle: data.datasets[0].backgroundColor[i],
+                  strokeStyle: data.datasets[0].borderColor[i],
+                  lineWidth: 1,
+                  hidden: false,
+                  index: i,
+                  pointStyle: 'circle'
+                };
+              });
+            }
+          }
         },
         tooltip: {
+          backgroundColor: 'rgba(11, 59, 111, 0.97)',
+          titleColor: '#FFD96B',
+          titleFont: { size: 13, weight: '700', family: '"Sarabun",sans-serif' },
+          bodyColor: '#fff',
+          bodyFont: { size: 12.5, family: '"Sarabun",sans-serif' },
+          padding: 12, cornerRadius: 8,
+          borderColor: '#FFD96B', borderWidth: 1,
           callbacks: {
             label: ctx => {
               const v = ctx.raw, total = ctx.dataset.data.reduce((s,x) => s+x, 0);
-              return `${ctx.label}: ${v} จุด (${((v/total)*100).toFixed(1)}%)`;
+              return `  ${v} จุด  (${((v/total)*100).toFixed(1)}%)`;
             }
           }
         }
       },
-      cutout: IS_MOBILE() ? '55%' : '50%'
-    }
+      cutout: IS_MOBILE() ? '58%' : '55%'
+    },
+    plugins: [percentLabelPlugin]
   });
 }
 
