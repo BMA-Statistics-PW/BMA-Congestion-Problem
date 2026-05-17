@@ -1381,12 +1381,14 @@ Chart.defaults.maintainAspectRatio = false;
 Chart.defaults.responsive = true;
 Chart.defaults.plugins.legend.labels.boxWidth = 14;
 Chart.defaults.plugins.legend.labels.boxHeight = 14;
-Chart.defaults.plugins.legend.labels.padding = 12;
+Chart.defaults.plugins.legend.labels.padding = 14;
+Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
 const IS_NARROW = () => window.innerWidth <= 768;
 const IS_MOBILE = () => window.innerWidth <= 540;
 
-const YEAR_COLORS = { 2566: '#6B7C93', 2567: '#1E5AA6', 2568: '#0B3B6F' };
-const ZONE_COLORS = ['#0B3B6F','#1E5AA6','#4A90E2','#1B8E5A','#D97706','#B91C1C'];
+const YEAR_COLORS = { 2566: '#64748B', 2567: '#0EA5E9', 2568: '#1E40AF' };
+const ZONE_COLORS = ['#2563EB','#0891B2','#059669','#D97706','#7C3AED','#DC2626'];
 const THAI_ZONE = {
   'North Bangkok':'กรุงเทพเหนือ', 'East Bangkok':'กรุงเทพตะวันออก',
   'Central Bangkok':'กรุงเทพกลาง', 'South Bangkok':'กรุงเทพใต้',
@@ -1534,13 +1536,18 @@ function renderZoneChart(rows) {
     options: {
       responsive: true, maintainAspectRatio: false,
       layout: { padding: 8 },
+      interaction: { mode: 'nearest', intersect: true },
       plugins: {
         legend: {
           position: IS_NARROW() ? 'bottom' : 'right',
-          labels: { font: { size: IS_MOBILE() ? 11 : 12 }, padding: 10, usePointStyle: true, boxWidth: 12 }
+          align: 'center',
+          maxWidth: IS_NARROW() ? undefined : 220,
+          labels: { font: { size: IS_MOBILE() ? 11 : 12 }, padding: 14, pointStyle: 'circle', usePointStyle: true, boxWidth: 12 }
         },
         tooltip: {
+          enabled: true,
           callbacks: {
+            title: items => items[0]?.label || 'โซน',
             label: ctx => {
               const v = ctx.raw, total = ctx.dataset.data.reduce((s,x) => s+x, 0);
               return `${ctx.label}: ${v} จุด (${((v/total)*100).toFixed(1)}%)`;
@@ -1563,15 +1570,33 @@ function renderTrendChart(byYear) {
         label: 'จุดปัญหา',
         data: [byYear[2566]||0, byYear[2567]||0, byYear[2568]||0],
         backgroundColor: [YEAR_COLORS[2566], YEAR_COLORS[2567], YEAR_COLORS[2568]],
+        hoverBackgroundColor: ['#94A3B8', '#38BDF8', '#1D4ED8'],
         borderRadius: 8, borderSkipped: false,
       }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       layout: { padding: { top: 24 } },
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} จุด` } }
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            title: items => items[0]?.label || '',
+            label: ctx => {
+              const values = ctx.dataset.data;
+              const idx = ctx.dataIndex;
+              const current = Number(values[idx] || 0);
+              if (idx === 0) return `${ctx.label}: ${current} จุด (ปีฐาน)`;
+              const prev = Number(values[idx - 1] || 0);
+              if (!prev) return `${ctx.label}: ${current} จุด (ไม่มีข้อมูลปีก่อน)`;
+              const deltaPct = ((current - prev) / prev) * 100;
+              const arrow = deltaPct > 0 ? '▲' : (deltaPct < 0 ? '▼' : '•');
+              return `${ctx.label}: ${current} จุด (${arrow} ${Math.abs(deltaPct).toFixed(1)}% จากปีก่อน)`;
+            }
+          }
+        }
       },
       scales: {
         y: { beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 11 : 12 } } },
@@ -1580,13 +1605,17 @@ function renderTrendChart(byYear) {
       animation: {
         onComplete: function(){
           const ctx = this.ctx;
-          ctx.font = (IS_MOBILE() ? '600 12px ' : '700 14px ') + '"Sarabun", sans-serif';
-          ctx.fillStyle = '#0B3B6F';
+          ctx.save();
+          ctx.font = (IS_MOBILE() ? '700 12px ' : '700 14px ') + '"Sarabun", sans-serif';
+          ctx.fillStyle = '#F8FAFC';
+          ctx.shadowColor = 'rgba(15,23,42,0.35)';
+          ctx.shadowBlur = 2;
           ctx.textAlign = 'center';
           this.data.datasets[0].data.forEach((val, i) => {
             const meta = this.getDatasetMeta(0).data[i];
-            ctx.fillText(val, meta.x, meta.y - 6);
+            ctx.fillText(val, meta.x, meta.y + (IS_MOBILE() ? 14 : 16));
           });
+          ctx.restore();
         }
       }
     }
@@ -1610,12 +1639,28 @@ function renderLineageStack() {
     options: {
       responsive: true, maintainAspectRatio: false,
       layout: { padding: { top: 4 } },
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: {
           position: 'top', align: 'start',
-          labels: { font: { size: IS_MOBILE() ? 10.5 : 12 }, padding: 10, boxWidth: 12, usePointStyle: true }
+          labels: { font: { size: IS_MOBILE() ? 10.5 : 12 }, padding: 14, pointStyle: 'circle', boxWidth: 12, usePointStyle: true }
         },
-        tooltip: { mode: 'index', intersect: false },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            title: items => items[0]?.label || '',
+            label: ctx => {
+              const stackTotal = ctx.chart.data.datasets.reduce((sum, ds) => sum + Number(ds.data[ctx.dataIndex] || 0), 0);
+              const value = Number(ctx.parsed.y || 0);
+              const pct = stackTotal ? ((value / stackTotal) * 100).toFixed(1) : '0.0';
+              return `${ctx.dataset.label}: ${value} จุด (${pct}%)`;
+            },
+            footer: items => {
+              const total = items.reduce((sum, it) => sum + Number(it.parsed.y || 0), 0);
+              return `รวมทั้งหมด: ${total} จุด`;
+            }
+          }
+        },
         title: {
           display: true,
           text: 'องค์ประกอบของ inventory ในแต่ละปี (เชิงประมาณ)',
@@ -1656,9 +1701,21 @@ function renderDistrictChart(rows) {
       indexAxis: 'y',
       responsive: true, maintainAspectRatio: false,
       layout: { padding: { right: 24 } },
+      interaction: { mode: 'nearest', intersect: false },
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: ctx => `${ctx.parsed.x} จุด` } }
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            title: items => items[0]?.label || '',
+            label: ctx => {
+              const value = Number(ctx.parsed.x || 0);
+              const total = ctx.dataset.data.reduce((sum, x) => sum + Number(x || 0), 0);
+              const pct = total ? ((value / total) * 100).toFixed(1) : '0.0';
+              return `${ctx.label}: ${value} จุด (${pct}%)`;
+            }
+          }
+        }
       },
       scales: {
         x: { beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 10 : 11 }, precision: 0 } },
