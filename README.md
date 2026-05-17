@@ -77,6 +77,12 @@ python -m http.server 8080
 # then open http://localhost:8080
 ```
 
+## Chart Presentation & Interaction
+- Charts use a consistent, colorblind-friendly palette and standardized typography/grid styles for professional data presentation.
+- Values are formatted with thousands separators and explicit units (e.g., `จุด`, `%`) for readability.
+- Hovering on chart elements shows contextual tooltips (label + value + period when applicable).
+- Bar charts include hover guide lines/highlight behavior to improve point-in-time comparisons.
+
 ## Publish via GitHub Pages
 1. Push this repository to GitHub
 2. Go to Settings > Pages
