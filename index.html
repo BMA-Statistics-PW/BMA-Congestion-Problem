@@ -500,18 +500,18 @@ body {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 10;
-  min-height: 280px;
-  max-height: 380px;
+  min-height: clamp(280px, 34vh, 380px);
+  max-height: 420px;
 }
 .chart-wrap.tall {
   aspect-ratio: 4 / 3;
-  min-height: 340px;
-  max-height: 460px;
+  min-height: clamp(320px, 40vh, 460px);
+  max-height: 500px;
 }
 .chart-wrap.square {
   aspect-ratio: 1 / 1;
-  min-height: 260px;
-  max-height: 360px;
+  min-height: clamp(260px, 32vh, 360px);
+  max-height: 400px;
 }
 .chart-wrap canvas { max-width: 100%; }
 @media (max-width: 768px) {
@@ -1379,14 +1379,38 @@ Chart.defaults.color = '#334155';
 Chart.defaults.font.size = 12;
 Chart.defaults.maintainAspectRatio = false;
 Chart.defaults.responsive = true;
+Chart.defaults.interaction = { mode: 'nearest', intersect: false };
 Chart.defaults.plugins.legend.labels.boxWidth = 14;
 Chart.defaults.plugins.legend.labels.boxHeight = 14;
 Chart.defaults.plugins.legend.labels.padding = 12;
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.94)';
+Chart.defaults.plugins.tooltip.titleColor = '#F8FAFC';
+Chart.defaults.plugins.tooltip.bodyColor = '#E2E8F0';
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.cornerRadius = 8;
+Chart.defaults.plugins.tooltip.displayColors = true;
 const IS_NARROW = () => window.innerWidth <= 768;
 const IS_MOBILE = () => window.innerWidth <= 540;
 
-const YEAR_COLORS = { 2566: '#6B7C93', 2567: '#1E5AA6', 2568: '#0B3B6F' };
-const ZONE_COLORS = ['#0B3B6F','#1E5AA6','#4A90E2','#1B8E5A','#D97706','#B91C1C'];
+const INT_FMT = new Intl.NumberFormat('th-TH');
+const PCT_FMT = new Intl.NumberFormat('th-TH', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const fmtInt = v => INT_FMT.format(Number(v) || 0);
+const fmtPct = v => `${PCT_FMT.format(Number(v) || 0)}%`;
+
+const DATA_VIZ = {
+  blue: '#0072B2',
+  sky: '#56B4E9',
+  teal: '#009E73',
+  orange: '#E69F00',
+  vermillion: '#D55E00',
+  purple: '#CC79A7',
+  navy: '#1F2937',
+  yellow: '#F0E442',
+  grid: '#E2E8F0',
+  axis: '#475569'
+};
+const YEAR_COLORS = { 2566: DATA_VIZ.sky, 2567: DATA_VIZ.blue, 2568: '#0B3B6F' };
+const ZONE_COLORS = [DATA_VIZ.blue, DATA_VIZ.teal, DATA_VIZ.orange, DATA_VIZ.purple, DATA_VIZ.vermillion, DATA_VIZ.navy];
 const THAI_ZONE = {
   'North Bangkok':'กรุงเทพเหนือ', 'East Bangkok':'กรุงเทพตะวันออก',
   'Central Bangkok':'กรุงเทพกลาง', 'South Bangkok':'กรุงเทพใต้',
@@ -1394,6 +1418,35 @@ const THAI_ZONE = {
 };
 const translateZone = z => THAI_ZONE[z] || z || 'ไม่ระบุ';
 const toInt = v => { const n=Number(v); return Number.isFinite(n) ? Math.trunc(n) : null; };
+
+const hoverGuidePlugin = {
+  id: 'hoverGuide',
+  afterDatasetsDraw(chart, args, opts) {
+    if (!opts || !opts.enabled || !chart.tooltip) return;
+    const active = chart.tooltip.getActiveElements ? chart.tooltip.getActiveElements() : [];
+    if (!active.length || !chart.chartArea) return;
+    const { top, bottom, left, right } = chart.chartArea;
+    const point = active[0].element;
+    if (!point) return;
+    const isHorizontal = chart.options?.indexAxis === 'y';
+    const ctx = chart.ctx;
+    ctx.save();
+    ctx.beginPath();
+    ctx.strokeStyle = opts.color || '#94A3B8';
+    ctx.lineWidth = opts.lineWidth || 1;
+    ctx.setLineDash(opts.lineDash || [4, 4]);
+    if (isHorizontal) {
+      ctx.moveTo(left, point.y);
+      ctx.lineTo(right, point.y);
+    } else {
+      ctx.moveTo(point.x, top);
+      ctx.lineTo(point.x, bottom);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+};
+Chart.register(hoverGuidePlugin);
 
 async function fetchJson(path){
   const res = await fetch(path);
@@ -1528,7 +1581,10 @@ function renderZoneChart(rows) {
       datasets: [{
         data: entries.map(e => e[1]),
         backgroundColor: ZONE_COLORS,
-        borderColor: '#fff', borderWidth: 2,
+        borderColor: '#fff',
+        borderWidth: 2,
+        hoverOffset: 12,
+        hoverBorderWidth: 3
       }]
     },
     options: {
@@ -1541,9 +1597,10 @@ function renderZoneChart(rows) {
         },
         tooltip: {
           callbacks: {
+            title: items => `โซน: ${items[0].label}`,
             label: ctx => {
               const v = ctx.raw, total = ctx.dataset.data.reduce((s,x) => s+x, 0);
-              return `${ctx.label}: ${v} จุด (${((v/total)*100).toFixed(1)}%)`;
+              return `จำนวน: ${fmtInt(v)} จุด (${fmtPct((v/total)*100)})`;
             }
           }
         }
@@ -1563,19 +1620,38 @@ function renderTrendChart(byYear) {
         label: 'จุดปัญหา',
         data: [byYear[2566]||0, byYear[2567]||0, byYear[2568]||0],
         backgroundColor: [YEAR_COLORS[2566], YEAR_COLORS[2567], YEAR_COLORS[2568]],
+        borderColor: [YEAR_COLORS[2566], YEAR_COLORS[2567], YEAR_COLORS[2568]],
+        borderWidth: 1,
         borderRadius: 8, borderSkipped: false,
+        hoverBackgroundColor: ['#78C1EC', '#1B82C7', '#1E4F8B']
       }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       layout: { padding: { top: 24 } },
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} จุด` } }
+        hoverGuide: { enabled: true, color: '#94A3B8' },
+        tooltip: {
+          callbacks: {
+            title: items => `ปีงบประมาณ ${items[0].label.replace('FY ', '')}`,
+            label: ctx => `จำนวน: ${fmtInt(ctx.parsed.y)} จุด`
+          }
+        }
       },
       scales: {
-        y: { beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 11 : 12 } } },
-        x: { grid: { display: false }, ticks: { font: { size: IS_MOBILE() ? 11 : 13, weight: '600' } } }
+        y: {
+          beginAtZero: true,
+          grid: { color: DATA_VIZ.grid },
+          ticks: { font: { size: IS_MOBILE() ? 11 : 12 }, callback: v => fmtInt(v) },
+          title: { display: true, text: 'จำนวนจุด (จุด)', color: DATA_VIZ.axis, font: { size: 12, weight: '600' } }
+        },
+        x: {
+          grid: { color: '#F1F5F9' },
+          ticks: { font: { size: IS_MOBILE() ? 11 : 13, weight: '600' } },
+          title: { display: true, text: 'ปีงบประมาณ', color: DATA_VIZ.axis, font: { size: 12, weight: '600' } }
+        }
       },
       animation: {
         onComplete: function(){
@@ -1585,7 +1661,7 @@ function renderTrendChart(byYear) {
           ctx.textAlign = 'center';
           this.data.datasets[0].data.forEach((val, i) => {
             const meta = this.getDatasetMeta(0).data[i];
-            ctx.fillText(val, meta.x, meta.y - 6);
+            ctx.fillText(fmtInt(val), meta.x, meta.y - 6);
           });
         }
       }
@@ -1601,21 +1677,29 @@ function renderLineageStack() {
     data: {
       labels: ['FY 2566','FY 2567','FY 2568'],
       datasets: [
-        { label: 'จุดที่อยู่ทั้ง 3 ปี', data: [23, 23, 23], backgroundColor: '#B91C1C' },
-        { label: 'จุดที่ดำเนินการต่อจากปีก่อน', data: [0, 43, 28], backgroundColor: '#1E5AA6' },
-        { label: 'จุดใหม่ที่เพิ่มเข้ามาในปี', data: [243, 61, 8], backgroundColor: '#FFD96B' },
-        { label: 'จุดที่ไม่ดำเนินการต่อ', data: [0, 0, 18], backgroundColor: '#94A3B8' },
+        { label: 'จุดที่อยู่ทั้ง 3 ปี', data: [23, 23, 23], backgroundColor: DATA_VIZ.vermillion, borderColor: DATA_VIZ.vermillion, borderWidth: 1 },
+        { label: 'จุดที่ดำเนินการต่อจากปีก่อน', data: [0, 43, 28], backgroundColor: DATA_VIZ.blue, borderColor: DATA_VIZ.blue, borderWidth: 1 },
+        { label: 'จุดใหม่ที่เพิ่มเข้ามาในปี', data: [243, 61, 8], backgroundColor: DATA_VIZ.orange, borderColor: DATA_VIZ.orange, borderWidth: 1 },
+        { label: 'จุดที่ไม่ดำเนินการต่อ', data: [0, 0, 18], backgroundColor: '#94A3B8', borderColor: '#94A3B8', borderWidth: 1 },
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       layout: { padding: { top: 4 } },
+      interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: {
           position: 'top', align: 'start',
           labels: { font: { size: IS_MOBILE() ? 10.5 : 12 }, padding: 10, boxWidth: 12, usePointStyle: true }
         },
-        tooltip: { mode: 'index', intersect: false },
+        hoverGuide: { enabled: true, color: '#94A3B8' },
+        tooltip: {
+          callbacks: {
+            title: items => `ปีงบประมาณ ${items[0].label.replace('FY ', '')}`,
+            label: ctx => `${ctx.dataset.label}: ${fmtInt(ctx.parsed.y)} จุด`,
+            footer: items => `รวม: ${fmtInt(items.reduce((sum, it) => sum + (it.parsed.y || 0), 0))} จุด`
+          }
+        },
         title: {
           display: true,
           text: 'องค์ประกอบของ inventory ในแต่ละปี (เชิงประมาณ)',
@@ -1624,8 +1708,19 @@ function renderLineageStack() {
         }
       },
       scales: {
-        x: { stacked: true, grid: { display: false }, ticks: { font: { size: IS_MOBILE() ? 11 : 12, weight: '600' } } },
-        y: { stacked: true, beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 10 : 11 } } }
+        x: {
+          stacked: true,
+          grid: { color: '#F1F5F9' },
+          ticks: { font: { size: IS_MOBILE() ? 11 : 12, weight: '600' } },
+          title: { display: true, text: 'ปีงบประมาณ', color: DATA_VIZ.axis, font: { size: 12, weight: '600' } }
+        },
+        y: {
+          stacked: true,
+          beginAtZero: true,
+          grid: { color: DATA_VIZ.grid },
+          ticks: { font: { size: IS_MOBILE() ? 10 : 11 }, callback: v => fmtInt(v) },
+          title: { display: true, text: 'จำนวนจุด (จุด)', color: DATA_VIZ.axis, font: { size: 12, weight: '600' } }
+        }
       }
     }
   });
@@ -1648,21 +1743,40 @@ function renderDistrictChart(rows) {
       datasets: [{
         label: 'จุดปัญหารวม 3 ปี',
         data: top.map(e => e[1]),
-        backgroundColor: '#1E5AA6',
+        backgroundColor: DATA_VIZ.blue,
+        borderColor: DATA_VIZ.blue,
+        borderWidth: 1,
         borderRadius: 6,
+        hoverBackgroundColor: '#1B82C7'
       }]
     },
     options: {
       indexAxis: 'y',
       responsive: true, maintainAspectRatio: false,
       layout: { padding: { right: 24 } },
+      interaction: { mode: 'nearest', intersect: false },
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: ctx => `${ctx.parsed.x} จุด` } }
+        hoverGuide: { enabled: true, color: '#94A3B8' },
+        tooltip: {
+          callbacks: {
+            title: items => `เขต: ${items[0].label}`,
+            label: ctx => `จำนวนสะสม: ${fmtInt(ctx.parsed.x)} จุด`
+          }
+        }
       },
       scales: {
-        x: { beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 10 : 11 }, precision: 0 } },
-        y: { grid: { display: false }, ticks: { font: { size: IS_MOBILE() ? 11 : 12 } } }
+        x: {
+          beginAtZero: true,
+          grid: { color: DATA_VIZ.grid },
+          ticks: { font: { size: IS_MOBILE() ? 10 : 11 }, precision: 0, callback: v => fmtInt(v) },
+          title: { display: true, text: 'จำนวนจุดสะสม (3 ปี)', color: DATA_VIZ.axis, font: { size: 12, weight: '600' } }
+        },
+        y: {
+          grid: { color: '#F1F5F9' },
+          ticks: { font: { size: IS_MOBILE() ? 11 : 12 } },
+          title: { display: true, text: 'เขต', color: DATA_VIZ.axis, font: { size: 12, weight: '600' } }
+        }
       },
       animation: {
         onComplete: function(){
@@ -1673,7 +1787,7 @@ function renderDistrictChart(rows) {
           ctx.textBaseline = 'middle';
           this.data.datasets[0].data.forEach((val, i) => {
             const meta = this.getDatasetMeta(0).data[i];
-            ctx.fillText(val, meta.x + 5, meta.y);
+            ctx.fillText(fmtInt(val), meta.x + 5, meta.y);
           });
         }
       }
