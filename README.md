@@ -1,95 +1,109 @@
-# BMA Congestion Problem Dashboard (FY 2566-2568)
+# BMA Congestion Analysis — Spatial Lineage Dashboard
 
-## Executive Summary
-This repository presents an official portfolio dashboard for congestion friction points in Bangkok,
-covering fiscal years 2566-2568 (2023-2025). The objective is to communicate:
+**FY 2566–2568 (2023–2025)** · Portfolio Project by © Prapawadee W.
 
-- What was collected (inventory)
-- What was carried forward and filtered each year
-- Where persistent bottlenecks remain
-- Which intervention patterns appear to be most effective
+[![Made by](https://img.shields.io/badge/Made_by-Prapawadee_W.-0B3B6F)](#)
+[![Org](https://img.shields.io/badge/Org-BMA_Traffic_%26_Transportation-1E5AA6)](#)
+[![Stack](https://img.shields.io/badge/Stack-Python_%7C_Chart.js_%7C_Leaflet-4A90E2)](#)
+[![Map](https://img.shields.io/badge/Map-OpenStreetMap_(ODbL)-success)](https://www.openstreetmap.org/copyright)
 
-Key topline values used in this portfolio:
+---
 
-- FY 2566: 266 points
-- FY 2567: 127 points
-- FY 2568: 77 points
-- Persistent 3-year geo-matched points: 23
-- Persistent corridors (DBSCAN): 25
+## 📋 ภาพรวม / Overview
 
-## Portfolio Deliverables
-- Formal dashboard page with KPI, trend, zone comparison, and hotspot map
-- Policy-oriented findings section in Thai and English
-- OpenStreetMap-based geospatial visualization for chronic congestion points
-- GitHub Pages-ready static site structure
-- Full production data export from source XLSX into JSON/GeoJSON files
+Dashboard เชิงโต้ตอบ (Interactive) เพื่อแสดงผลการวิเคราะห์จุดปัญหาการจราจรติดขัดในกรุงเทพมหานคร
+ครอบคลุมปีงบประมาณ 2566–2568 โดยมีจุดเน้น:
 
-## Production Data Pipeline
-Source file used:
+- **Multi-agency intervention** — แสดงบทบาทของหน่วยงานหลายฝ่ายในการแก้ไขปัญหา
+- **Spatial Lineage Story** — เล่าวิวัฒนาการของ inventory จากการร้องเรียน → กรอง TE → focused
+- **Persistent Hotspots & Corridors** — ระบุพื้นที่ที่ต้องการ priority
+- **Methodology Showcase** — แสดงเทคนิคทางสถิติและเครื่องมือที่ใช้
 
-- `data.xlsx` (copied from `BMA_Congestion_Analysis_2566-2568.xlsx`)
+## 🗂 บริบทของข้อมูล / Data Context
 
-Conversion script:
+| ปีงบประมาณ | จำนวนจุด | แหล่งข้อมูล | ขอบเขต |
+|---|---|---|---|
+| **2566** | 266 | เรื่องร้องเรียน · บช.น. · สำนักงานเขต | กทม. + นอก กทม. |
+| **2567** | 127 | วิเคราะห์ Traffic Engineering (สจส. × สนข.) | กทม. + นอก กทม. |
+| **2568** | 77 | TE วิเคราะห์เพิ่มเติม | เน้น กทม. |
 
-- `scripts/convert_xlsx_to_data.ps1`
+**สำคัญ:** การลดลงของจำนวนจุดไม่ใช่ตัวชี้ "การแก้สำเร็จ" ทั้งหมด แต่เป็นการ refine inventory ตามมิติวิศวกรรมจราจรอย่างเป็นระบบ
 
-Run conversion:
+## 🏛 หน่วยงานดำเนินการ / Implementing Agencies
 
-```powershell
-./scripts/convert_xlsx_to_data.ps1 -InputPath ./data.xlsx -OutDir ./data
-```
+- **สจส.** — สำนักการจราจรและขนส่ง (หน่วยหลัก)
+- **สนย.** — สำนักการโยธา (งานก่อสร้าง/โครงสร้าง)
+- **สำนักเทศกิจ** — กวดขันความเป็นระเบียบ
+- **สนข. (50 เขต)** — รับเรื่อง/ประสานในพื้นที่
+- **บช.น.** — บังคับใช้กฎจราจร
 
-Generated outputs:
+## 🚀 Quick Start
 
-- `data/manifest.json` (sheet inventory)
-- `data/combined_data.json` (full consolidated rows)
-- `data/all_points.geojson` (all geocoded points)
-- `data/sheets/*.json` (all worksheets exported separately)
+```bash
+# Clone repo
+git clone https://github.com/BMA-Statistics-PW/BMA-Congestion-Problem.git
+cd BMA-Congestion-Problem
 
-The dashboard (`index.html`) now reads these files directly at runtime.
-
-## Methodology (High-level)
-1. Annual point inventory and engineering filtering
-2. Cross-year spatial lineage matching (threshold 250m)
-3. Corridor clustering via DBSCAN for corridor-level intervention insights
-4. Comparative progress analysis by zone and intervention type
-
-## OpenStreetMap Compliance
-This project uses OpenStreetMap tiles for interactive visualization and follows attribution requirements.
-
-- Tile source: https://tile.openstreetmap.org/{z}/{x}/{y}.png
-- Attribution shown in map control and footer:
-  - Data and map tiles copyright OpenStreetMap contributors
-  - ODbL notice linked via OpenStreetMap copyright page
-
-References:
-- https://www.openstreetmap.org/copyright
-- https://operations.osmfoundation.org/policies/tiles/
-
-## Run Locally
-Open `index.html` directly in browser, or use a static server.
-
-PowerShell example:
-
-```powershell
-# from repository root
+# Run local static server
 python -m http.server 8080
-# then open http://localhost:8080
+# Open http://localhost:8080
 ```
 
-## Publish via GitHub Pages
-1. Push this repository to GitHub
-2. Go to Settings > Pages
-3. Source: Deploy from a branch
-4. Branch: `main`, folder `/ (root)`
-5. Save and wait for deployment
+## 📁 Project Structure
 
-## Data Notes
-- This portfolio contains curated dashboard-ready indicators and hotspot coordinates for presentation use.
-- For operational reporting, keep master analytical datasets in governed internal storage and update this dashboard from validated exports.
+```
+BMA-Congestion-Problem/
+├── index.html                  # Main interactive dashboard (this file)
+├── data/
+│   ├── combined_data.json      # Consolidated 3-year dataset
+│   ├── all_points.geojson      # Geo-located points (470)
+│   └── sheets/
+│       ├── 10_Spatial_Lineage.json
+│       ├── 11_Corridors.json
+│       └── ...                 # Other sheet exports
+├── data.xlsx                   # Source Excel workbook
+├── scripts/
+│   └── convert_xlsx_to_data.ps1
+└── README.md
+```
 
-## Owner
-Prapawadee W
-Statistics and Research Group
-Policy and Planning Division
-Traffic and Transportation Department, BMA
+## 🔬 Methodology Highlights
+
+| Method | Tech | Purpose |
+|---|---|---|
+| **Haversine Distance Matching** | numpy · threshold 250m | Cross-year point lineage |
+| **K-Means Clustering** | scikit-learn · k=6 | Solution pattern grouping |
+| **DBSCAN Corridor Clustering** | scikit-learn · eps=400m | Corridor identification |
+| **Kernel Density Estimation** | scipy.stats · Gaussian | Hot zone detection |
+| **Inferential Statistics** | scipy.stats | Spearman ρ, Kruskal-Wallis, χ² |
+
+## 📊 Key Findings
+
+1. **Persistent Hotspots — 23 จุด** ปรากฏใน inventory ทั้ง 3 ปี (Spatial match ≤250m)
+2. **25 Persistent Corridors** ที่ active ทั้ง 3 ปี (DBSCAN) — เหมาะกับ corridor-level intervention
+3. **Multi-measure approach** (≥3 มาตรการ) มีอัตราความสำเร็จสูงกว่า single-measure อย่างมีนัยสำคัญ (Spearman ρ=0.141, p=0.044)
+4. **Zone differences are significant** — Kruskal-Wallis H=19.83, p=0.001 — ควรมีกลยุทธ์เฉพาะโซน
+
+## 🗺 OpenStreetMap Compliance
+
+- Tile source: `https://tile.openstreetmap.org/{z}/{x}/{y}.png`
+- Attribution: © OpenStreetMap contributors (ODbL)
+- References: [OSM Copyright](https://www.openstreetmap.org/copyright) · [Tile Policy](https://operations.osmfoundation.org/policies/tiles/)
+
+## 👤 About the Analyst
+
+**© Prapawadee W.**
+Professional-Level Statistician
+กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน
+สำนักการจราจรและขนส่ง กรุงเทพมหานคร
+
+*Statistics & Research Group, Policy & Planning Division,
+Traffic and Transportation Department, Bangkok Metropolitan Administration*
+
+---
+
+## 📜 License & Usage
+
+จัดทำขึ้นเพื่อประโยชน์สาธารณะและสนับสนุนการตัดสินใจเชิงนโยบาย ไม่อนุญาตให้นำไปใช้แสวงหาผลประโยชน์ส่วนบุคคล
+
+For public-sector and research use only. Commercial use not permitted.
