@@ -2579,65 +2579,12 @@ function renderOpsSummary(rows) {
 
   wrapQA.innerHTML = `
     <div class="qa-item">
-      <div class="qa-q"><span class="qa-badge">Q1</span>ดำเนินการแก้ไขแล้วกี่จุด? (นับจุดที่มีความคืบหน้า แม้อาจไม่ครบทุกมาตรการ)</div>
-      <div class="qa-a">
-        <p><strong>ปี 2567</strong> — ดำเนินการแล้ว <strong class="hl-green">${s67.done} จาก ${s67.total} จุด (${pct(s67.done, s67.total)}%)</strong>
-          แบ่งเป็น แล้วเสร็จครบทุกมาตรการ (100%) จำนวน ${s67.complete.length} จุด และดำเนินการแล้วบางส่วน ${s67.partial.length} จุด</p>
-        <p><strong>ปี 2568</strong> — ดำเนินการแล้ว <strong class="hl-green">${s68.done} จาก ${s68.total} จุด (${pct(s68.done, s68.total)}%)</strong>
-          แบ่งเป็น แล้วเสร็จครบทุกมาตรการ (100%) จำนวน ${s68.complete.length} จุด และดำเนินการแล้วบางส่วน ${s68.partial.length} จุด</p>
-      </div>
-    </div>
-    <div class="qa-item">
-      <div class="qa-q"><span class="qa-badge">Q2</span>จุดที่ยังไม่ได้ดำเนินการเลย (ยังไม่ดำเนินการมาตรการใด ๆ) มีกี่จุด? จุดใดบ้าง? เพราะอะไร?</div>
+      <div class="qa-q">รายชื่อจุดที่ยังไม่ได้ดำเนินการ</div>
       <div class="qa-a">
         <p>ปี 2567 มี <strong class="hl-red">${s67.zero.length} จุด (${pct(s67.zero.length, s67.total)}%)</strong>
           และปี 2568 มี <strong class="hl-red">${s68.zero.length} จุด (${pct(s68.zero.length, s68.total)}%)</strong> — คลิกเพื่อดูรายชื่อ</p>
         <details><summary>รายชื่อจุดที่ยังไม่ได้ดำเนินการ ปี 2567 (${s67.zero.length} จุด)</summary><ul class="qa-list">${zeroList(s67)}</ul></details>
         <details><summary>รายชื่อจุดที่ยังไม่ได้ดำเนินการ ปี 2568 (${s68.zero.length} จุด)</summary><ul class="qa-list">${zeroList(s68)}</ul></details>
-        <p class="qa-why-head">ข้อสังเกตจากข้อมูล — ปัจจัยที่เกี่ยวข้องกับการยังไม่ได้ดำเนินการ</p>
-        <ul class="qa-why">
-          <li><strong>ต้องประสานหน่วยงานภายนอก / ยังไม่ระบุหน่วยงานหลัก</strong> — ปี 2567 จำนวน ${external(s67)} จุด และปี 2568 จำนวน ${external(s68)} จุด
-            หน่วยงานหลักไม่ใช่ กทม. (เช่น กรมทางหลวงชนบท) หรือยังไม่ระบุ ทำให้ต้องรอการประสานงานระหว่างหน่วยงานก่อนเริ่มดำเนินการ</li>
-          <li><strong>มาตรการที่กำหนดเป็นงานปรับกายภาพ/โครงสร้าง</strong> — ปี 2567 จำนวน ${physical(s67)} จุด และปี 2568 จำนวน ${physical(s68)} จุด
-            ซึ่งต้องใช้การออกแบบทางวิศวกรรม งบประมาณ และระยะเวลาก่อสร้าง จึงใช้เวลาเตรียมการนานกว่ามาตรการเชิงบริหารจัดการ</li>
-          <li><strong>จุดค้างต่อเนื่อง 2 ปี (ปรากฏทั้งปี 2567 และ 2568)</strong> — จำนวน ${carry.length} จุด ได้แก่
-            ${carry.map(r => (r.point_name || '').toString().replace(/\n/g, ' ')).join(' · ') || '—'}
-            — เป็นกลุ่มที่ควรได้รับการทบทวนแนวทางและจัดลำดับความสำคัญเร่งด่วนที่สุด</li>
-        </ul>
-        <p class="qa-note">หมายเหตุ: ชุดข้อมูลปัจจุบันยังไม่มีฟิลด์บันทึก "สาเหตุที่ยังไม่ดำเนินการ" ของแต่ละจุดอย่างเป็นทางการ
-          ข้อสังเกตข้างต้นวิเคราะห์จากหน่วยงานหลักและประเภทมาตรการที่กำหนด — ข้อเสนอแนะ: ควรเพิ่มการบันทึกสาเหตุ/อุปสรรครายจุดในรอบการติดตามถัดไป</p>
-      </div>
-    </div>
-    <div class="qa-item">
-      <div class="qa-q"><span class="qa-badge">Q3</span>ปี 2567 (127 จุด) — เป็นความรับผิดชอบของ กทม. กี่จุด และผลการดำเนินงานแยกตามหน่วยงานเป็นอย่างไร?</div>
-      <div class="qa-a">
-        <p><strong>ความรับผิดชอบของ กทม.</strong> — <strong class="hl-green">${bma67.length} จุด (${pct(bma67.length, s67.total)}% ของ ${s67.total} จุด)</strong>
-          ดำเนินการแล้ว ${doneOf(bma67)} จุด (${pct(doneOf(bma67), bma67.length)}% ของจุด กทม.)
-          และยังไม่ได้ดำเนินการ <strong class="hl-red">${zeroOf(bma67)} จุด (${pct(zeroOf(bma67), bma67.length)}%)</strong></p>
-        <p><strong>จุดที่ต้องทบทวนมาตรการ / แนวทางดำเนินการ (ความคืบหน้าต่ำกว่า 100%)</strong> —
-          รวม <strong class="hl-red">${reviewOf(bma67)} จุด</strong> แบ่งเป็น ดำเนินการบางส่วน ${partOf(bma67)} จุด และยังไม่เริ่ม ${zeroOf(bma67)} จุด</p>
-        <p><strong>หน่วยงานอื่น</strong> — <strong>${oth67.length} จุด (${pct(oth67.length, s67.total)}% ของ ${s67.total} จุด)</strong>
-          ได้แก่ ${othStr} — ดำเนินการแล้ว ${doneOf(oth67)} จุด (แล้วเสร็จ 100% จำนวน ${compOf(oth67)} จุด) ยังไม่เริ่ม ${zeroOf(oth67)} จุด</p>
-      </div>
-    </div>
-    <div class="qa-item">
-      <div class="qa-q"><span class="qa-badge">Q4</span>ปี 2568 (77 จุด) — ดำเนินการแล้วเท่าไร และมีจุดที่ต้องทบทวนมาตรการกี่จุด?</div>
-      <div class="qa-a">
-        <p>ดำเนินการแล้ว <strong class="hl-green">${s68.done} จุด (${pct(s68.done, s68.total)}%)</strong> จากทั้งหมด ${s68.total} จุด
-          — ในจำนวนนี้อยู่ในความรับผิดชอบ กทม. ${bma68.length} จุด และยังไม่ระบุหน่วยงานหลัก ${oth68.length} จุด</p>
-        <p><strong>จุดที่ยังไม่ได้ดำเนินการ ${s68.zero.length} จุด (${pct(s68.zero.length, s68.total)}%) ถือเป็นจุดที่ต้องทบทวนมาตรการ/แนวทางดำเนินการทั้งหมด</strong>
-          และเมื่อรวมจุดที่ดำเนินการบางส่วนอีก ${s68.partial.length} จุด จะมีจุดที่ต้องติดตาม-ทบทวนรวม
-          <strong class="hl-red">${s68.zero.length + s68.partial.length} จุด (${pct(s68.zero.length + s68.partial.length, s68.total)}%)</strong></p>
-      </div>
-    </div>
-    <div class="qa-item">
-      <div class="qa-q"><span class="qa-badge">Q5</span>จุดที่เป็นข้อมูลซ้ำระหว่างปี 2567 และปี 2568 มีทั้งหมดกี่จุด?</div>
-      <div class="qa-a">
-        <p>จับคู่ตามพิกัด (ระยะ ≤ 250 ม. ตามเกณฑ์ระเบียบวิธีของโครงการ) —
-          <strong class="hl-red">${dupGeo} จุด (${pct(dupGeo, s68.total)}% ของ ${s68.total} จุดในปี 2568)</strong>
-          เป็นจุดที่สืบทอดต่อเนื่องมาจากบัญชีปี 2567</p>
-        <p>หากจับคู่แบบชื่อจุดตรงกันทุกตัวอักษร จะพบ <strong>${dupName} จุด</strong>
-          (ส่วนต่างเกิดจากจุดเดียวกันที่สะกดชื่อ/ระบุขอบเขตต่างกันระหว่างปี แต่พิกัดอยู่ในรัศมีเดียวกัน)</p>
       </div>
     </div>`;
 }
