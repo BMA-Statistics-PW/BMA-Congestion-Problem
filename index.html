@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 
 <style>
 :root {
@@ -211,6 +212,11 @@ body {
 }
 .hero-stat-row .label { opacity: 0.85; }
 .hero-stat-row .val { font-weight: 700; font-size: 1.05rem; color: #FFD96B; font-family: "JetBrains Mono", monospace; }
+.hero-asof {
+  margin-top: 14px; padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  font-size: 0.78rem; opacity: 0.8; line-height: 1.6;
+}
 
 /* ========== TABS ========== */
 .tabs-wrap {
@@ -576,6 +582,52 @@ table.standard td {
 }
 table.standard tr:hover td { background: var(--line-soft); }
 
+.table-scroll {
+  max-height: 560px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.table-scroll table.standard th {
+  position: sticky; top: 0; z-index: 1;
+}
+.status-note {
+  background: var(--accent-soft);
+  border: 1px solid #F0D98A;
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-size: 0.92rem;
+  color: #7A5900;
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+.status-note strong { color: #5C4400; }
+
+.status-header { align-items: center; }
+.btn-solid {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: 8px;
+  font-weight: 600; font-size: 0.9rem;
+  background: var(--brand-2); color: #fff; border: none; cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.btn-solid:hover { background: var(--brand); transform: translateY(-1px); }
+.print-only { display: none; }
+
+@media print {
+  @page { size: A4; margin: 14mm; }
+  .no-print, .topbar, .hero, .tabs-wrap, footer { display: none !important; }
+  .print-only { display: block !important; font-size: 0.85rem; color: var(--muted); margin-top: 6px; }
+  body { background: #fff; }
+  main.container { max-width: 100%; padding: 0 4px; }
+  .section { box-shadow: none; border: 1px solid #ddd; }
+  .table-scroll { max-height: none !important; overflow: visible !important; border: none; }
+  table.standard th { position: static !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
 .tag {
   display: inline-block; padding: 3px 9px;
   border-radius: 999px; font-size: 0.78rem; font-weight: 600;
@@ -783,6 +835,141 @@ footer {
   .kpi .val { font-size: 1.4rem; }
   .section-head h2 { font-size: 0.98rem; }
 }
+
+/* ========== OPS SUMMARY FY2567-2568 (Overview) ========== */
+.ops-year-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px; margin-bottom: 20px;
+}
+.ops-card {
+  background: #fff; border: 1px solid var(--line); border-radius: 12px;
+  padding: 18px 20px; box-shadow: var(--shadow-sm);
+}
+.ops-card h4 { margin: 0 0 2px; font-size: 1.08rem; color: var(--brand); }
+.ops-card .ops-sub { font-size: 0.84rem; color: var(--muted); margin-bottom: 10px; }
+.ops-bar {
+  display: flex; height: 14px; border-radius: 7px; overflow: hidden;
+  background: var(--line-soft); margin: 10px 0 8px;
+}
+.ops-bar span { display: block; height: 100%; }
+.ops-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 0.82rem; color: var(--ink-soft); }
+.ops-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; }
+.ops-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.ops-stat { background: var(--line-soft); border-radius: 8px; padding: 8px 6px; text-align: center; }
+.ops-stat b { display: block; font-size: 1.3rem; font-family: "JetBrains Mono", monospace; line-height: 1.3; }
+.ops-stat small { font-size: 0.74rem; color: var(--muted); line-height: 1.4; display: block; }
+
+.qa-item { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 14px; overflow: hidden; background: #fff; box-shadow: var(--shadow-sm); }
+.qa-q {
+  padding: 13px 18px; background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+  color: #fff; font-weight: 600; font-size: 0.98rem; display: flex; align-items: baseline; gap: 10px;
+}
+.qa-badge {
+  flex-shrink: 0; background: #FFD96B; color: var(--brand); font-weight: 800;
+  font-size: 0.8rem; padding: 2px 9px; border-radius: 20px; font-family: "JetBrains Mono", monospace;
+}
+.qa-a { padding: 14px 18px 16px; font-size: 0.93rem; }
+.qa-a p { margin: 0 0 10px; }
+.qa-a .hl-green { color: var(--success); }
+.qa-a .hl-red { color: var(--danger); }
+.qa-a details {
+  border: 1px solid var(--line); border-radius: 8px; margin: 8px 0; background: var(--line-soft);
+}
+.qa-a summary {
+  cursor: pointer; padding: 9px 14px; font-weight: 600; font-size: 0.88rem; color: var(--brand);
+  user-select: none;
+}
+.qa-a summary:hover { color: var(--brand-2); }
+.qa-list { margin: 0; padding: 4px 18px 12px 32px; }
+.qa-list li { margin-bottom: 6px; font-size: 0.87rem; }
+.qa-meta { display: block; font-size: 0.78rem; color: var(--muted); }
+.qa-why-head { font-weight: 700; color: var(--brand); margin-top: 14px !important; }
+.qa-why { margin: 6px 0 10px; padding-left: 22px; }
+.qa-why li { margin-bottom: 7px; }
+.qa-note {
+  font-size: 0.82rem; color: var(--muted); background: var(--line-soft);
+  border-left: 3px solid var(--warning); border-radius: 0 8px 8px 0; padding: 8px 12px; margin-top: 10px !important;
+}
+
+/* ========== REGISTER (ตารางรายจุด) ========== */
+.reg-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.reg-controls > div { display: flex; flex-direction: column; gap: 3px; }
+.reg-controls label { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+.reg-controls select, .reg-controls input {
+  padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px;
+  font-family: inherit; font-size: 0.86rem; background: #fff; color: var(--ink);
+}
+.reg-controls input { min-width: 180px; }
+.reg-count { font-size: 0.84rem; color: var(--muted); margin: 10px 0; }
+.reg-table { font-size: 0.86rem; }
+.reg-table td, .reg-table th { vertical-align: top; }
+.reg-print-head { text-align: center; margin-bottom: 10px; }
+.reg-print-head h3 { margin: 0; font-size: 1.1rem; color: var(--ink); }
+.reg-print-head .sub { font-size: 0.85rem; color: var(--muted); margin-top: 3px; }
+@media print {
+  #register .section { border: none; box-shadow: none; }
+  .reg-table { font-size: 8pt; }
+  .reg-table th { background: #f1f5f9 !important; }
+  .reg-table td, .reg-table th { padding: 3px 5px; }
+  .reg-table tr { page-break-inside: avoid; }
+}
+
+/* ========== MAP CONTROLS & LEGEND ========== */
+.map-controls { display: flex; flex-wrap: wrap; gap: 10px; }
+.map-controls > div { display: flex; flex-direction: column; gap: 3px; }
+.map-controls label { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+.map-controls select {
+  padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px;
+  font-family: inherit; font-size: 0.86rem; background: #fff; color: var(--ink);
+}
+.map-legend {
+  background: rgba(255,255,255,0.95); padding: 10px 12px; border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.2); font-size: 0.8rem; line-height: 1.7;
+  border: 1px solid var(--line);
+}
+.map-legend .lg-title { font-weight: 700; color: var(--brand); margin-bottom: 4px; font-size: 0.78rem; }
+.map-legend .lg-row { display: flex; align-items: center; gap: 7px; }
+.map-legend .lg-dot { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.15); flex-shrink: 0; }
+.map-legend .lg-grad { width: 90px; height: 10px; border-radius: 5px; background: linear-gradient(90deg,#2166ac,#4393c3,#fddbc7,#f4a582,#d6604d,#b2182b); }
+
+/* ========== EXECUTIVE SUMMARY ========== */
+.exec-headline {
+  font-size: 1.06rem; font-weight: 600; color: var(--ink);
+  background: var(--line-soft); border-left: 4px solid var(--brand);
+  padding: 12px 16px; border-radius: 0 10px 10px 0;
+  margin: 0 0 16px; line-height: 1.85;
+}
+.exec-big-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px; margin-bottom: 16px;
+}
+.exec-big {
+  background: #fff; border: 1px solid var(--line); border-radius: 12px;
+  border-top: 4px solid var(--brand);
+  padding: 14px 16px; text-align: center; box-shadow: var(--shadow-sm);
+}
+.exec-big b {
+  display: block; font-size: 1.9rem; font-weight: 800; line-height: 1.4;
+  font-family: "JetBrains Mono", monospace; color: var(--brand);
+}
+.exec-big.green { border-top-color: var(--success); } .exec-big.green b { color: var(--success); }
+.exec-big.amber { border-top-color: var(--warning); } .exec-big.amber b { color: var(--warning); }
+.exec-big.red { border-top-color: var(--danger); } .exec-big.red b { color: var(--danger); }
+.exec-big small { display: block; font-size: 0.8rem; color: var(--ink-soft); line-height: 1.55; }
+.exec-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.exec-points li {
+  background: #fff; border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 14px; font-size: 0.92rem;
+  display: flex; gap: 10px; align-items: baseline;
+}
+.exec-points .pt-ic { font-weight: 800; flex-shrink: 0; font-size: 1rem; }
+.exec-points li.ok .pt-ic { color: var(--success); }
+.exec-points li.warn .pt-ic { color: var(--warning); }
+.exec-points li.next .pt-ic { color: var(--brand-2); }
+@media print {
+  .exec-big b { font-size: 1.5rem; }
+  #executive .section { border: none; }
+}
 </style>
 </head>
 <body>
@@ -802,6 +989,7 @@ footer {
       <a href="#timeline" data-jump="timeline">Timeline</a>
       <a href="#spatial" data-jump="spatial">Spatial</a>
       <a href="#hotspots" data-jump="hotspots">Hotspots</a>
+      <a href="#status" data-jump="status">Status</a>
       <a href="#agencies" data-jump="agencies">Agencies</a>
       <a href="#methodology" data-jump="methodology">Methodology</a>
       <a href="#about" data-jump="about">About</a>
@@ -819,18 +1007,16 @@ footer {
       </div>
       <h1>
         วิเคราะห์จุดปัญหา<span class="accent">จราจรติดขัด</span><br/>
-        กรุงเทพมหานคร 2566–2568
+        กรุงเทพมหานคร พ.ศ. 2566–2568 (2023–2025)
       </h1>
       <p class="lede">
-        งานวิเคราะห์ข้อมูลเชิงพื้นที่ (Spatial Analytics) เพื่อสนับสนุนการตัดสินใจเชิงนโยบาย
-        ครอบคลุมการวิเคราะห์ inventory รายปี การจัดกลุ่ม corridor
-        การคำนวณและการวิเคราะห์รูปแบบมาตรการที่มีประสิทธิผลสูงสุด
+        วิเคราะห์ข้อมูลจุดปัญหาจราจรเชิงพื้นที่ (Spatial Analytics)
+        เพื่อสนับสนุนการตัดสินใจเชิงนโยบายของกรุงเทพมหานคร ปี 2566–ปี 2568
       </p>
       <div class="hero-meta">
-        <span class="hero-chip">🏛️ 50 เขต · 6 กลุ่มเขต</span>
-        <span class="hero-chip">📍 Spatial threshold 250m</span>
-        <span class="hero-chip">🤝 Multi-agency intervention</span>
-        <span class="hero-chip">📊 470 geo-located points</span>
+        <span class="hero-chip">50 เขต · 6 กลุ่มเขต</span>
+        <span class="hero-chip">เกณฑ์จับคู่พิกัด 250 ม. · Spatial threshold</span>
+        <span class="hero-chip">ความร่วมมือหลายหน่วยงาน · Multi-agency</span>
       </div>
       <div class="hero-cta">
         <a href="#timeline" data-jump="timeline" class="btn btn-primary">ดู Timeline เรื่องราว →</a>
@@ -847,26 +1033,27 @@ footer {
         </div>
       </div>
       <div class="hero-stat-list">
-        <div class="hero-stat-row"><span class="label">FY 2566 — Inventory</span><span class="val" id="heroK1">266</span></div>
-        <div class="hero-stat-row"><span class="label">FY 2567 — TE Filtered</span><span class="val" id="heroK2">127</span></div>
-        <div class="hero-stat-row"><span class="label">FY 2568 — TE Focused</span><span class="val" id="heroK3">77</span></div>
-        <div class="hero-stat-row"><span class="label">Persistent (3-yr Geo)</span><span class="val" id="heroK4">23</span></div>
-        <div class="hero-stat-row"><span class="label">Persistent Corridors</span><span class="val" id="heroK5">25</span></div>
+        <div class="hero-stat-row"><span class="label">FY 2566 (2023) — จุดรวบรวมทั้งหมด</span><span class="val" id="heroK1">266</span></div>
+        <div class="hero-stat-row"><span class="label">FY 2567 (2024) — ผ่านการคัดกรอง TE</span><span class="val" id="heroK2">127</span></div>
+        <div class="hero-stat-row"><span class="label">FY 2568 (2025) — เน้นพื้นที่ กทม.</span><span class="val" id="heroK3">77</span></div>
+        <div class="hero-stat-row"><span class="label">จุดปัญหาซ้ำทั้ง 3 ปี (ตามพิกัด)</span><span class="val" id="heroK4">23</span></div>
       </div>
+      <div class="hero-asof" id="dataAsOf"></div>
     </div>
   </div>
 </section>
 
 <!-- ========== TABS ========== -->
 <div class="tabs-wrap">
-  <div class="tabs" role="tablist">
-    <button class="tab active" data-tab="overview">📊 ภาพรวม / Overview</button>
-    <button class="tab" data-tab="timeline">🗓 Timeline 3 ปี</button>
-    <button class="tab" data-tab="spatial">🗺 Spatial Analysis</button>
-    <button class="tab" data-tab="hotspots">⚠️ Hotspots &amp; Corridors</button>
-    <button class="tab" data-tab="agencies">🏛 Multi-agency</button>
-    <button class="tab" data-tab="methodology">🔬 Methodology</button>
-    <button class="tab" data-tab="about">👤 About the Analyst</button>
+  <div class="tabs" role="tablist" aria-label="ส่วนต่าง ๆ ของแดชบอร์ด">
+    <button class="tab active" data-tab="overview" role="tab" aria-selected="true">ภาพรวม · Overview</button>
+    <button class="tab" data-tab="timeline" role="tab" aria-selected="false">เส้นเวลา 3 ปี · Timeline</button>
+    <button class="tab" data-tab="spatial" role="tab" aria-selected="false">เชิงพื้นที่ · Spatial</button>
+    <button class="tab" data-tab="hotspots" role="tab" aria-selected="false">จุดปัญหาซ้ำ · Hotspots</button>
+    <button class="tab" data-tab="status" role="tab" aria-selected="false">สถานะและรายจุด · Status &amp; Register</button>
+    <button class="tab" data-tab="agencies" role="tab" aria-selected="false">หน่วยงาน · Agencies</button>
+    <button class="tab" data-tab="methodology" role="tab" aria-selected="false">ระเบียบวิธี · Methodology</button>
+    <button class="tab" data-tab="about" role="tab" aria-selected="false">เกี่ยวกับผู้จัดทำ · About</button>
   </div>
 </div>
 
@@ -874,13 +1061,27 @@ footer {
 
   <!-- ========== TAB: OVERVIEW ========== -->
   <section class="tab-panel active" id="overview">
+
+    <!-- ===== EXECUTIVE SUMMARY (top block) ===== -->
+    <div class="section" id="execSummary">
+      <div class="section-head">
+        <div>
+          <h2>บทสรุปผู้บริหาร<span class="en">Executive Summary — FY2567 (2024) &amp; FY2568 (2025)</span></h2>
+          <div class="sub">ผลการดำเนินงานแก้ไขจุดปัญหาจราจร 2 ปีงบประมาณ — สรุปในหน้าเดียว</div>
+        </div>
+      </div>
+      <p class="exec-headline" id="execHeadline"></p>
+      <div class="exec-big-grid" id="execBigCards"></div>
+      <ul class="exec-points" id="execPoints"></ul>
+    </div>
+
     <div class="kpi-grid">
-      <div class="kpi"><div class="lbl">FY 2566 — Inventory</div><div class="val" id="kpi66">266</div><div class="hint">รวบรวมจากเรื่องร้องเรียน · บช.น. · สำนักงานเขต</div></div>
-      <div class="kpi success"><div class="lbl">FY 2567 — TE Filtered</div><div class="val" id="kpi67">127</div><div class="hint">วิเคราะห์ด้วย Traffic Engineering โดยความร่วมมือของ สจส. และ OTP</div></div>
-      <div class="kpi success"><div class="lbl">FY 2568 — TE Focused</div><div class="val" id="kpi68">77</div><div class="hint">เน้นพื้นที่รับผิดชอบของ กทม.</div></div>
-      <div class="kpi danger"><div class="lbl">Persistent 3-yr Geo</div><div class="val" id="kpiPers">23</div><div class="hint">อยู่ใน inventory ทั้ง 3 ปี (ตามพิกัด)</div></div>
-      <div class="kpi warning"><div class="lbl">Persistent Corridors</div><div class="val" id="kpiCorr">25</div><div class="hint">DBSCAN cluster active 3 ปี</div></div>
-      <div class="kpi"><div class="lbl">Spatial Coverage</div><div class="val">470</div><div class="hint">geo-located points · 50 เขต · 6 โซน</div></div>
+      <div class="kpi"><div class="lbl">FY 2566 (2023) — จุดรวบรวมทั้งหมด</div><div class="val" id="kpi66">266</div><div class="hint">รวบรวมจากเรื่องร้องเรียน · บช.น. · สำนักงานเขต</div></div>
+      <div class="kpi success"><div class="lbl">FY 2567 (2024) — ผ่านการคัดกรอง</div><div class="val" id="kpi67">127</div><div class="hint">คัดกรองด้วยหลักวิศวกรรมจราจร (Traffic Engineering: TE) ร่วมกับ สจส. และ OTP</div></div>
+      <div class="kpi success"><div class="lbl">FY 2568 (2025) — เน้นพื้นที่ กทม.</div><div class="val" id="kpi68">77</div><div class="hint">วิเคราะห์ TE เพิ่มเติม เน้นจุดในพื้นที่รับผิดชอบของ กทม. โดยตรง</div></div>
+      <div class="kpi success"><div class="lbl">จำนวนจุดที่ดำเนินการแล้ว</div><div class="val" id="kpiDoneRate">–</div><div class="hint" id="kpiDoneRateHint">นับรวมปี 2566–2568 · ตำแหน่งซ้ำนับเป็น 1 จุด</div></div>
+      <div class="kpi danger"><div class="lbl">จุดปัญหาซ้ำทั้ง 3 ปี</div><div class="val" id="kpiPers">–</div><div class="hint">ปรากฏในบัญชีจุดปัญหาทุกปี ตามพิกัด (ระยะจับคู่ ≤ 250 ม.)</div></div>
+      <div class="kpi warning"><div class="lbl">แนวถนนปัญหาต่อเนื่อง</div><div class="val" id="kpiCorr">–</div><div class="hint">จัดกลุ่มเชิงพื้นที่ด้วยเทคนิค DBSCAN — พบต่อเนื่องครบ 3 ปี</div></div>
     </div>
 
     <div class="section">
@@ -893,32 +1094,48 @@ footer {
       <div class="flow">
         <div class="flow-card y66">
           <div class="num">266</div>
-          <div class="lbl">FY 2566 · Inventory</div>
+          <div class="lbl">FY 2566 (2023) · รวบรวมจุดปัญหา</div>
           <div class="desc">รวบรวมจาก<strong>เรื่องร้องเรียน · บช.น. · สำนักงานเขต</strong> ครอบคลุมทั้งพื้นที่ กทม. และหน่วยงานภายนอก</div>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-card y67">
           <div class="num">127</div>
-          <div class="lbl">FY 2567 · TE Filtered</div>
-          <div class="desc">วิเคราะห์ด้วย <strong>Traffic Engineering</strong> โดยความร่วมมือของ <strong>สจส. และ OTP</strong> ครอบคลุมทั้งพื้นที่ กทม. และนอก กทม.</div>
+          <div class="lbl">FY 2567 (2024) · ผ่านการคัดกรอง TE</div>
+          <div class="desc">คัดกรองด้วยหลัก<strong>วิศวกรรมจราจร (Traffic Engineering)</strong> โดยความร่วมมือของ <strong>สจส. และ OTP</strong> ครอบคลุมทั้งพื้นที่ กทม. และนอก กทม.</div>
         </div>
         <div class="flow-arrow">→</div>
         <div class="flow-card y68">
           <div class="num">77</div>
-          <div class="lbl">FY 2568 · TE Focused</div>
+          <div class="lbl">FY 2568 (2025) · เน้นพื้นที่ กทม.</div>
           <div class="desc">วิเคราะห์ Traffic Engineering <strong>เพิ่มเติม</strong> เน้น<strong>พื้นที่รับผิดชอบของ กทม.</strong></div>
         </div>
       </div>
+      <p class="qa-note" style="margin-top:14px;">
+        หมายเหตุ: จำนวนจุดที่ลดลง (266 → 127 → 77) เกิดจาก<strong>การปรับขอบเขตการวิเคราะห์ให้แคบลง</strong> (scope refinement)
+        ตามเกณฑ์วิศวกรรมจราจรและพื้นที่รับผิดชอบ — <strong>ไม่ได้</strong>หมายความว่าจำนวนจุดปัญหาจราจรในภาพรวมลดลง
+      </p>
+    </div>
+
+    <!-- ========== OPS SUMMARY FY2567-2568 ========== -->
+    <div class="section" id="opsSummary">
+      <div class="section-head">
+        <div>
+          <h2>สรุปผลการดำเนินงาน ปีงบประมาณ 2567–2568 (2024–2025)<span class="en">Implementation Summary — FY2567 (2024) &amp; FY2568 (2025)</span></h2>
+          <div class="sub">"ดำเนินการแล้ว" หมายถึงจุดที่มีความคืบหน้าอย่างน้อย 1 มาตรการ (แม้อาจยังไม่ครบทุกมาตรการ) · นับจากความคืบหน้า (progress) ของแต่ละจุด</div>
+        </div>
+      </div>
+      <div class="ops-year-grid" id="opsYearCards"></div>
+      <div id="opsQA"></div>
     </div>
 
     <div class="two-col">
       <div class="section">
         <div class="section-head"><div><h2>การกระจายจุดตามโซน (FY 2568)<span class="en">Zone Distribution</span></h2></div></div>
-        <div class="chart-wrap"><canvas id="zoneChart"></canvas></div>
+        <div class="chart-wrap"><canvas id="zoneChart" role="img" aria-label="แผนภูมิแท่ง: การกระจายจุดปัญหาตามกลุ่มเขต ปีงบประมาณ 2568"></canvas></div>
       </div>
       <div class="section">
         <div class="section-head"><div><h2>แนวโน้ม inventory<span class="en">Inventory Trend</span></h2></div></div>
-        <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+        <div class="chart-wrap"><canvas id="trendChart" role="img" aria-label="แผนภูมิเส้น: แนวโน้มจำนวนจุดปัญหา ปีงบประมาณ 2566–2568"></canvas></div>
       </div>
     </div>
 
@@ -933,11 +1150,12 @@ footer {
         และ 77 จุดที่อยู่ในพื้นที่รับผิดชอบ กทม. โดยตรง สะท้อนกระบวนการ refine inventory ที่ขับเคลื่อนด้วยข้อมูล
       </div>
       <div class="finding">
-        <strong>2. Persistent Hotspots — 23 จุด</strong> ปรากฏใน inventory ทั้ง 3 ปี ตามพิกัด (Spatial match ≤ 250m)
+        <strong>2. จุดปัญหาซ้ำต่อเนื่อง 3 ปี — <span id="findPers">23</span> จุด</strong> ปรากฏในบัญชีจุดปัญหาทั้ง 3 ปี ตามพิกัด (จับคู่ระยะ ≤ 250 ม.)
         จุดเหล่านี้ต้องการ <strong>การแก้ไขเชิงโครงสร้าง (structural intervention)</strong> และความร่วมมือระหว่างหน่วยงานหลายฝ่าย
+        (ดูรายละเอียดรายจุดได้ที่แท็บ Timeline)
       </div>
       <div class="finding">
-        <strong>3. 25 Persistent Corridors</strong> ที่จัดกลุ่มด้วย DBSCAN เป็นพื้นที่ปัญหาเชิงเส้น (corridor) เช่น
+        <strong>3. แนวถนนปัญหาต่อเนื่อง (Corridors) — <span id="findCorr">50</span> แนว</strong> ที่จัดกลุ่มเชิงพื้นที่ด้วยเทคนิค DBSCAN พบต่อเนื่องครบ 3 ปี เช่น
         ดุสิต–สามเสน, บางกอกน้อย–อรุณอมรินทร์, ปทุมวัน–พระรามที่ 1, บางบอน–เอกชัย
         — เหมาะกับการแก้แบบ <strong>corridor-level intervention</strong> มากกว่าจุดเดี่ยว
       </div>
@@ -972,8 +1190,8 @@ footer {
               <strong>266 จุด</strong> ที่รวบรวมจากแหล่งข้อมูลหลัก ได้แก่ <strong>เรื่องร้องเรียน · กองบัญชาการตำรวจนครบาล (บช.น.) · สำนักงานเขตทั้ง 50 เขต</strong>
               ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และพื้นที่ของหน่วยงานภายนอก (เช่น กรมทางหลวง, การรถไฟ ฯลฯ)
               <div class="tl-stats">
-                <span class="tl-stat">📍 <strong>266</strong> จุด</span>
-                <span class="tl-stat">🏛 <strong>50</strong> เขต</span>
+                <span class="tl-stat">📍 <strong id="tl66pts">266</strong> จุด</span>
+                <span class="tl-stat">🏛 <strong id="tl66dist">50</strong> เขต</span>
                 <span class="tl-stat">📂 <strong>3</strong> แหล่งข้อมูล</span>
               </div>
             </div>
@@ -988,13 +1206,13 @@ footer {
             <div class="tl-title-line">วิเคราะห์ด้วย Traffic Engineering</div>
             <div class="tl-body">
               <strong>127 จุด</strong> ที่ผ่านการวิเคราะห์ตามมิติ <strong>Traffic Engineering</strong>
-              ภายใต้ความร่วมมือระหว่าง <strong>สำนักการจราจรและขนส่ง (สจส.)</strong> และ <strong>สำนักงานนโยบายและแผนการขนส่งและจราจร (สนข.)</strong>
+              ภายใต้ความร่วมมือระหว่าง <strong>สำนักการจราจรและขนส่ง (สจส.)</strong> และ <strong>สำนักงานนโยบายและแผนการขนส่งและจราจร (OTP)</strong>
               ครอบคลุมทั้งพื้นที่รับผิดชอบของ กทม. และหน่วยงานภายนอก
               <div class="tl-stats">
-                <span class="tl-stat">📍 <strong>127</strong> จุด</span>
+                <span class="tl-stat">📍 <strong id="tl67pts">127</strong> จุด</span>
                 <span class="tl-stat">🤝 <strong>2</strong> หน่วยงานหลัก</span>
-                <span class="tl-stat">🔄 <strong>52%</strong> สืบทอดจาก 2566</span>
-                <span class="tl-stat">✨ <strong>48%</strong> จุดใหม่เพิ่มเติม</span>
+                <span class="tl-stat">🔄 <strong id="tl67inh">52%</strong> สืบทอดจาก 2566</span>
+                <span class="tl-stat">✨ <strong id="tl67new">48%</strong> จุดใหม่เพิ่มเติม</span>
               </div>
             </div>
           </div>
@@ -1010,10 +1228,10 @@ footer {
               <strong>77 จุด</strong> ที่ได้รับการวิเคราะห์ Traffic Engineering <strong>เพิ่มเติม</strong>
               โดยมุ่งเน้นเฉพาะ <strong>พื้นที่รับผิดชอบของ กทม.</strong> เพื่อให้แผนแก้ไขสามารถดำเนินการได้ภายใต้อำนาจหน้าที่
               <div class="tl-stats">
-                <span class="tl-stat">📍 <strong>77</strong> จุด</span>
+                <span class="tl-stat">📍 <strong id="tl68pts">77</strong> จุด</span>
                 <span class="tl-stat">🎯 <strong>BMA-scope</strong></span>
-                <span class="tl-stat">🔄 <strong>66%</strong> สืบทอดจาก 2567</span>
-                <span class="tl-stat">⚠️ <strong>23</strong> จุดเรื้อรัง 3 ปี</span>
+                <span class="tl-stat">🔄 <strong id="tl68inh">66%</strong> สืบทอดจาก 2567</span>
+                <span class="tl-stat">⚠️ <strong id="tl683yr">23</strong> จุดที่ดำเนินงานต่อเนื่อง 3 ปี</span>
               </div>
             </div>
           </div>
@@ -1028,14 +1246,53 @@ footer {
             <div class="sub">เลื่อนเมาส์/แตะที่กราฟเพื่อดูรายละเอียดแต่ละองค์ประกอบของ inventory</div>
           </div>
         </div>
-        <div class="chart-wrap tall"><canvas id="lineageStack"></canvas></div>
+        <div class="chart-wrap tall"><canvas id="lineageStack" role="img" aria-label="แผนภูมิแท่งซ้อน: องค์ประกอบบัญชีจุดปัญหารายปี (จุดเดิม/จุดใหม่/จุดที่หลุดออก)"></canvas></div>
         <div class="tl-legend-note">
-          <div><span class="tl-sw" style="background:#B91C1C"></span> จุดเรื้อรังทั้ง 3 ปี — Priority สูงสุด</div>
+          <div><span class="tl-sw" style="background:#B91C1C"></span> จุดที่ดำเนินงานต่อเนื่องทั้ง 3 ปี — Priority สูงสุด</div>
           <div><span class="tl-sw" style="background:#1E5AA6"></span> จุดที่ดำเนินการต่อจากปีก่อน</div>
           <div><span class="tl-sw" style="background:#FFD96B"></span> จุดใหม่ที่เพิ่มเข้ามา</div>
-          <div><span class="tl-sw" style="background:#94A3B8"></span> จุดที่ต้องวิเคราะห์เพิ่มเติม</div>
+          <div><span class="tl-sw" style="background:#94A3B8"></span> จับคู่พิกัดไม่ชัดเจน (ต้องตรวจสอบ)</div>
         </div>
       </div>
+    </div>
+
+    <!-- ===== POINT HISTORY MATRIX (Timeseries รายจุด) ===== -->
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Timeseries รายจุด — ประวัติสถานะจุดซ้ำ 3 ปี<span class="en">Point History Matrix (FY2566–2568)</span></h2>
+          <div class="sub">จับคู่จุดข้ามปีด้วยพิกัด (ระยะ ≤ 250 ม.) · ปี 2566 ยังไม่มีระบบติดตามความคืบหน้า จึงแสดงเป็น "พบปัญหา"</div>
+        </div>
+        <select id="histFilter" class="no-print" aria-label="กรองกลุ่มจุดซ้ำ"
+          style="padding:6px 10px; border:1px solid var(--line); border-radius:6px; font-family:inherit;">
+          <option value="all">แสดงทุกกลุ่ม</option>
+          <option value="tri">อยู่ครบ 3 ปี</option>
+          <option value="skip">พบ 2566 → กลับมา 2568</option>
+          <option value="d6768">เริ่ม 2567 ต่อเนื่อง 2568</option>
+          <option value="d6667">พบ 2566–2567 แล้วหลุดจากบัญชี</option>
+        </select>
+      </div>
+      <div class="exec-big-grid" id="histSummary"></div>
+      <div class="section-head" style="margin-top:10px;">
+        <div><h2 style="font-size:0.95rem;">เส้นทางสถานะของจุดที่อยู่ครบ 3 ปี<span class="en">Status Pathways — 3-year Persistent Points</span></h2></div>
+      </div>
+      <table class="standard" id="pathSummaryTable" style="margin-bottom:18px;"></table>
+
+      <div class="section-head" style="margin-top:10px;">
+        <div>
+          <h2 style="font-size:0.95rem;">23 จุดที่ดำเนินงานต่อเนื่อง — มาตรการและความคืบหน้า ปี 2567 → 2568<span class="en">Measures &amp; Progress of the 23 Persistent Points</span></h2>
+          <div class="sub">ปี 2568 ส่วนใหญ่เป็นการ "ทำมาตรการเดิมต่อจนแล้วเสร็จ" — คอลัมน์ "เพิ่มใหม่ 2568" แสดงเฉพาะมาตรการชนิดใหม่ที่ไม่มีในปี 2567</div>
+        </div>
+      </div>
+      <div class="exec-big-grid" id="chronicSummary"></div>
+      <div class="table-scroll">
+        <table class="standard" id="chronicMeasureTable"></table>
+      </div>
+      <div class="table-scroll">
+        <table class="standard" id="historyMatrixTable"></table>
+      </div>
+      <p class="qa-note">การจับคู่จุดข้ามปีใช้พิกัดภูมิศาสตร์ (ระยะ ≤ 250 ม. ตามระเบียบวิธีของโครงการ) เนื่องจากรหัสจุด (point_id) ไม่คงที่ระหว่างปี
+        — ข้อเสนอแนะ: กำหนดรหัสจุดถาวร (permanent point UID) ในรอบการเก็บข้อมูลถัดไป เพื่อให้ติดตาม timeseries รายจุดได้แม่นยำ 100%</p>
     </div>
   </section>
 
@@ -1045,16 +1302,36 @@ footer {
       <div class="section-head">
         <div>
           <h2>แผนที่จุดปัญหาจราจร<span class="en">Interactive Map (OpenStreetMap)</span></h2>
-          <div class="sub">เลือกปีเพื่อกรองจุดบนแผนที่ — โทนสีเรียงตามปีงบประมาณ</div>
+          <div class="sub">เลือกโหมดการแสดงผล กรองตามปีงบประมาณและสถานะการดำเนินการ</div>
         </div>
-        <div>
-          <label for="mapYear" style="font-size:.85rem; color: var(--muted); margin-right:6px;">ปีงบประมาณ:</label>
-          <select id="mapYear" style="padding:6px 10px; border:1px solid var(--line); border-radius:6px; font-family: inherit;">
-            <option value="all">ทั้งหมด</option>
-            <option value="2566">2566</option>
-            <option value="2567">2567</option>
-            <option value="2568">2568</option>
-          </select>
+        <div class="map-controls">
+          <div>
+            <label for="mapMode">โหมด</label>
+            <select id="mapMode">
+              <option value="status">สีตามสถานะ</option>
+              <option value="year">สีตามปีงบประมาณ</option>
+              <option value="heat">ความหนาแน่น (Heatmap)</option>
+            </select>
+          </div>
+          <div>
+            <label for="mapYear">ปีงบประมาณ</label>
+            <select id="mapYear">
+              <option value="all">ทั้งหมด</option>
+              <option value="2566">2566</option>
+              <option value="2567">2567</option>
+              <option value="2568">2568</option>
+            </select>
+          </div>
+          <div id="statusFilterWrap">
+            <label for="mapStatus">สถานะ</label>
+            <select id="mapStatus">
+              <option value="all">ทั้งหมด</option>
+              <option value="done">เสร็จสิ้น (100%)</option>
+              <option value="partial">บางส่วน</option>
+              <option value="notstarted">ยังไม่เริ่ม</option>
+              <option value="nodata">ยังไม่มีข้อมูลติดตาม (2566)</option>
+            </select>
+          </div>
         </div>
       </div>
       <div id="map"></div>
@@ -1068,7 +1345,7 @@ footer {
       </div>
       <div class="section">
         <div class="section-head"><div><h2>Top เขตที่มีจุดปัญหา<span class="en">Top Districts</span></h2></div></div>
-        <div class="chart-wrap tall"><canvas id="districtChart"></canvas></div>
+        <div class="chart-wrap tall"><canvas id="districtChart" role="img" aria-label="แผนภูมิแท่ง: เขตที่มีจุดปัญหาจราจรมากที่สุด"></canvas></div>
       </div>
     </div>
   </section>
@@ -1078,8 +1355,8 @@ footer {
     <div class="section">
       <div class="section-head">
         <div>
-          <h2>Persistent Hotspots — ถนนที่พบปัญหาต่อเนื่อง</h2>
-          <div class="sub">จัดอันดับบริเวณถนนที่ปรากฏใน inventory ทั้ง 3 ปีงบประมาณ — Priority สำหรับการแก้ไขเชิงโครงสร้าง</div>
+          <h2>ถนนที่พบปัญหาต่อเนื่อง<span class="en">Persistent Roads (grouped by เขต × ถนน, 3 years)</span></h2>
+          <div class="sub">จัดกลุ่มตาม "เขต × ถนน" ที่ปรากฏในบัญชีจุดปัญหาทั้ง 3 ปีงบประมาณ — คนละหน่วยกับ "จุดปัญหาซ้ำ" (ซึ่งจับคู่ตามพิกัดรายจุด)</div>
         </div>
       </div>
       <table class="standard" id="hotspotTable"></table>
@@ -1093,6 +1370,98 @@ footer {
         </div>
       </div>
       <table class="standard" id="corridorTable"></table>
+    </div>
+  </section>
+
+  <!-- ========== TAB: STATUS ========== -->
+  <section class="tab-panel" id="status">
+    <div class="section-head status-header">
+      <div>
+        <h2>สถานะการดำเนินการและตารางรายจุด<span class="en">Implementation Status &amp; Point Register</span></h2>
+        <div class="sub">ภาพรวมสถานะ · ผลการดำเนินงานแยกตามหน่วยงาน · และตารางข้อมูลรายจุดครบทั้ง 3 ปี · © Prapawadee W. กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สจส. กทม.</div>
+        <div class="print-only" id="printDate"></div>
+      </div>
+      <button class="btn-solid no-print" onclick="window.print()">พิมพ์ / บันทึกเป็น PDF</button>
+    </div>
+    <div class="kpi-grid" id="statusKpiGrid"></div>
+
+    <div class="status-note">
+      <strong>หมายเหตุสำคัญ:</strong> ข้อมูลความคืบหน้า (progress_pct) มีการติดตามเฉพาะจุดที่ผ่านการวิเคราะห์ Traffic Engineering
+      ในปีงบประมาณ <strong>2567 และ 2568</strong> เท่านั้น (รวม 204 จุด) ส่วนจุดปี 2566 (266 จุดจากเรื่องร้องเรียน) ยังไม่มีข้อมูลความคืบหน้าในชุดข้อมูลนี้
+      เนื่องจากเป็นบัญชีก่อนการคัดกรองเชิงวิศวกรรมจราจร การที่จุดปี 2566 ไม่ถูกนับต่อในปีถัดไป (dropout) <strong>ไม่ได้แปลว่าแก้ไขสำเร็จ</strong>
+      แต่คือการ refine inventory ตามเกณฑ์ TE ควรตรวจสอบสถานะจริงแยกต่างหากหากต้องการยืนยันผลของจุดกลุ่มนี้
+    </div>
+
+    <div class="two-col">
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h2>สัดส่วนสถานะดำเนินการ<span class="en">Implementation Status</span></h2>
+            <div class="sub">จากจุดที่มีข้อมูลติดตาม 204 จุด (FY2567 + FY2568)</div>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="statusDonutChart" role="img" aria-label="แผนภูมิวงกลม: สัดส่วนสถานะการดำเนินการ (เสร็จสิ้น/บางส่วน/ยังไม่เริ่ม)"></canvas></div>
+      </div>
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h2>สถานะแยกตามปีงบประมาณ<span class="en">Status by Fiscal Year</span></h2>
+            <div class="sub">เปรียบเทียบความคืบหน้า FY2567 กับ FY2568</div>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="statusYearChart" role="img" aria-label="แผนภูมิแท่ง: สถานะการดำเนินการแยกตามปีงบประมาณ 2567 และ 2568"></canvas></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>ผลการดำเนินงานแยกตามหน่วยงานรับผิดชอบ<span class="en">Performance by Responsible Agency</span></h2>
+          <div class="sub">จำแนกจุดที่ติดตามสถานะตามหน่วยงานหลักและปีงบประมาณ (FY2567 + FY2568)</div>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="standard" id="execAgencyTable"></table>
+      </div>
+      <p class="qa-note" id="execFootNote"></p>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>ตารางแสดงข้อมูลรายจุด ปีงบประมาณ 2566–2568<span class="en">Congestion Point Register — FY2566–2568</span></h2>
+          <div class="sub">แนวทางดำเนินการและผลการดำเนินการรายจุด — กรองตามปี/สถานะ และค้นหาได้ (ใช้ปุ่ม "พิมพ์ / บันทึกเป็น PDF" ด้านบนเพื่อบันทึกทั้งหน้า)</div>
+        </div>
+        <div class="reg-controls no-print">
+          <div>
+            <label for="regYear">ปีงบประมาณ</label>
+            <select id="regYear">
+              <option value="all">ทั้งหมด</option>
+              <option value="2566">2566</option>
+              <option value="2567">2567</option>
+              <option value="2568">2568</option>
+            </select>
+          </div>
+          <div>
+            <label for="regStatus">สถานะ</label>
+            <select id="regStatus">
+              <option value="all">ทั้งหมด</option>
+              <option value="done">ดำเนินการแล้วเสร็จ</option>
+              <option value="partial">อยู่ระหว่างดำเนินการ</option>
+              <option value="notstarted">ยังมิได้ดำเนินการ</option>
+              <option value="nodata">ปีตั้งต้น (2566)</option>
+            </select>
+          </div>
+          <div>
+            <label for="regSearch">ค้นหา (จุด/เขต/ถนน)</label>
+            <input type="text" id="regSearch" placeholder="พิมพ์คำค้น…" autocomplete="off" />
+          </div>
+        </div>
+      </div>
+      <div class="reg-count no-print" id="regCount"></div>
+      <div class="table-scroll">
+        <table class="standard reg-table" id="registerTable"></table>
+      </div>
     </div>
   </section>
 
@@ -1127,7 +1496,7 @@ footer {
         <div class="agency-card">
           <span class="ag-tag local">BMA District</span>
           <div class="ag-name">สำนักงานเขต (50 เขต)</div>
-          <div class="ag-full">สนข. · BMA District Offices</div>
+          <div class="ag-full">สนง.เขต · BMA District Offices</div>
           <div class="ag-role">รับเรื่องร้องเรียนพื้นที่ · ประสานงานในพื้นที่ · กวดขันท้องที่ · ดำเนินมาตรการระยะสั้น</div>
         </div>
         <div class="agency-card">
@@ -1165,7 +1534,7 @@ footer {
               <th>สจส.</th>
               <th>สนย.</th>
               <th>เทศกิจ</th>
-              <th>สนข.</th>
+              <th>สนง.เขต</th>
               <th>บช.น.</th>
               <th>หมายเหตุ</th>
             </tr>
@@ -1232,7 +1601,7 @@ footer {
               <td><span class="dot dot-c"></span></td>
               <td><span class="dot dot-a"></span></td>
               <td><span class="dot dot-i"></span></td>
-              <td>สนข. เป็นด่านแรกในการรับเรื่องในพื้นที่</td>
+              <td>สนง.เขต เป็นด่านแรกในการรับเรื่องในพื้นที่</td>
             </tr>
           </tbody>
         </table>
@@ -1447,7 +1816,11 @@ async function fetchJson(path){
 
 // ============== TAB SWITCH ==============
 function activateTab(id) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+  document.querySelectorAll('.tab').forEach(t => {
+    const on = t.dataset.tab === id;
+    t.classList.toggle('active', on);
+    t.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === id));
   // map resize
   setTimeout(() => { if (window._map) window._map.invalidateSize(); }, 100);
@@ -1703,18 +2076,173 @@ function renderTrendChart(byYear) {
   });
 }
 
+// ============== 3-YEAR POINT LINEAGE (Timeseries รายจุด) ==============
+function computeLineage(rows) {
+  const byY = {};
+  [2566, 2567, 2568].forEach(y => {
+    byY[y] = rows.filter(r => toInt(r.year) === y && r.latitude && r.longitude);
+  });
+  const nearest = (r, pool) => {
+    let best = null, bd = Infinity;
+    pool.forEach(q => {
+      const dist = haversineM(Number(r.latitude), Number(r.longitude), Number(q.latitude), Number(q.longitude));
+      if (dist < bd) { bd = dist; best = q; }
+    });
+    return bd <= 250 ? best : null;
+  };
+  const tri = [], d6667 = [], skip = [];
+  let only66 = 0;
+  byY[2566].forEach(r => {
+    const m67 = nearest(r, byY[2567]), m68 = nearest(r, byY[2568]);
+    if (m67 && m68) tri.push({ base: r, m67, m68 });
+    else if (m67) d6667.push({ base: r, m67 });
+    else if (m68) skip.push({ base: r, m68 });
+    else only66++;
+  });
+  const new67 = byY[2567].filter(r => !nearest(r, byY[2566]));
+  const d6768 = [];
+  new67.forEach(r => {
+    const m68 = nearest(r, byY[2568]);
+    if (m68) d6768.push({ base: r, m67: r, m68 });
+  });
+  const new68 = byY[2568].filter(r => !nearest(r, byY[2567]) && !nearest(r, byY[2566])).length;
+  // สืบทอด (นับจากฝั่งปีปลายทาง) — 2567 ที่พบใน 2566, และ 2568 ที่พบใน 2567
+  const inh67 = byY[2567].filter(r => nearest(r, byY[2566])).length;
+  const inh68 = byY[2568].filter(r => nearest(r, byY[2567])).length;
+  return { byY, tri, d6667, skip, d6768, only66, new67count: new67.length, new68, inh67, inh68 };
+}
+function histChip(p, present) {
+  if (!present) return '<span style="color:var(--muted);">—</span>';
+  if (p === null || p === undefined) return '<span class="tag tag-blue">● พบปัญหา</span>';
+  const n = Number(p);
+  if (n === 100) return '<span class="tag tag-green">✓ เสร็จ</span>';
+  if (n === 0) return '<span class="tag tag-red">✕ ยังไม่เริ่ม</span>';
+  return '<span class="tag tag-amber">▲ บางส่วน</span>';
+}
+function renderPointHistory(lin) {
+  const sumEl = document.getElementById('histSummary');
+  const pathEl = document.getElementById('pathSummaryTable');
+  const tblEl = document.getElementById('historyMatrixTable');
+  if (!sumEl || !pathEl || !tblEl) return;
+
+  // Summary cards
+  sumEl.innerHTML = `
+    <div class="exec-big red"><b>${lin.tri.length}</b><small>อยู่ครบ 3 ปี<br>(ดำเนินงานต่อเนื่อง)</small></div>
+    <div class="exec-big amber"><b>${lin.skip.length}</b><small>พบปี 2566 หายไป<br>แล้วกลับมาปี 2568</small></div>
+    <div class="exec-big"><b>${lin.d6768.length}</b><small>เริ่มปี 2567<br>ต่อเนื่องถึงปี 2568</small></div>
+    <div class="exec-big green"><b>${lin.d6667.length}</b><small>พบปี 2566–2567<br>แล้วหลุดจากบัญชี</small></div>`;
+
+  // Status pathways (3-year points)
+  const stName = p => { const n = Number(p); return n === 100 ? 'เสร็จ 100%' : (n === 0 ? 'ยังไม่เริ่ม' : 'บางส่วน'); };
+  const paths = {};
+  lin.tri.forEach(t => {
+    const k = stName(t.m67.progress_pct) + '||' + stName(t.m68.progress_pct);
+    paths[k] = (paths[k] || 0) + 1;
+  });
+  let ph = '<thead><tr><th>ปี 2566</th><th>ปี 2567</th><th>ปี 2568</th><th style="text-align:right;">จำนวนจุด</th></tr></thead><tbody>';
+  Object.entries(paths).sort((a, b) => b[1] - a[1]).forEach(([k, n]) => {
+    const [a, b] = k.split('||');
+    ph += `<tr><td><span class="tag tag-blue">พบปัญหา</span></td><td>${a}</td><td>${b}</td>
+      <td style="text-align:right; font-family:'JetBrains Mono',monospace;">${n}</td></tr>`;
+  });
+  ph += '</tbody>';
+  pathEl.innerHTML = ph;
+
+  // Matrix rows
+  const clean = t => (t || '-').toString().replace(/\n/g, ' ');
+  const rowsData = [];
+  lin.tri.forEach(t => rowsData.push({ g: 'tri', gTag: '<span class="tag tag-red">ครบ 3 ปี</span>',
+    name: clean(t.m68.point_name), district: t.m68.district || t.base.district || '-',
+    c66: histChip(null, true), c67: histChip(t.m67.progress_pct, true), c68: histChip(t.m68.progress_pct, true) }));
+  lin.skip.forEach(t => rowsData.push({ g: 'skip', gTag: '<span class="tag tag-amber">2566 → 2568</span>',
+    name: clean(t.m68.point_name), district: t.m68.district || t.base.district || '-',
+    c66: histChip(null, true), c67: histChip(null, false), c68: histChip(t.m68.progress_pct, true) }));
+  lin.d6768.forEach(t => rowsData.push({ g: 'd6768', gTag: '<span class="tag tag-blue">2567–2568</span>',
+    name: clean(t.m68.point_name), district: t.m68.district || '-',
+    c66: histChip(null, false), c67: histChip(t.m67.progress_pct, true), c68: histChip(t.m68.progress_pct, true) }));
+  lin.d6667.forEach(t => rowsData.push({ g: 'd6667', gTag: '<span class="tag tag-green">2566–2567</span>',
+    name: clean(t.m67.point_name), district: t.m67.district || t.base.district || '-',
+    c66: histChip(null, true), c67: histChip(t.m67.progress_pct, true), c68: histChip(null, false) }));
+
+  const renderRows = filter => {
+    const list = filter === 'all' ? rowsData : rowsData.filter(r => r.g === filter);
+    let html = `<thead><tr><th>#</th><th>กลุ่ม</th><th>จุดปัญหา</th><th>เขต</th>
+      <th>ปี 2566</th><th>ปี 2567</th><th>ปี 2568</th></tr></thead><tbody>`;
+    list.forEach((r, i) => {
+      html += `<tr><td>${i + 1}</td><td>${r.gTag}</td><td>${r.name}</td><td>${r.district}</td>
+        <td>${r.c66}</td><td>${r.c67}</td><td>${r.c68}</td></tr>`;
+    });
+    html += '</tbody>';
+    tblEl.innerHTML = html;
+  };
+  renderRows('all');
+  const sel = document.getElementById('histFilter');
+  if (sel) sel.addEventListener('change', e => renderRows(e.target.value));
+
+  renderChronicMeasures(lin);
+}
+
+// ============== 23 จุดต่อเนื่อง — มาตรการและความคืบหน้าระหว่างปี 2567 ถึง 2568 ==============
+const MEASURE_MAP = [['sol_traffic_mgmt','บริหารจัดการจราจร'],['sol_enforcement','กวดขันวินัย'],
+  ['sol_signal','สัญญาณไฟ'],['sol_physical','ปรับกายภาพ'],['sol_busbay','Bus Bay'],['sol_cctv','CCTV']];
+function measureSet(r) { return MEASURE_MAP.filter(([k]) => Number(r && r[k]) === 1).map(([, l]) => l); }
+function renderChronicMeasures(lin) {
+  const sumEl = document.getElementById('chronicSummary');
+  const tblEl = document.getElementById('chronicMeasureTable');
+  if (!sumEl || !tblEl) return;
+
+  let sumProg67 = 0, sumProg68 = 0, done67 = 0, done68 = 0, advanced = 0, addedAny = 0;
+  const rowsHtml = lin.tri.map((t, i) => {
+    const p67 = Number(t.m67.progress_pct) || 0, p68 = Number(t.m68.progress_pct) || 0;
+    sumProg67 += p67; sumProg68 += p68;
+    if (p67 === 100) done67++; if (p68 === 100) done68++;
+    if (p68 > p67) advanced++;
+    const s67 = measureSet(t.m67), s68 = measureSet(t.m68);
+    const added = s68.filter(m => !s67.includes(m));
+    if (added.length) addedAny++;
+    const deltaTag = p68 > p67 ? `<span class="tag tag-green">▲ +${(p68 - p67).toFixed(0)}%</span>`
+      : (p68 < p67 ? `<span class="tag tag-red">▼ ${(p68 - p67).toFixed(0)}%</span>` : `<span class="tag tag-blue">คงที่</span>`);
+    return `<tr>
+      <td>${i + 1}</td>
+      <td>${(t.m68.point_name || '-').toString().replace(/\n/g, ' ')}</td>
+      <td>${t.m68.district || t.base.district || '-'}</td>
+      <td>${s67.join(', ') || '-'}</td>
+      <td style="text-align:right; font-family:'JetBrains Mono',monospace;">${p67.toFixed(0)}%</td>
+      <td style="text-align:right; font-family:'JetBrains Mono',monospace;">${p68.toFixed(0)}%</td>
+      <td>${deltaTag}</td>
+      <td>${added.length ? '<strong style="color:var(--brand)">' + added.join(', ') + '</strong>' : '<span style="color:var(--muted)">(ทำมาตรการเดิมต่อ)</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  const avg67 = (sumProg67 / lin.tri.length).toFixed(1), avg68 = (sumProg68 / lin.tri.length).toFixed(1);
+  sumEl.innerHTML = `
+    <div class="exec-big"><b>${avg67}% → ${avg68}%</b><small>ความคืบหน้าเฉลี่ย<br>2567 → 2568</small></div>
+    <div class="exec-big green"><b>${done67} → ${done68}</b><small>จุดที่เสร็จ 100%<br>2567 → 2568</small></div>
+    <div class="exec-big amber"><b>${advanced}</b><small>จุดที่คืบหน้าเพิ่มขึ้น<br>ในปี 2568</small></div>
+    <div class="exec-big red"><b>${addedAny}</b><small>จุดที่เพิ่มมาตรการ<br>ชนิดใหม่ในปี 2568</small></div>`;
+  tblEl.innerHTML = `<thead><tr><th>#</th><th>จุดปัญหา</th><th>เขต</th><th>มาตรการที่ทำ (2567)</th>
+    <th style="text-align:right;">คืบหน้า 2567</th><th style="text-align:right;">คืบหน้า 2568</th><th>เปลี่ยนแปลง</th>
+    <th>เพิ่มใหม่ 2568</th></tr></thead><tbody>${rowsHtml}</tbody>`;
+}
+
 // ============== LINEAGE STACK ==============
-function renderLineageStack() {
-  // Fixed estimates based on analysis
+function renderLineageStack(lin) {
+  const t66 = lin.byY[2566].length, t67 = lin.byY[2567].length, t68 = lin.byY[2568].length;
+  const nTri = lin.tri.length;
+  const carry67 = lin.d6667.length;
+  const carry68 = lin.skip.length + lin.d6768.length;
+  const new66 = t66 - nTri;
+  const resid67 = Math.max(0, t67 - nTri - carry67 - lin.new67count);
+  const resid68 = Math.max(0, t68 - nTri - carry68 - lin.new68);
   new Chart(document.getElementById('lineageStack'), {
     type: 'bar',
     data: {
       labels: ['FY 2566','FY 2567','FY 2568'],
       datasets: [
-        { label: 'จุดที่อยู่ทั้ง 3 ปี', data: [23, 23, 23], backgroundColor: '#B91C1C' },
-        { label: 'จุดที่ดำเนินการต่อจากปีก่อน', data: [0, 43, 28], backgroundColor: '#1E5AA6' },
-        { label: 'จุดใหม่ที่เพิ่มเข้ามาในปี', data: [243, 61, 8], backgroundColor: '#FFD96B' },
-        { label: 'จุดที่ต้องวิเคราะห์เพิ่มเติม', data: [0, 0, 18], backgroundColor: '#94A3B8' },
+        { label: 'จุดที่อยู่ทั้ง 3 ปี', data: [nTri, nTri, nTri], backgroundColor: '#B91C1C' },
+        { label: 'จุดที่ดำเนินการต่อจากปีก่อน', data: [0, carry67, carry68], backgroundColor: '#1E5AA6' },
+        { label: 'จุดใหม่ที่เพิ่มเข้ามาในปี', data: [new66, lin.new67count, lin.new68], backgroundColor: '#FFD96B' },
+        { label: 'จับคู่พิกัดไม่ชัดเจน (ต้องตรวจสอบ)', data: [0, resid67, resid68], backgroundColor: '#94A3B8' },
       ]
     },
     options: {
@@ -1757,7 +2285,7 @@ function renderLineageStack() {
         },
         title: {
           display: true,
-          text: 'องค์ประกอบของ inventory ในแต่ละปี (เชิงประมาณ)',
+          text: 'องค์ประกอบของ inventory ในแต่ละปี (คำนวณจากพิกัดจริง ระยะจับคู่ ≤ 250 ม.)',
           font: { size: IS_MOBILE() ? 12 : 14, weight: '600' },
           padding: { bottom: 12 }
         }
@@ -1823,7 +2351,433 @@ function renderDistrictChart(rows) {
   });
 }
 
+// ============== STATUS ดำเนินการ ==============
+function statusOf(p) {
+  if (p === 0) return 'ยังไม่เริ่ม';
+  if (p === 100) return 'เสร็จสิ้น';
+  return 'บางส่วน';
+}
+function solMeasures(r) {
+  const map = [['sol_traffic_mgmt','จัดการจราจร'],['sol_enforcement','บังคับใช้กม.'],
+    ['sol_signal','สัญญาณไฟ'],['sol_physical','กายภาพ/โครงสร้าง'],
+    ['sol_busbay','Bus Bay'],['sol_cctv','CCTV']];
+  const m = map.filter(([k]) => Number(r[k]) === 1).map(([,label]) => label);
+  return m.length ? m.join(', ') : '-';
+}
+function renderStatusKPIs(tracked) {
+  const total = tracked.length;
+  const complete = tracked.filter(r => Number(r.progress_pct) === 100).length;
+  const partial = tracked.filter(r => { const p = Number(r.progress_pct); return p > 0 && p < 100; }).length;
+  const notStarted = tracked.filter(r => Number(r.progress_pct) === 0).length;
+  const needAction = partial + notStarted;
+  const pct = v => total ? ((v/total)*100).toFixed(1) : '0.0';
+  const grid = document.getElementById('statusKpiGrid');
+  grid.innerHTML = `
+    <div class="kpi"><div class="lbl">จุดที่ติดตามสถานะ</div><div class="val">${total}</div><div class="hint">FY2567 (127) + FY2568 (77)</div></div>
+    <div class="kpi success"><div class="lbl">เสร็จสิ้นแล้ว (100%)</div><div class="val">${complete}</div><div class="hint">${pct(complete)}% ของจุดที่ติดตาม</div></div>
+    <div class="kpi warning"><div class="lbl">ดำเนินการบางส่วน</div><div class="val">${partial}</div><div class="hint">${pct(partial)}% · ความคืบหน้า 1–99%</div></div>
+    <div class="kpi danger"><div class="lbl">ยังไม่เริ่มดำเนินการ</div><div class="val">${notStarted}</div><div class="hint">${pct(notStarted)}% · ความคืบหน้า 0%</div></div>
+    <div class="kpi danger"><div class="lbl">► ต้องทบทวน/ดำเนินการเพิ่ม</div><div class="val">${needAction}</div><div class="hint">${pct(needAction)}% รวมบางส่วน+ยังไม่เริ่ม</div></div>
+  `;
+}
+function renderStatusDonut(tracked) {
+  const complete = tracked.filter(r => Number(r.progress_pct) === 100).length;
+  const partial = tracked.filter(r => { const p = Number(r.progress_pct); return p > 0 && p < 100; }).length;
+  const notStarted = tracked.filter(r => Number(r.progress_pct) === 0).length;
+  new Chart(document.getElementById('statusDonutChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['เสร็จสิ้น (100%)', 'บางส่วน (1-99%)', 'ยังไม่เริ่ม (0%)'],
+      datasets: [{
+        data: [complete, partial, notStarted],
+        backgroundColor: ['#1B8E5A', '#D97706', '#B91C1C'],
+        borderColor: '#fff', borderWidth: 2, hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      layout: { padding: 14 },
+      plugins: {
+        legend: {
+          position: IS_NARROW() ? 'bottom' : 'right',
+          labels: { font: { size: IS_MOBILE() ? 11 : 12, weight: '500' }, padding: 12, usePointStyle: true, boxWidth: 10, color: '#334155' }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(11, 59, 111, 0.97)', titleColor: '#FFD96B',
+          titleFont: { size: 13, weight: '700', family: '"Sarabun",sans-serif' },
+          bodyColor: '#fff', bodyFont: { size: 12.5, family: '"Sarabun",sans-serif' },
+          padding: 12, cornerRadius: 8, borderColor: '#FFD96B', borderWidth: 1,
+          callbacks: { label: ctx => { const v = ctx.raw, total = ctx.dataset.data.reduce((s,x)=>s+x,0); return `  ${v} จุด (${((v/total)*100).toFixed(1)}%)`; } }
+        }
+      },
+      cutout: IS_MOBILE() ? '58%' : '55%'
+    }
+  });
+}
+function renderStatusYearChart(tracked) {
+  const byYear = { 2567: { complete:0, partial:0, notStarted:0 }, 2568: { complete:0, partial:0, notStarted:0 } };
+  tracked.forEach(r => {
+    const y = toInt(r.year); const p = Number(r.progress_pct);
+    if (!byYear[y]) return;
+    if (p === 100) byYear[y].complete++; else if (p === 0) byYear[y].notStarted++; else byYear[y].partial++;
+  });
+  new Chart(document.getElementById('statusYearChart'), {
+    type: 'bar',
+    data: {
+      labels: ['FY 2567', 'FY 2568'],
+      datasets: [
+        { label: 'เสร็จสิ้น', data: [byYear[2567].complete, byYear[2568].complete], backgroundColor: '#1B8E5A', borderRadius: 6 },
+        { label: 'บางส่วน', data: [byYear[2567].partial, byYear[2568].partial], backgroundColor: '#D97706', borderRadius: 6 },
+        { label: 'ยังไม่เริ่ม', data: [byYear[2567].notStarted, byYear[2568].notStarted], backgroundColor: '#B91C1C', borderRadius: 6 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      layout: { padding: { top: 12 } },
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: IS_MOBILE() ? 10.5 : 12 }, boxWidth: 12, usePointStyle: true } },
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y} จุด` } }
+      },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: IS_MOBILE() ? 11 : 13, weight: '600' } } },
+        y: { stacked: true, beginAtZero: true, grid: { color: '#E2E8F0' }, ticks: { font: { size: IS_MOBILE() ? 11 : 12 } } }
+      }
+    }
+  });
+}
+// ============== OPS SUMMARY (Overview tab) ==============
+function opsStats(rows, year) {
+  const yr = rows.filter(r => toInt(r.year) === year && r.progress_pct !== null && r.progress_pct !== undefined);
+  const total = yr.length;
+  const complete = yr.filter(r => Number(r.progress_pct) === 100);
+  const partial = yr.filter(r => { const p = Number(r.progress_pct); return p > 0 && p < 100; });
+  const zero = yr.filter(r => Number(r.progress_pct) === 0);
+  return { year, total, rows: yr, complete, partial, zero, done: complete.length + partial.length };
+}
+function haversineM(lat1, lon1, lat2, lon2) {
+  const R = 6371000, rad = x => x * Math.PI / 180;
+  const dp = rad(lat2 - lat1), dl = rad(lon2 - lon1);
+  const a = Math.sin(dp/2)**2 + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dl/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+function renderOpsSummary(rows) {
+  const wrapCards = document.getElementById('opsYearCards');
+  const wrapQA = document.getElementById('opsQA');
+  if (!wrapCards || !wrapQA) return;
+  const s67 = opsStats(rows, 2567), s68 = opsStats(rows, 2568);
+  const pct = (n, t) => t ? ((n / t) * 100).toFixed(1) : '0.0';
+
+  // --- Year summary cards ---
+  const card = s => `
+    <div class="ops-card">
+      <h4>ปีงบประมาณ ${s.year} (${s.year - 543})</h4>
+      <div class="ops-sub">จุดปัญหาที่ติดตามสถานะทั้งหมด ${s.total} จุด</div>
+      <div class="ops-bar">
+        <span style="width:${pct(s.complete.length, s.total)}%; background:var(--success);" title="เสร็จสิ้น ${s.complete.length} จุด"></span>
+        <span style="width:${pct(s.partial.length, s.total)}%; background:var(--warning);" title="บางส่วน ${s.partial.length} จุด"></span>
+        <span style="width:${pct(s.zero.length, s.total)}%; background:var(--danger);" title="ยังไม่เริ่ม ${s.zero.length} จุด"></span>
+      </div>
+      <div class="ops-legend">
+        <span><i style="background:var(--success)"></i>เสร็จสิ้น 100% — ${s.complete.length} จุด</span>
+        <span><i style="background:var(--warning)"></i>บางส่วน — ${s.partial.length} จุด</span>
+        <span><i style="background:var(--danger)"></i>ยังไม่เริ่ม — ${s.zero.length} จุด</span>
+      </div>
+      <div class="ops-stats">
+        <div class="ops-stat"><b style="color:var(--brand)">${s.done}</b><small>ดำเนินการแล้ว<br>(≥ 1 มาตรการ)</small></div>
+        <div class="ops-stat"><b style="color:var(--success)">${pct(s.done, s.total)}%</b><small>ของจุดทั้งหมด<br>ในปีนั้น</small></div>
+        <div class="ops-stat"><b style="color:var(--danger)">${s.zero.length}</b><small>ยังไม่ได้ดำเนินการ<br>สักมาตรการ</small></div>
+      </div>
+    </div>`;
+  wrapCards.innerHTML = card(s67) + card(s68);
+
+  // --- KPI: จำนวนจุดที่ดำเนินการแล้ว รวม 3 ปี (ตัดตำแหน่งซ้ำ ≤ 250 ม.) ---
+  const doneRecs = rows.filter(r => r.progress_pct != null && Number(r.progress_pct) > 0 && r.latitude && r.longitude);
+  const doneClusters = [];
+  doneRecs.forEach(r => {
+    const lat = Number(r.latitude), lon = Number(r.longitude);
+    const dup = doneClusters.some(c => haversineM(lat, lon, c[0], c[1]) <= 250);
+    if (!dup) doneClusters.push([lat, lon]);
+  });
+  const rateEl = document.getElementById('kpiDoneRate');
+  if (rateEl) rateEl.textContent = doneClusters.length;
+  const hintEl = document.getElementById('kpiDoneRateHint');
+  if (hintEl) hintEl.textContent = `นับรวมปี 2566–2568 · ตำแหน่งซ้ำนับเป็น 1 จุด (≤ 250 ม.)`;
+
+  // --- Q&A ---
+  const zeroList = s => s.zero.map(r =>
+    `<li><strong>${(r.point_name || '-').toString().replace(/\n/g, ' ')}</strong>
+      <span class="qa-meta">เขต${r.district || '-'} · หน่วยงานหลัก: ${r.agency_main || 'ยังไม่ระบุ'} · มาตรการที่กำหนด: ${solMeasures(r)}</span></li>`).join('');
+
+  const norm = t => (t || '').toString().replace(/\s+/g, '');
+  const z67 = new Set(s67.zero.map(r => norm(r.point_name)));
+  const carry = s68.zero.filter(r => z67.has(norm(r.point_name)));
+  const external = s => s.zero.filter(r => !r.agency_main || String(r.agency_main).trim() !== 'กทม.').length;
+  const physical = s => s.zero.filter(r => Number(r.sol_physical) === 1).length;
+
+  // --- Agency breakdown (FY2567) ---
+  const isBMA = r => String(r.agency_main || '').trim() === 'กทม.';
+  const bma67 = s67.rows.filter(isBMA), oth67 = s67.rows.filter(r => !isBMA(r));
+  const bma68 = s68.rows.filter(isBMA), oth68 = s68.rows.filter(r => !isBMA(r));
+  const doneOf = list => list.filter(r => Number(r.progress_pct) > 0).length;
+  const compOf = list => list.filter(r => Number(r.progress_pct) === 100).length;
+  const partOf = list => list.filter(r => { const p = Number(r.progress_pct); return p > 0 && p < 100; }).length;
+  const zeroOf = list => list.filter(r => Number(r.progress_pct) === 0).length;
+  const reviewOf = list => list.filter(r => Number(r.progress_pct) < 100).length;
+  const othAgencies = {};
+  oth67.forEach(r => { const a = String(r.agency_main || 'ไม่ระบุ').trim() || 'ไม่ระบุ'; othAgencies[a] = (othAgencies[a] || 0) + 1; });
+  const othStr = Object.entries(othAgencies).map(([k, v]) => `${k} ${v} จุด`).join(' · ');
+
+  // --- Cross-year duplicates (FY2567 ∩ FY2568) ---
+  const n67set = new Set(s67.rows.map(r => norm(r.point_name)));
+  const dupName = s68.rows.filter(r => n67set.has(norm(r.point_name))).length;
+  const p67geo = s67.rows.filter(r => r.latitude && r.longitude);
+  const dupGeo = s68.rows.filter(r => r.latitude && r.longitude &&
+    p67geo.some(q => haversineM(Number(r.latitude), Number(r.longitude), Number(q.latitude), Number(q.longitude)) <= 250)).length;
+
+  // --- Executive summary (overview block + executive tab) ---
+  const chronic = (typeof buildHotspots === 'function') ? buildHotspots(rows).length : 0;
+  // จุดปี 2567 สถานะ "บางส่วน" ที่ดำเนินการต่อจนเสร็จ 100% ในปี 2568 (จับคู่พิกัด ≤ 250 ม.)
+  const contComplete = s68.complete.filter(r => {
+    if (!r.latitude || !r.longitude) return false;
+    let best = null, bd = Infinity;
+    p67geo.forEach(q => {
+      const dist = haversineM(Number(r.latitude), Number(r.longitude), Number(q.latitude), Number(q.longitude));
+      if (dist < bd) { bd = dist; best = q; }
+    });
+    if (!best || bd > 250) return false;
+    const p = Number(best.progress_pct);
+    return p > 0 && p < 100;
+  }).length;
+  const review68 = s68.zero.length + s68.partial.length;
+  const fill = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+
+  const headline = `ปีงบประมาณ 2567 ดำเนินการแล้ว <strong>${s67.done} จาก ${s67.total} จุด (${pct(s67.done, s67.total)}%)</strong>
+    และปีงบประมาณ 2568 ดำเนินการแล้ว <strong>${s68.done} จาก ${s68.total} จุด (${pct(s68.done, s68.total)}%)</strong>
+    — คงเหลือจุดที่ต้องเร่งรัด/ทบทวนมาตรการ <strong>${review68} จุด</strong>`;
+  const bigCards = `
+    <div class="exec-big green"><b>${pct(s67.done, s67.total)}%</b><small>ผลงานปี 2567<br>(${s67.done}/${s67.total} จุด)</small></div>
+    <div class="exec-big green"><b>${pct(s68.done, s68.total)}%</b><small>ผลงานปี 2568<br>(${s68.done}/${s68.total} จุด)</small></div>
+    <div class="exec-big amber"><b>${review68}</b><small>จุดต้องเร่งรัด/ทบทวนมาตรการ<br>(ยังไม่เริ่ม ${s68.zero.length} + บางส่วน ${s68.partial.length})</small></div>
+    <div class="exec-big red"><b>${chronic}</b><small>จุดที่ดำเนินงานต่อเนื่อง 3 ปี<br>ต้องแก้ไขเชิงโครงสร้าง</small></div>`;
+  const points = `
+    <li class="ok"><span class="pt-ic">✓</span><span><strong>ผลงานเด่น</strong> — จุดที่ดำเนินการต่อเนื่องจากปี 2567 แล้วเสร็จเพิ่ม ${contComplete} จุด
+      และจุดของหน่วยงานภายนอกในปี 2567 แล้วเสร็จ ${compOf(oth67)} จาก ${oth67.length} จุด</span></li>
+    <li class="warn"><span class="pt-ic">!</span><span><strong>ต้องติดตาม</strong> — ${s68.zero.length} จุดของปี 2568 ยังไม่เริ่มดำเนินการ
+      ในจำนวนนี้ ${carry.length} จุดค้างต่อเนื่องมาตั้งแต่ปี 2567</span></li>
+    <li class="next"><span class="pt-ic">→</span><span><strong>ข้อเสนอ</strong> — จัดลำดับความสำคัญจุดที่ดำเนินงานต่อเนื่อง ${chronic} จุด
+      ซึ่งต้องการงบประมาณเชิงโครงสร้างและการประสานหลายหน่วยงาน พร้อมเริ่มบันทึกสาเหตุ/อุปสรรครายจุดในรอบติดตามถัดไป</span></li>`;
+
+  fill('execHeadline', headline);  fill('execHeadline2', headline);
+  fill('execBigCards', bigCards);  fill('execBigCards2', bigCards);
+  fill('execPoints', points);      fill('execPoints2', points);
+  fill('execYearCards', card(s67) + card(s68));
+
+  const num = 'style="text-align:right; font-family:\'JetBrains Mono\',monospace;"';
+  const agRow = (label, g) => `<tr><td>${label}</td><td ${num}>${g.length}</td>
+    <td ${num}>${doneOf(g)} (${pct(doneOf(g), g.length)}%)</td><td ${num}>${compOf(g)}</td><td ${num}>${zeroOf(g)}</td></tr>`;
+  fill('execAgencyTable', `
+    <thead><tr><th>กลุ่ม</th><th style="text-align:right;">จำนวนจุด</th><th style="text-align:right;">ดำเนินการแล้ว</th>
+    <th style="text-align:right;">แล้วเสร็จ 100%</th><th style="text-align:right;">ยังไม่เริ่ม</th></tr></thead>
+    <tbody>
+      ${agRow('ปี 2567 — กทม.', bma67)}
+      ${agRow('ปี 2567 — หน่วยงานอื่น (' + othStr + ')', oth67)}
+      ${agRow('ปี 2568 — กทม.', bma68)}
+      ${agRow('ปี 2568 — ยังไม่ระบุหน่วยงานหลัก', oth68)}
+    </tbody>`);
+  fill('execFootNote', `หมายเหตุ: จุดที่ปรากฏซ้ำทั้งปี 2567 และ 2568 (จับคู่พิกัดระยะ ≤ 250 ม.) มี ${dupGeo} จุด
+    การรวมจำนวนจุดสองปีเข้าด้วยกันจึงมีการนับซ้ำบางส่วน — ตัวเลขร้อยละคำนวณแยกรายปี ·
+    ข้อมูลจากฐานติดตามจุดปัญหาจราจร สจส. · จัดทำโดย กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน`);
+
+  wrapQA.innerHTML = `
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-badge">Q1</span>ดำเนินการแก้ไขแล้วกี่จุด? (นับจุดที่มีความคืบหน้า แม้อาจไม่ครบทุกมาตรการ)</div>
+      <div class="qa-a">
+        <p><strong>ปี 2567</strong> — ดำเนินการแล้ว <strong class="hl-green">${s67.done} จาก ${s67.total} จุด (${pct(s67.done, s67.total)}%)</strong>
+          แบ่งเป็น แล้วเสร็จครบทุกมาตรการ (100%) จำนวน ${s67.complete.length} จุด และดำเนินการแล้วบางส่วน ${s67.partial.length} จุด</p>
+        <p><strong>ปี 2568</strong> — ดำเนินการแล้ว <strong class="hl-green">${s68.done} จาก ${s68.total} จุด (${pct(s68.done, s68.total)}%)</strong>
+          แบ่งเป็น แล้วเสร็จครบทุกมาตรการ (100%) จำนวน ${s68.complete.length} จุด และดำเนินการแล้วบางส่วน ${s68.partial.length} จุด</p>
+      </div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-badge">Q2</span>จุดที่ยังไม่ได้ดำเนินการเลย (ไม่มีความคืบหน้าสักมาตรการ) มีกี่จุด? จุดใดบ้าง? เพราะอะไร?</div>
+      <div class="qa-a">
+        <p>ปี 2567 มี <strong class="hl-red">${s67.zero.length} จุด (${pct(s67.zero.length, s67.total)}%)</strong>
+          และปี 2568 มี <strong class="hl-red">${s68.zero.length} จุด (${pct(s68.zero.length, s68.total)}%)</strong> — คลิกเพื่อดูรายชื่อ</p>
+        <details><summary>รายชื่อจุดที่ยังไม่ได้ดำเนินการ ปี 2567 (${s67.zero.length} จุด)</summary><ul class="qa-list">${zeroList(s67)}</ul></details>
+        <details><summary>รายชื่อจุดที่ยังไม่ได้ดำเนินการ ปี 2568 (${s68.zero.length} จุด)</summary><ul class="qa-list">${zeroList(s68)}</ul></details>
+        <p class="qa-why-head">ข้อสังเกตจากข้อมูล — ปัจจัยที่เกี่ยวข้องกับการยังไม่ได้ดำเนินการ</p>
+        <ul class="qa-why">
+          <li><strong>ต้องประสานหน่วยงานภายนอก / ยังไม่ระบุหน่วยงานหลัก</strong> — ปี 2567 จำนวน ${external(s67)} จุด และปี 2568 จำนวน ${external(s68)} จุด
+            หน่วยงานหลักไม่ใช่ กทม. (เช่น กรมทางหลวงชนบท) หรือยังไม่ระบุ ทำให้ต้องรอการประสานงานระหว่างหน่วยงานก่อนเริ่มดำเนินการ</li>
+          <li><strong>มาตรการที่กำหนดเป็นงานปรับกายภาพ/โครงสร้าง</strong> — ปี 2567 จำนวน ${physical(s67)} จุด และปี 2568 จำนวน ${physical(s68)} จุด
+            ซึ่งต้องใช้การออกแบบทางวิศวกรรม งบประมาณ และระยะเวลาก่อสร้าง จึงใช้เวลาเตรียมการนานกว่ามาตรการเชิงบริหารจัดการ</li>
+          <li><strong>จุดค้างต่อเนื่อง 2 ปี (ปรากฏทั้งปี 2567 และ 2568)</strong> — จำนวน ${carry.length} จุด ได้แก่
+            ${carry.map(r => (r.point_name || '').toString().replace(/\n/g, ' ')).join(' · ') || '—'}
+            — เป็นกลุ่มที่ควรได้รับการทบทวนแนวทางและจัดลำดับความสำคัญเร่งด่วนที่สุด</li>
+        </ul>
+        <p class="qa-note">หมายเหตุ: ชุดข้อมูลปัจจุบันยังไม่มีฟิลด์บันทึก "สาเหตุที่ยังไม่ดำเนินการ" ของแต่ละจุดอย่างเป็นทางการ
+          ข้อสังเกตข้างต้นวิเคราะห์จากหน่วยงานหลักและประเภทมาตรการที่กำหนด — ข้อเสนอแนะ: ควรเพิ่มการบันทึกสาเหตุ/อุปสรรครายจุดในรอบการติดตามถัดไป</p>
+      </div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-badge">Q3</span>ปี 2567 (127 จุด) — เป็นความรับผิดชอบของ กทม. กี่จุด และผลการดำเนินงานแยกตามหน่วยงานเป็นอย่างไร?</div>
+      <div class="qa-a">
+        <p><strong>ความรับผิดชอบของ กทม.</strong> — <strong class="hl-green">${bma67.length} จุด (${pct(bma67.length, s67.total)}% ของ ${s67.total} จุด)</strong>
+          ดำเนินการแล้ว ${doneOf(bma67)} จุด (${pct(doneOf(bma67), bma67.length)}% ของจุด กทม.)
+          และยังไม่ได้ดำเนินการ <strong class="hl-red">${zeroOf(bma67)} จุด (${pct(zeroOf(bma67), bma67.length)}%)</strong></p>
+        <p><strong>จุดที่ต้องทบทวนมาตรการ / แนวทางดำเนินการ (ความคืบหน้าต่ำกว่า 100%)</strong> —
+          รวม <strong class="hl-red">${reviewOf(bma67)} จุด</strong> แบ่งเป็น ดำเนินการบางส่วน ${partOf(bma67)} จุด และยังไม่เริ่ม ${zeroOf(bma67)} จุด</p>
+        <p><strong>หน่วยงานอื่น</strong> — <strong>${oth67.length} จุด (${pct(oth67.length, s67.total)}% ของ ${s67.total} จุด)</strong>
+          ได้แก่ ${othStr} — ดำเนินการแล้ว ${doneOf(oth67)} จุด (แล้วเสร็จ 100% จำนวน ${compOf(oth67)} จุด) ยังไม่เริ่ม ${zeroOf(oth67)} จุด</p>
+      </div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-badge">Q4</span>ปี 2568 (77 จุด) — ดำเนินการแล้วเท่าไร และมีจุดที่ต้องทบทวนมาตรการกี่จุด?</div>
+      <div class="qa-a">
+        <p>ดำเนินการแล้ว <strong class="hl-green">${s68.done} จุด (${pct(s68.done, s68.total)}%)</strong> จากทั้งหมด ${s68.total} จุด
+          — ในจำนวนนี้อยู่ในความรับผิดชอบ กทม. ${bma68.length} จุด และยังไม่ระบุหน่วยงานหลัก ${oth68.length} จุด</p>
+        <p><strong>จุดที่ยังไม่ได้ดำเนินการ ${s68.zero.length} จุด (${pct(s68.zero.length, s68.total)}%) ถือเป็นจุดที่ต้องทบทวนมาตรการ/แนวทางดำเนินการทั้งหมด</strong>
+          และเมื่อรวมจุดที่ดำเนินการบางส่วนอีก ${s68.partial.length} จุด จะมีจุดที่ต้องติดตาม-ทบทวนรวม
+          <strong class="hl-red">${s68.zero.length + s68.partial.length} จุด (${pct(s68.zero.length + s68.partial.length, s68.total)}%)</strong></p>
+      </div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q"><span class="qa-badge">Q5</span>จุดที่เป็นข้อมูลซ้ำระหว่างปี 2567 และปี 2568 มีทั้งหมดกี่จุด?</div>
+      <div class="qa-a">
+        <p>จับคู่ตามพิกัด (ระยะ ≤ 250 ม. ตามเกณฑ์ระเบียบวิธีของโครงการ) —
+          <strong class="hl-red">${dupGeo} จุด (${pct(dupGeo, s68.total)}% ของ ${s68.total} จุดในปี 2568)</strong>
+          เป็นจุดที่สืบทอดต่อเนื่องมาจากบัญชีปี 2567</p>
+        <p>หากจับคู่แบบชื่อจุดตรงกันทุกตัวอักษร จะพบ <strong>${dupName} จุด</strong>
+          (ส่วนต่างเกิดจากจุดเดียวกันที่สะกดชื่อ/ระบุขอบเขตต่างกันระหว่างปี แต่พิกัดอยู่ในรัศมีเดียวกัน)</p>
+      </div>
+    </div>`;
+}
+
+// ============== DATA AS-OF (hero card) ==============
+async function renderDataAsOf() {
+  const el = document.getElementById('dataAsOf');
+  if (!el) return;
+  try {
+    const manifest = await fetchJson('data/manifest.json');
+    const m = String(manifest.generated_at_utc || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return;
+    let y = Number(m[1]);
+    const be = y > 2400 ? y : y + 543;           // รองรับทั้ง พ.ศ. และ ค.ศ.
+    const d = Number(m[3]), mo = Number(m[2]);
+    const thM = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    const enM = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    el.innerHTML = `ข้อมูล ณ วันที่ ${d} ${thM[mo-1]} ${be} · Data as of ${d} ${enM[mo-1]} ${be - 543}`;
+  } catch (e) { /* non-fatal */ }
+}
+
+function setPrintDate() {
+  const d = new Date();
+  const opts = { year: 'numeric', month: 'long', day: 'numeric' };
+  const txt = 'พิมพ์เมื่อ / Generated: ' + d.toLocaleDateString('th-TH', opts);
+  ['printDate', 'execPrintDate'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = txt;
+  });
+}
+function renderStatusTab(rows) {
+  const tracked = rows.filter(r => r.progress_pct !== null && r.progress_pct !== undefined);
+  renderStatusKPIs(tracked);
+  renderStatusDonut(tracked);
+  renderStatusYearChart(tracked);
+  setPrintDate();
+}
+
+// ============== REGISTER (ตารางรายจุด) ==============
+function regStatusOf(p) {
+  if (p === null || p === undefined || p === '') return 'nodata';
+  const n = Number(p);
+  if (n === 100) return 'done';
+  if (n === 0) return 'notstarted';
+  return 'partial';
+}
+function regResultText(p) {
+  const s = regStatusOf(p);
+  if (s === 'done') return '<span class="tag tag-green">ดำเนินการแล้วเสร็จ</span>';
+  if (s === 'partial') return `<span class="tag tag-amber">อยู่ระหว่างดำเนินการ (${Number(p).toFixed(0)}%)</span>`;
+  if (s === 'notstarted') return '<span class="tag tag-red">ยังมิได้ดำเนินการ</span>';
+  return '<span class="tag tag-blue">รวบรวมเข้าบัญชีปัญหา (ปีตั้งต้น)</span>';
+}
+function regApproach(r) {
+  const m = solMeasures(r);
+  if (m && m !== '-') return m;
+  return (toInt(r.year) === 2566) ? 'อยู่ระหว่างวิเคราะห์แนวทาง' : '—';
+}
+function renderRegister(rows) {
+  const tblEl = document.getElementById('registerTable');
+  const countEl = document.getElementById('regCount');
+  if (!tblEl) return;
+  const data = rows.slice().sort((a, b) =>
+    (toInt(a.year) - toInt(b.year)) ||
+    (a.district || '').localeCompare(b.district || '', 'th'));
+
+  const build = () => {
+    const yF = document.getElementById('regYear').value;
+    const sF = document.getElementById('regStatus').value;
+    const q = (document.getElementById('regSearch').value || '').trim().toLowerCase();
+    const list = data.filter(r =>
+      (yF === 'all' || String(toInt(r.year)) === yF) &&
+      (sF === 'all' || regStatusOf(r.progress_pct) === sF) &&
+      (!q || `${r.point_name || ''} ${r.district || ''} ${r.road || ''}`.toLowerCase().includes(q)));
+
+    let html = `<thead><tr>
+      <th style="width:38px;">ลำดับ</th><th style="width:60px;">ปีงบฯ</th>
+      <th>จุด/บริเวณที่มีปัญหา</th><th style="width:92px;">เขต</th>
+      <th style="width:110px;">หน่วยงานหลัก</th><th>แนวทางดำเนินการ (มาตรการ)</th>
+      <th style="width:150px;">ผลการดำเนินการ</th></tr></thead><tbody>`;
+    list.forEach((r, i) => {
+      html += `<tr>
+        <td style="text-align:right;">${i + 1}</td>
+        <td>${toInt(r.year)}</td>
+        <td>${(r.point_name || '-').toString().replace(/\n/g, ' ')}</td>
+        <td>${r.district || '-'}</td>
+        <td>${r.agency_main || 'ยังไม่ระบุ'}</td>
+        <td>${regApproach(r)}</td>
+        <td>${regResultText(r.progress_pct)}</td>
+      </tr>`;
+    });
+    html += '</tbody>';
+    tblEl.innerHTML = html;
+    if (countEl) countEl.textContent = `แสดง ${list.length} รายการ จากทั้งหมด ${data.length} รายการ`;
+  };
+
+  ['regYear', 'regStatus'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', build);
+  });
+  const searchEl = document.getElementById('regSearch');
+  if (searchEl) searchEl.addEventListener('input', build);
+
+  const printBtn = document.getElementById('regPrintBtn');
+  const headEl = document.getElementById('regPrintHead');
+  if (printBtn) printBtn.addEventListener('click', () => {
+    if (headEl) {
+      const d = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+      const yF = document.getElementById('regYear').value;
+      const yTxt = yF === 'all' ? 'ปีงบประมาณ 2566–2568' : 'ปีงบประมาณ ' + yF;
+      headEl.innerHTML = `<h3>ตารางแสดงข้อมูลรายจุดปัญหาจราจรและผลการดำเนินการ · ${yTxt}</h3>
+        <div class="sub">สำนักการจราจรและขนส่ง กรุงเทพมหานคร · จัดทำโดย กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน · พิมพ์เมื่อ ${d}</div>`;
+    }
+    window.print();
+  });
+
+  build();
+}
+
 // ============== MAP ==============
+const STATUS_COLORS = { done: '#1B8E5A', partial: '#D97706', notstarted: '#B91C1C', nodata: '#94A3B8' };
+const STATUS_LABELS = { done: 'เสร็จสิ้น (100%)', partial: 'ดำเนินการบางส่วน', notstarted: 'ยังไม่เริ่ม', nodata: 'ยังไม่มีข้อมูลติดตาม (ปี 2566)' };
+function pointStatus(p) {
+  if (p === null || p === undefined || p === '') return 'nodata';
+  const n = Number(p);
+  if (n === 100) return 'done';
+  if (n === 0) return 'notstarted';
+  return 'partial';
+}
 function renderMap(geoJson) {
   const map = L.map('map').setView([13.7563, 100.5018], 11);
   window._map = map;
@@ -1832,40 +2786,85 @@ function renderMap(geoJson) {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  const yearLayers = { 2566: L.layerGroup(), 2567: L.layerGroup(), 2568: L.layerGroup() };
+  // เตรียมข้อมูลจุด
+  const pts = [];
   geoJson.features.forEach(f => {
     if (!f.geometry || !Array.isArray(f.geometry.coordinates)) return;
-    const props = f.properties || {};
-    const year = toInt(props.year);
     const [lon, lat] = f.geometry.coordinates;
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
-    const marker = L.circleMarker([lat, lon], {
-      radius: 6, fillOpacity: 0.85,
-      fillColor: YEAR_COLORS[year] || '#94A3B8',
-      color: '#fff', weight: 1
-    });
-    marker.bindPopup(
-      `<strong>${props.point_name || 'ไม่ระบุ'}</strong><br/>`
-      + `ปี: <b>${props.year || '-'}</b><br/>`
-      + `เขต: ${props.district || '-'}<br/>`
-      + `ถนน: ${props.road || '-'}<br/>`
-      + `โซน: ${translateZone(props.zone || 'Unknown')}`
-    );
-    if (yearLayers[year]) yearLayers[year].addLayer(marker);
+    const props = f.properties || {};
+    pts.push({ lat, lon, year: toInt(props.year), status: pointStatus(props.progress_pct), props });
   });
-  Object.values(yearLayers).forEach(l => l.addTo(map));
 
-  const sel = document.getElementById('mapYear');
-  if (sel) sel.addEventListener('change', e => {
-    const v = e.target.value;
-    Object.entries(yearLayers).forEach(([y, layer]) => {
-      if (v === 'all' || v === y) {
-        if (!map.hasLayer(layer)) map.addLayer(layer);
-      } else {
-        if (map.hasLayer(layer)) map.removeLayer(layer);
-      }
-    });
+  const markerLayer = L.layerGroup().addTo(map);
+  let heatLayer = null;
+
+  const popupHtml = p => {
+    const pr = p.props;
+    const prog = (pr.progress_pct === null || pr.progress_pct === undefined || pr.progress_pct === '')
+      ? 'ยังไม่มีข้อมูลติดตาม' : Number(pr.progress_pct).toFixed(0) + '%';
+    return `<strong>${pr.point_name || 'ไม่ระบุ'}</strong><br/>`
+      + `ปีงบประมาณ: <b>${pr.year || '-'}</b><br/>`
+      + `สถานะ: <b style="color:${STATUS_COLORS[p.status]}">${STATUS_LABELS[p.status]}</b><br/>`
+      + `ความคืบหน้า: <b>${prog}</b><br/>`
+      + `เขต: ${pr.district || '-'} · โซน: ${translateZone(pr.zone || 'Unknown')}<br/>`
+      + `ถนน: ${(pr.road || '-').toString().replace(/\n/g, ' ')}<br/>`
+      + `หน่วยงานหลัก: ${pr.agency_main || 'ยังไม่ระบุ'}`;
+  };
+
+  // Legend control
+  const legend = L.control({ position: 'bottomright' });
+  legend.onAdd = () => { const div = L.DomUtil.create('div', 'map-legend'); div._el = div; return div; };
+  legend.addTo(map);
+  const legendEl = legend.getContainer();
+  const updateLegend = mode => {
+    if (mode === 'heat') {
+      legendEl.innerHTML = `<div class="lg-title">ความหนาแน่นของจุดปัญหา</div>
+        <div class="lg-row"><span>น้อย</span><span class="lg-grad"></span><span>มาก</span></div>`;
+    } else if (mode === 'year') {
+      legendEl.innerHTML = `<div class="lg-title">ปีงบประมาณ</div>`
+        + [[2566, YEAR_COLORS[2566]], [2567, YEAR_COLORS[2567]], [2568, YEAR_COLORS[2568]]]
+          .map(([y, c]) => `<div class="lg-row"><span class="lg-dot" style="background:${c}"></span>ปี ${y}</div>`).join('');
+    } else {
+      legendEl.innerHTML = `<div class="lg-title">สถานะการดำเนินการ</div>`
+        + ['done', 'partial', 'notstarted', 'nodata']
+          .map(s => `<div class="lg-row"><span class="lg-dot" style="background:${STATUS_COLORS[s]}"></span>${STATUS_LABELS[s]}</div>`).join('');
+    }
+  };
+
+  const draw = () => {
+    const mode = document.getElementById('mapMode').value;
+    const yF = document.getElementById('mapYear').value;
+    const sF = document.getElementById('mapStatus').value;
+    // ซ่อนตัวกรองสถานะเมื่ออยู่โหมด heat (heatmap ใช้ทุกจุด)
+    document.getElementById('statusFilterWrap').style.display = mode === 'heat' ? 'none' : '';
+
+    const sel = pts.filter(p =>
+      (yF === 'all' || String(p.year) === yF) &&
+      (mode === 'heat' || sF === 'all' || p.status === sF));
+
+    markerLayer.clearLayers();
+    if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
+
+    if (mode === 'heat') {
+      heatLayer = L.heatLayer(sel.map(p => [p.lat, p.lon, 1]),
+        { radius: 22, blur: 18, maxZoom: 15,
+          gradient: { 0.2: '#2166ac', 0.4: '#4393c3', 0.6: '#fddbc7', 0.8: '#f4a582', 1.0: '#b2182b' } }).addTo(map);
+    } else {
+      sel.forEach(p => {
+        const color = mode === 'year' ? (YEAR_COLORS[p.year] || '#94A3B8') : STATUS_COLORS[p.status];
+        L.circleMarker([p.lat, p.lon], { radius: 6, fillOpacity: 0.85, fillColor: color, color: '#fff', weight: 1 })
+          .bindPopup(popupHtml(p)).addTo(markerLayer);
+      });
+    }
+    updateLegend(mode);
+  };
+
+  ['mapMode', 'mapYear', 'mapStatus'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', draw);
   });
+  draw();
 }
 
 // ============== INIT ==============
@@ -1891,28 +2890,50 @@ async function init() {
     document.getElementById('heroK2').textContent = byYear[2567];
     document.getElementById('heroK3').textContent = byYear[2568];
 
-    // KPIs — Persistent hotspots (3-year cross-coordinate match)
-    const persistentHotspots = buildHotspots(combinedRows);
-    const persEl = document.getElementById('kpiPers');
-    if (persEl) persEl.textContent = persistentHotspots.length;
-    const heroK4 = document.getElementById('heroK4');
-    if (heroK4) heroK4.textContent = persistentHotspots.length;
+    // คำนวณ lineage (จับคู่จุดข้ามปีด้วยพิกัด ≤ 250 ม.) — ใช้เป็นแหล่งข้อมูลเดียวสำหรับทุกส่วน
+    const lineage = computeLineage(combinedRows);
 
-    // KPIs — Persistent corridors (DBSCAN clusters active 3 years)
+    // KPIs — จุดปัญหาซ้ำทั้ง 3 ปี (จับคู่ตามพิกัด ≤ 250 ม.) = lineage.tri
+    const persistent3yr = lineage.tri.length;
+    const persEl = document.getElementById('kpiPers');
+    if (persEl) persEl.textContent = persistent3yr;
+    const heroK4 = document.getElementById('heroK4');
+    if (heroK4) heroK4.textContent = persistent3yr;
+
+    // KPIs — แนวถนนปัญหาต่อเนื่อง (DBSCAN corridors ที่พบครบ 3 ปี)
     const persistentCorridors = corridors.filter(c => Number(c.n_years) >= 3).length;
     const corrEl = document.getElementById('kpiCorr');
     if (corrEl) corrEl.textContent = persistentCorridors;
     const heroK5 = document.getElementById('heroK5');
     if (heroK5) heroK5.textContent = persistentCorridors;
 
+    // Key Policy Findings — ตัวเลขดึงจากการคำนวณจริง (กันไม่ให้ขัดแย้งกับ KPI)
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setTxt('findPers', persistent3yr);
+    setTxt('findCorr', persistentCorridors);
+
+    // Timeline — ตัวเลขดึงจากการคำนวณจริง ให้ตรงกับ KPI ทุกส่วน
+    const districtCount = new Set(combinedRows.map(r => (r.district || '').toString().trim()).filter(Boolean)).size;
+    const pctInt = (n, t) => t ? Math.round((n / t) * 100) : 0;
+    const inh67pct = pctInt(lineage.inh67, byYear[2567]);
+    const inh68pct = pctInt(lineage.inh68, byYear[2568]);
+    setTxt('tl66pts', byYear[2566]);   setTxt('tl66dist', districtCount);
+    setTxt('tl67pts', byYear[2567]);   setTxt('tl67inh', inh67pct + '%');   setTxt('tl67new', (100 - inh67pct) + '%');
+    setTxt('tl68pts', byYear[2568]);   setTxt('tl68inh', inh68pct + '%');   setTxt('tl683yr', persistent3yr);
+
     renderAreaType(combinedRows);
     renderHotspots(combinedRows);
     renderCorridors(corridors);
     renderZoneChart(combinedRows);
     renderTrendChart(byYear);
-    renderLineageStack();
+    renderLineageStack(lineage);
+    renderPointHistory(lineage);
     renderDistrictChart(combinedRows);
+    renderStatusTab(combinedRows);
+    renderRegister(combinedRows);
+    renderOpsSummary(combinedRows);
     renderMap(geoJson);
+    renderDataAsOf();
   } catch (err) {
     console.error(err);
     alert('ไม่สามารถโหลดไฟล์ข้อมูลได้ — ตรวจสอบว่า data/combined_data.json, data/all_points.geojson, data/sheets/11_Corridors.json พร้อมใช้งาน');
