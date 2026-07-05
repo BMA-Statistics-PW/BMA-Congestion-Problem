@@ -1007,7 +1007,7 @@ footer {
       </div>
       <h1>
         วิเคราะห์จุดปัญหา<span class="accent">จราจรติดขัด</span><br/>
-        กรุงเทพมหานคร พ.ศ. 2566–2568 (2023–2025)
+        กรุงเทพมหานคร พ.ศ. 2566–2568
       </h1>
       <p class="lede">
         วิเคราะห์ข้อมูลจุดปัญหาจราจรเชิงพื้นที่ (Spatial Analytics)
@@ -1047,10 +1047,10 @@ footer {
 <div class="tabs-wrap">
   <div class="tabs" role="tablist" aria-label="ส่วนต่าง ๆ ของแดชบอร์ด">
     <button class="tab active" data-tab="overview" role="tab" aria-selected="true">ภาพรวม · Overview</button>
-    <button class="tab" data-tab="timeline" role="tab" aria-selected="false">เส้นเวลา 3 ปี · Timeline</button>
+    <button class="tab" data-tab="timeline" role="tab" aria-selected="false">Timeline</button>
     <button class="tab" data-tab="spatial" role="tab" aria-selected="false">เชิงพื้นที่ · Spatial</button>
     <button class="tab" data-tab="hotspots" role="tab" aria-selected="false">จุดปัญหาซ้ำ · Hotspots</button>
-    <button class="tab" data-tab="status" role="tab" aria-selected="false">สถานะและรายจุด · Status &amp; Register</button>
+    <button class="tab" data-tab="status" role="tab" aria-selected="false">สถานะ · Status</button>
     <button class="tab" data-tab="agencies" role="tab" aria-selected="false">หน่วยงาน · Agencies</button>
     <button class="tab" data-tab="methodology" role="tab" aria-selected="false">ระเบียบวิธี · Methodology</button>
     <button class="tab" data-tab="about" role="tab" aria-selected="false">เกี่ยวกับผู้จัดทำ · About</button>
@@ -1274,11 +1274,6 @@ footer {
       </div>
       <div class="exec-big-grid" id="histSummary"></div>
       <div class="section-head" style="margin-top:10px;">
-        <div><h2 style="font-size:0.95rem;">เส้นทางสถานะของจุดที่อยู่ครบ 3 ปี<span class="en">Status Pathways — 3-year Persistent Points</span></h2></div>
-      </div>
-      <table class="standard" id="pathSummaryTable" style="margin-bottom:18px;"></table>
-
-      <div class="section-head" style="margin-top:10px;">
         <div>
           <h2 style="font-size:0.95rem;">23 จุดที่ดำเนินงานต่อเนื่อง — มาตรการและความคืบหน้า ปี 2567 → 2568<span class="en">Measures &amp; Progress of the 23 Persistent Points</span></h2>
           <div class="sub">ปี 2568 ส่วนใหญ่เป็นการ "ทำมาตรการเดิมต่อจนแล้วเสร็จ" — คอลัมน์ "เพิ่มใหม่ 2568" แสดงเฉพาะมาตรการชนิดใหม่ที่ไม่มีในปี 2567</div>
@@ -1356,7 +1351,7 @@ footer {
       <div class="section-head">
         <div>
           <h2>ถนนที่พบปัญหาต่อเนื่อง<span class="en">Persistent Roads (grouped by เขต × ถนน, 3 years)</span></h2>
-          <div class="sub">จัดกลุ่มตาม "เขต × ถนน" ที่ปรากฏในบัญชีจุดปัญหาทั้ง 3 ปีงบประมาณ — คนละหน่วยกับ "จุดปัญหาซ้ำ" (ซึ่งจับคู่ตามพิกัดรายจุด)</div>
+          <div class="sub">จัดกลุ่มตาม "เขต × ถนน" ที่ปรากฏในบัญชีจุดปัญหาทั้ง 3 ปีงบประมาณ — "จำนวนจุด" นับเฉพาะจุดที่ไม่ซ้ำตำแหน่ง (≤ 250 ม.) ส่วน "ครั้งที่พบ" คือจำนวนที่ปรากฏรวมทุกปี (จุดเดียวกันที่พบหลายปีจึงนับหลายครั้ง)</div>
         </div>
       </div>
       <table class="standard" id="hotspotTable"></table>
@@ -1651,7 +1646,7 @@ footer {
           <div class="method-icon">🛣️</div>
           <div class="method-name">DBSCAN Corridor Clustering</div>
           <div class="method-tech">eps=400m · min_samples=3</div>
-          <div class="method-desc">จัดกลุ่ม corridor ตามพิกัดจริง (ไม่ขึ้นกับขอบเขตการปกครอง) ด้วย Density-Based Spatial Clustering — ระบุได้ 45 corridors โดย 25 corridors active ทั้ง 3 ปี</div>
+          <div class="method-desc">จัดกลุ่ม corridor ตามพิกัดจริง (ไม่ขึ้นกับขอบเขตการปกครอง) ด้วย Density-Based Spatial Clustering — ระบุได้ 70 corridors โดย 50 corridors active ทั้ง 3 ปี</div>
         </div>
         <div class="method-card">
           <div class="method-icon">🌡️</div>
@@ -1883,25 +1878,38 @@ function buildHotspots(rows) {
     if (!d || !rd) return;
     const y = toInt(r.year);
     const key = `${d}|${rd}`;
-    if (!grouped.has(key)) grouped.set(key, { district:d, road:rd, count:0, years:new Set() });
+    if (!grouped.has(key)) grouped.set(key, { district:d, road:rd, count:0, years:new Set(), coords:[] });
     const it = grouped.get(key);
-    it.count += 1;
+    it.count += 1;                       // จำนวน record รวมทุกปี (ครั้งที่พบ)
     if (y) it.years.add(y);
+    if (r.latitude && r.longitude) it.coords.push([Number(r.latitude), Number(r.longitude)]);
+  });
+  // จำนวนจุดที่ไม่ซ้ำตำแหน่ง (จับกลุ่มพิกัด ≤ 250 ม. — กันการนับจุดเดียวกันที่พบหลายปีซ้ำ)
+  grouped.forEach(it => {
+    const cl = [];
+    it.coords.forEach(([la, lo]) => {
+      if (!cl.some(c => haversineM(la, lo, c[0], c[1]) <= 250)) cl.push([la, lo]);
+    });
+    it.uniquePoints = cl.length;
   });
   return Array.from(grouped.values())
     .filter(x => x.years.size >= 3)
-    .sort((a,b) => b.count - a.count);
+    .sort((a,b) => b.uniquePoints - a.uniquePoints || b.count - a.count);
 }
 
 function renderHotspots(rows) {
   const hs = buildHotspots(rows);
-  let html = '<thead><tr><th>#</th><th>เขต</th><th>ถนน</th><th style="text-align:right;">จำนวน</th><th>ปีที่พบ</th></tr></thead><tbody>';
+  let html = '<thead><tr><th>#</th><th>เขต</th><th>ถนน</th>'
+    + '<th style="text-align:right;">จำนวนจุด<br><span style="font-weight:400;font-size:0.88em;color:var(--muted);">(ไม่ซ้ำตำแหน่ง)</span></th>'
+    + '<th style="text-align:right;">ครั้งที่พบ<br><span style="font-weight:400;font-size:0.88em;color:var(--muted);">(รวมทุกปี)</span></th>'
+    + '<th>ปีที่พบ</th></tr></thead><tbody>';
   hs.forEach((h, i) => {
     html += `<tr>
       <td>${i+1}</td>
       <td>${h.district}</td>
       <td>${h.road}</td>
-      <td style="text-align:right;"><span class="tag tag-red">${h.count}</span></td>
+      <td style="text-align:right;"><span class="tag tag-red">${h.uniquePoints}</span></td>
+      <td style="text-align:right; font-family:'JetBrains Mono',monospace; color:var(--muted);">${h.count}</td>
       <td><span class="tag tag-amber">${Array.from(h.years).sort().join(', ')}</span></td>
     </tr>`;
   });
@@ -2121,9 +2129,8 @@ function histChip(p, present) {
 }
 function renderPointHistory(lin) {
   const sumEl = document.getElementById('histSummary');
-  const pathEl = document.getElementById('pathSummaryTable');
   const tblEl = document.getElementById('historyMatrixTable');
-  if (!sumEl || !pathEl || !tblEl) return;
+  if (!sumEl || !tblEl) return;
 
   // Summary cards
   sumEl.innerHTML = `
@@ -2131,22 +2138,6 @@ function renderPointHistory(lin) {
     <div class="exec-big amber"><b>${lin.skip.length}</b><small>พบปี 2566 หายไป<br>แล้วกลับมาปี 2568</small></div>
     <div class="exec-big"><b>${lin.d6768.length}</b><small>เริ่มปี 2567<br>ต่อเนื่องถึงปี 2568</small></div>
     <div class="exec-big green"><b>${lin.d6667.length}</b><small>พบปี 2566–2567<br>แล้วหลุดจากบัญชี</small></div>`;
-
-  // Status pathways (3-year points)
-  const stName = p => { const n = Number(p); return n === 100 ? 'เสร็จ 100%' : (n === 0 ? 'ยังไม่เริ่ม' : 'บางส่วน'); };
-  const paths = {};
-  lin.tri.forEach(t => {
-    const k = stName(t.m67.progress_pct) + '||' + stName(t.m68.progress_pct);
-    paths[k] = (paths[k] || 0) + 1;
-  });
-  let ph = '<thead><tr><th>ปี 2566</th><th>ปี 2567</th><th>ปี 2568</th><th style="text-align:right;">จำนวนจุด</th></tr></thead><tbody>';
-  Object.entries(paths).sort((a, b) => b[1] - a[1]).forEach(([k, n]) => {
-    const [a, b] = k.split('||');
-    ph += `<tr><td><span class="tag tag-blue">พบปัญหา</span></td><td>${a}</td><td>${b}</td>
-      <td style="text-align:right; font-family:'JetBrains Mono',monospace;">${n}</td></tr>`;
-  });
-  ph += '</tbody>';
-  pathEl.innerHTML = ph;
 
   // Matrix rows
   const clean = t => (t || '-').toString().replace(/\n/g, ' ');
@@ -2485,7 +2476,7 @@ function renderOpsSummary(rows) {
       <div class="ops-stats">
         <div class="ops-stat"><b style="color:var(--brand)">${s.done}</b><small>ดำเนินการแล้ว<br>(≥ 1 มาตรการ)</small></div>
         <div class="ops-stat"><b style="color:var(--success)">${pct(s.done, s.total)}%</b><small>ของจุดทั้งหมด<br>ในปีนั้น</small></div>
-        <div class="ops-stat"><b style="color:var(--danger)">${s.zero.length}</b><small>ยังไม่ได้ดำเนินการ<br>สักมาตรการ</small></div>
+        <div class="ops-stat"><b style="color:var(--danger)">${s.zero.length}</b><small>ยังไม่ได้ดำเนินการ</small></div>
       </div>
     </div>`;
   wrapCards.innerHTML = card(s67) + card(s68);
@@ -2560,8 +2551,6 @@ function renderOpsSummary(rows) {
     <div class="exec-big amber"><b>${review68}</b><small>จุดต้องเร่งรัด/ทบทวนมาตรการ<br>(ยังไม่เริ่ม ${s68.zero.length} + บางส่วน ${s68.partial.length})</small></div>
     <div class="exec-big red"><b>${chronic}</b><small>จุดที่ดำเนินงานต่อเนื่อง 3 ปี<br>ต้องแก้ไขเชิงโครงสร้าง</small></div>`;
   const points = `
-    <li class="ok"><span class="pt-ic">✓</span><span><strong>ผลงานเด่น</strong> — จุดที่ดำเนินการต่อเนื่องจากปี 2567 แล้วเสร็จเพิ่ม ${contComplete} จุด
-      และจุดของหน่วยงานภายนอกในปี 2567 แล้วเสร็จ ${compOf(oth67)} จาก ${oth67.length} จุด</span></li>
     <li class="warn"><span class="pt-ic">!</span><span><strong>ต้องติดตาม</strong> — ${s68.zero.length} จุดของปี 2568 ยังไม่เริ่มดำเนินการ
       ในจำนวนนี้ ${carry.length} จุดค้างต่อเนื่องมาตั้งแต่ปี 2567</span></li>
     <li class="next"><span class="pt-ic">→</span><span><strong>ข้อเสนอ</strong> — จัดลำดับความสำคัญจุดที่ดำเนินงานต่อเนื่อง ${chronic} จุด
@@ -2599,7 +2588,7 @@ function renderOpsSummary(rows) {
       </div>
     </div>
     <div class="qa-item">
-      <div class="qa-q"><span class="qa-badge">Q2</span>จุดที่ยังไม่ได้ดำเนินการเลย (ไม่มีความคืบหน้าสักมาตรการ) มีกี่จุด? จุดใดบ้าง? เพราะอะไร?</div>
+      <div class="qa-q"><span class="qa-badge">Q2</span>จุดที่ยังไม่ได้ดำเนินการเลย (ยังไม่ดำเนินการมาตรการใด ๆ) มีกี่จุด? จุดใดบ้าง? เพราะอะไร?</div>
       <div class="qa-a">
         <p>ปี 2567 มี <strong class="hl-red">${s67.zero.length} จุด (${pct(s67.zero.length, s67.total)}%)</strong>
           และปี 2568 มี <strong class="hl-red">${s68.zero.length} จุด (${pct(s68.zero.length, s68.total)}%)</strong> — คลิกเพื่อดูรายชื่อ</p>
