@@ -29,12 +29,12 @@
 
   --brand: #0B3B6F;
   --brand-2: #1E5AA6;
-  --brand-3: #4A90E2;
-  --accent: #E0A800;
-  --accent-soft: #FFF4D1;
-  --success: #1B8E5A;
-  --warning: #D97706;
-  --danger: #B91C1C;
+  --brand-3: #3E76B8;
+  --accent: #B8912E;
+  --accent-soft: #F3EBD6;
+  --success: #2C7A54;
+  --warning: #B57826;
+  --danger: #9E2B25;
 
   --y2566: #6B7C93;
   --y2567: #1E5AA6;
@@ -141,7 +141,7 @@ body {
   font-weight: 700; line-height: 1.2;
   letter-spacing: -0.01em;
 }
-.hero h1 .accent { color: #FFD96B; }
+.hero h1 .accent { color: #E3C05A; }
 .hero .lede {
   font-size: clamp(0.95rem, 0.4vw + 0.85rem, 1.1rem);
   opacity: 0.92;
@@ -172,7 +172,7 @@ body {
   border: none; cursor: pointer;
   transition: all 0.15s ease;
 }
-.btn-primary { background: #FFD96B; color: #0B3B6F; }
+.btn-primary { background: #E3C05A; color: #0B3B6F; }
 .btn-primary:hover { background: white; transform: translateY(-1px); }
 .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
 .btn-outline:hover { background: rgba(255,255,255,0.1); }
@@ -198,10 +198,10 @@ body {
 }
 .profile-avatar {
   width: 56px; height: 56px;
-  background: linear-gradient(135deg, #FFD96B 0%, #E0A800 100%);
+  background: linear-gradient(135deg, #E3C05A 0%, #B8912E 100%);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 1.4rem; color: #0B3B6F;
+  font-weight: 700; font-size: 1.15rem; letter-spacing: 0.5px; color: #0B3B6F;
 }
 .profile-name { font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
 .profile-role { font-size: 0.82rem; opacity: 0.85; margin-top: 2px; }
@@ -211,7 +211,7 @@ body {
   font-size: 0.9rem;
 }
 .hero-stat-row .label { opacity: 0.85; }
-.hero-stat-row .val { font-weight: 700; font-size: 1.05rem; color: #FFD96B; font-family: "JetBrains Mono", monospace; }
+.hero-stat-row .val { font-weight: 700; font-size: 1.05rem; color: #E3C05A; font-family: "JetBrains Mono", monospace; }
 .hero-asof {
   margin-top: 14px; padding-top: 12px;
   border-top: 1px solid rgba(255,255,255,0.15);
@@ -478,7 +478,7 @@ body {
 }
 .ag-tag.gov { background: #E0F2FE; color: #0369A1; }
 .ag-tag.bma { background: #DBEAFE; color: #1E40AF; }
-.ag-tag.police { background: #FEE2E2; color: #B91C1C; }
+.ag-tag.police { background: #FEE2E2; color: #9E2B25; }
 .ag-tag.local { background: #DCFCE7; color: #166534; }
 .agency-card .ag-name {
   font-weight: 700; font-size: 1rem; color: var(--ink);
@@ -748,7 +748,7 @@ footer {
 }
 .footer-inner p, .footer-inner li { font-size: 0.85rem; line-height: 1.7; }
 .footer-inner ul { padding-left: 0; list-style: none; margin: 0; }
-.footer-inner a { color: #FFD96B; text-decoration: none; }
+.footer-inner a { color: #E3C05A; text-decoration: none; }
 .footer-inner a:hover { text-decoration: underline; }
 .footer-bottom {
   max-width: 1320px; margin: 24px auto 0;
@@ -865,7 +865,7 @@ footer {
   color: #fff; font-weight: 600; font-size: 0.98rem; display: flex; align-items: baseline; gap: 10px;
 }
 .qa-badge {
-  flex-shrink: 0; background: #FFD96B; color: var(--brand); font-weight: 800;
+  flex-shrink: 0; background: #E3C05A; color: var(--brand); font-weight: 800;
   font-size: 0.8rem; padding: 2px 9px; border-radius: 20px; font-family: "JetBrains Mono", monospace;
 }
 .qa-a { padding: 14px 18px 16px; font-size: 0.93rem; }
@@ -1026,7 +1026,7 @@ footer {
     <div class="hero-card">
       <h3>Analyst Profile</h3>
       <div class="profile-mini">
-        <div class="profile-avatar">P</div>
+        <div class="profile-avatar">PW</div>
         <div>
           <div class="profile-name">© Prapawadee W.</div>
           <div class="profile-role">Professional-Level Statistician</div>
@@ -1248,9 +1248,9 @@ footer {
         </div>
         <div class="chart-wrap tall"><canvas id="lineageStack" role="img" aria-label="แผนภูมิแท่งซ้อน: องค์ประกอบบัญชีจุดปัญหารายปี (จุดเดิม/จุดใหม่/จุดที่หลุดออก)"></canvas></div>
         <div class="tl-legend-note">
-          <div><span class="tl-sw" style="background:#B91C1C"></span> จุดที่ดำเนินงานต่อเนื่องทั้ง 3 ปี — Priority สูงสุด</div>
+          <div><span class="tl-sw" style="background:#9E2B25"></span> จุดที่ดำเนินงานต่อเนื่องทั้ง 3 ปี — Priority สูงสุด</div>
           <div><span class="tl-sw" style="background:#1E5AA6"></span> จุดที่ดำเนินการต่อจากปีก่อน</div>
-          <div><span class="tl-sw" style="background:#FFD96B"></span> จุดใหม่ที่เพิ่มเข้ามา</div>
+          <div><span class="tl-sw" style="background:#E3C05A"></span> จุดใหม่ที่เพิ่มเข้ามา</div>
           <div><span class="tl-sw" style="background:#94A3B8"></span> จับคู่พิกัดไม่ชัดเจน (ต้องตรวจสอบ)</div>
         </div>
       </div>
@@ -1373,7 +1373,7 @@ footer {
     <div class="section-head status-header">
       <div>
         <h2>สถานะการดำเนินการและตารางรายจุด<span class="en">Implementation Status &amp; Point Register</span></h2>
-        <div class="sub">ภาพรวมสถานะ · ผลการดำเนินงานแยกตามหน่วยงาน · และตารางข้อมูลรายจุดครบทั้ง 3 ปี · © Prapawadee W. กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สจส. กทม.</div>
+        <div class="sub">ภาพรวมสถานะ · และตารางข้อมูลรายจุดครบทั้ง 3 ปี · © Prapawadee W. กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน สจส. กทม.</div>
         <div class="print-only" id="printDate"></div>
       </div>
       <button class="btn-solid no-print" onclick="window.print()">พิมพ์ / บันทึกเป็น PDF</button>
@@ -1406,19 +1406,6 @@ footer {
         </div>
         <div class="chart-wrap"><canvas id="statusYearChart" role="img" aria-label="แผนภูมิแท่ง: สถานะการดำเนินการแยกตามปีงบประมาณ 2567 และ 2568"></canvas></div>
       </div>
-    </div>
-
-    <div class="section">
-      <div class="section-head">
-        <div>
-          <h2>ผลการดำเนินงานแยกตามหน่วยงานรับผิดชอบ<span class="en">Performance by Responsible Agency</span></h2>
-          <div class="sub">จำแนกจุดที่ติดตามสถานะตามหน่วยงานหลักและปีงบประมาณ (FY2567 + FY2568)</div>
-        </div>
-      </div>
-      <div class="table-scroll">
-        <table class="standard" id="execAgencyTable"></table>
-      </div>
-      <p class="qa-note" id="execFootNote"></p>
     </div>
 
     <div class="section">
@@ -2024,12 +2011,12 @@ function renderZoneChart(rows) {
         },
         tooltip: {
           backgroundColor: 'rgba(11, 59, 111, 0.97)',
-          titleColor: '#FFD96B',
+          titleColor: '#E3C05A',
           titleFont: { size: 13, weight: '700', family: '"Sarabun",sans-serif' },
           bodyColor: '#fff',
           bodyFont: { size: 12.5, family: '"Sarabun",sans-serif' },
           padding: 12, cornerRadius: 8,
-          borderColor: '#FFD96B', borderWidth: 1,
+          borderColor: '#E3C05A', borderWidth: 1,
           callbacks: {
             label: ctx => {
               const v = ctx.raw, total = ctx.dataset.data.reduce((s,x) => s+x, 0);
@@ -2230,9 +2217,9 @@ function renderLineageStack(lin) {
     data: {
       labels: ['FY 2566','FY 2567','FY 2568'],
       datasets: [
-        { label: 'จุดที่อยู่ทั้ง 3 ปี', data: [nTri, nTri, nTri], backgroundColor: '#B91C1C' },
+        { label: 'จุดที่อยู่ทั้ง 3 ปี', data: [nTri, nTri, nTri], backgroundColor: '#9E2B25' },
         { label: 'จุดที่ดำเนินการต่อจากปีก่อน', data: [0, carry67, carry68], backgroundColor: '#1E5AA6' },
-        { label: 'จุดใหม่ที่เพิ่มเข้ามาในปี', data: [new66, lin.new67count, lin.new68], backgroundColor: '#FFD96B' },
+        { label: 'จุดใหม่ที่เพิ่มเข้ามาในปี', data: [new66, lin.new67count, lin.new68], backgroundColor: '#E3C05A' },
         { label: 'จับคู่พิกัดไม่ชัดเจน (ต้องตรวจสอบ)', data: [0, resid67, resid68], backgroundColor: '#94A3B8' },
       ]
     },
@@ -2248,13 +2235,13 @@ function renderLineageStack(lin) {
         tooltip: {
           enabled: true,
           backgroundColor: 'rgba(11, 59, 111, 0.97)',
-          titleColor: '#FFD96B',
+          titleColor: '#E3C05A',
           titleFont: { size: 13, weight: '700', family: '"Sarabun",sans-serif' },
           bodyColor: '#fff',
           bodyFont: { size: 12.5, family: '"Sarabun",sans-serif' },
           padding: 14,
           cornerRadius: 8,
-          borderColor: '#FFD96B',
+          borderColor: '#E3C05A',
           borderWidth: 1,
           boxPadding: 6,
           usePointStyle: true,
@@ -2271,7 +2258,7 @@ function renderLineageStack(lin) {
               return '\nรวมทั้งหมด: ' + total + ' จุด';
             }
           },
-          footerColor: '#FFD96B',
+          footerColor: '#E3C05A',
           footerFont: { size: 12, weight: '700', family: '"Sarabun",sans-serif' }
         },
         title: {
@@ -2381,7 +2368,7 @@ function renderStatusDonut(tracked) {
       labels: ['เสร็จสิ้น (100%)', 'บางส่วน (1-99%)', 'ยังไม่เริ่ม (0%)'],
       datasets: [{
         data: [complete, partial, notStarted],
-        backgroundColor: ['#1B8E5A', '#D97706', '#B91C1C'],
+        backgroundColor: ['#2C7A54', '#B57826', '#9E2B25'],
         borderColor: '#fff', borderWidth: 2, hoverOffset: 8,
       }]
     },
@@ -2394,10 +2381,10 @@ function renderStatusDonut(tracked) {
           labels: { font: { size: IS_MOBILE() ? 11 : 12, weight: '500' }, padding: 12, usePointStyle: true, boxWidth: 10, color: '#334155' }
         },
         tooltip: {
-          backgroundColor: 'rgba(11, 59, 111, 0.97)', titleColor: '#FFD96B',
+          backgroundColor: 'rgba(11, 59, 111, 0.97)', titleColor: '#E3C05A',
           titleFont: { size: 13, weight: '700', family: '"Sarabun",sans-serif' },
           bodyColor: '#fff', bodyFont: { size: 12.5, family: '"Sarabun",sans-serif' },
-          padding: 12, cornerRadius: 8, borderColor: '#FFD96B', borderWidth: 1,
+          padding: 12, cornerRadius: 8, borderColor: '#E3C05A', borderWidth: 1,
           callbacks: { label: ctx => { const v = ctx.raw, total = ctx.dataset.data.reduce((s,x)=>s+x,0); return `  ${v} จุด (${((v/total)*100).toFixed(1)}%)`; } }
         }
       },
@@ -2417,9 +2404,9 @@ function renderStatusYearChart(tracked) {
     data: {
       labels: ['FY 2567', 'FY 2568'],
       datasets: [
-        { label: 'เสร็จสิ้น', data: [byYear[2567].complete, byYear[2568].complete], backgroundColor: '#1B8E5A', borderRadius: 6 },
-        { label: 'บางส่วน', data: [byYear[2567].partial, byYear[2568].partial], backgroundColor: '#D97706', borderRadius: 6 },
-        { label: 'ยังไม่เริ่ม', data: [byYear[2567].notStarted, byYear[2568].notStarted], backgroundColor: '#B91C1C', borderRadius: 6 },
+        { label: 'เสร็จสิ้น', data: [byYear[2567].complete, byYear[2568].complete], backgroundColor: '#2C7A54', borderRadius: 6 },
+        { label: 'บางส่วน', data: [byYear[2567].partial, byYear[2568].partial], backgroundColor: '#B57826', borderRadius: 6 },
+        { label: 'ยังไม่เริ่ม', data: [byYear[2567].notStarted, byYear[2568].notStarted], backgroundColor: '#9E2B25', borderRadius: 6 },
       ]
     },
     options: {
@@ -2561,22 +2548,6 @@ function renderOpsSummary(rows) {
   fill('execPoints', points);      fill('execPoints2', points);
   fill('execYearCards', card(s67) + card(s68));
 
-  const num = 'style="text-align:right; font-family:\'JetBrains Mono\',monospace;"';
-  const agRow = (label, g) => `<tr><td>${label}</td><td ${num}>${g.length}</td>
-    <td ${num}>${doneOf(g)} (${pct(doneOf(g), g.length)}%)</td><td ${num}>${compOf(g)}</td><td ${num}>${zeroOf(g)}</td></tr>`;
-  fill('execAgencyTable', `
-    <thead><tr><th>กลุ่ม</th><th style="text-align:right;">จำนวนจุด</th><th style="text-align:right;">ดำเนินการแล้ว</th>
-    <th style="text-align:right;">แล้วเสร็จ 100%</th><th style="text-align:right;">ยังไม่เริ่ม</th></tr></thead>
-    <tbody>
-      ${agRow('ปี 2567 — กทม.', bma67)}
-      ${agRow('ปี 2567 — หน่วยงานอื่น (' + othStr + ')', oth67)}
-      ${agRow('ปี 2568 — กทม.', bma68)}
-      ${agRow('ปี 2568 — ยังไม่ระบุหน่วยงานหลัก', oth68)}
-    </tbody>`);
-  fill('execFootNote', `หมายเหตุ: จุดที่ปรากฏซ้ำทั้งปี 2567 และ 2568 (จับคู่พิกัดระยะ ≤ 250 ม.) มี ${dupGeo} จุด
-    การรวมจำนวนจุดสองปีเข้าด้วยกันจึงมีการนับซ้ำบางส่วน — ตัวเลขร้อยละคำนวณแยกรายปี ·
-    ข้อมูลจากฐานติดตามจุดปัญหาจราจร สจส. · จัดทำโดย กลุ่มงานสถิติและวิจัย กองนโยบายและแผนงาน`);
-
   wrapQA.innerHTML = `
     <div class="qa-item">
       <div class="qa-q">รายชื่อจุดที่ยังไม่ได้ดำเนินการ</div>
@@ -2705,7 +2676,7 @@ function renderRegister(rows) {
 }
 
 // ============== MAP ==============
-const STATUS_COLORS = { done: '#1B8E5A', partial: '#D97706', notstarted: '#B91C1C', nodata: '#94A3B8' };
+const STATUS_COLORS = { done: '#2C7A54', partial: '#B57826', notstarted: '#9E2B25', nodata: '#94A3B8' };
 const STATUS_LABELS = { done: 'เสร็จสิ้น (100%)', partial: 'ดำเนินการบางส่วน', notstarted: 'ยังไม่เริ่ม', nodata: 'ยังไม่มีข้อมูลติดตาม (ปี 2566)' };
 function pointStatus(p) {
   if (p === null || p === undefined || p === '') return 'nodata';
