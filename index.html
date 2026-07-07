@@ -2472,6 +2472,33 @@ function renderOpsSummary(rows) {
   const s67 = opsStats(rows, 2567), s68 = opsStats(rows, 2568);
   const pct = (n, t) => t ? ((n / t) * 100).toFixed(1) : '0.0';
 
+  // --- ผลแล้วเสร็จแยกตามหน่วยงาน: กทม. vs นอกอำนาจ กทม. (แสดงเฉพาะปีที่ระบุหน่วยงานครบทุกจุด) ---
+  const agencyBlock = s => {
+    if (s.rows.some(r => !r.agency_main || !String(r.agency_main).trim())) return '';
+    const grp = (name, list, color) => {
+      const done = list.filter(r => Number(r.progress_pct) === 100).length;
+      const p = pct(done, list.length);
+      return `<div style="margin-bottom:7px;">
+        <div style="display:flex; justify-content:space-between; font-size:.85rem;">
+          <span><i style="display:inline-block; width:10px; height:10px; border-radius:3px; background:${color}; margin-right:6px;"></i>${name} — ${list.length} จุด</span>
+          <span style="font-family:'JetBrains Mono',monospace;"><b>${done}</b> จุด (${p}%)</span>
+        </div>
+        <div style="height:8px; border-radius:4px; background:var(--line-soft); overflow:hidden; margin-top:3px;">
+          <span style="display:block; height:100%; width:${p}%; background:${color};"></span>
+        </div>
+      </div>`;
+    };
+    const bma = s.rows.filter(r => String(r.agency_main).trim() === 'กทม.');
+    const ext = s.rows.filter(r => String(r.agency_main).trim() !== 'กทม.');
+    return `<div style="margin-top:12px; border-top:1px dashed var(--line); padding-top:10px;">
+      <div style="font-size:.86rem; font-weight:600; color:var(--ink-soft); margin-bottom:7px;">งานแล้วเสร็จ (100%) แยกตามหน่วยงานรับผิดชอบ</div>
+      ${grp('กทม.', bma, 'var(--brand)')}
+      ${grp('นอกอำนาจ กทม. (ทล./ทช./กทพ./รฟท.)', ext, '#64748B')}
+    </div>`;
+  };
+  s67.agencyBlock = agencyBlock(s67);
+  s68.agencyBlock = agencyBlock(s68);
+
   // --- Year summary cards ---
   const card = s => `
     <div class="ops-card">
@@ -2492,6 +2519,7 @@ function renderOpsSummary(rows) {
         <div class="ops-stat"><b style="color:var(--success)">${pct(s.done, s.total)}%</b><small>ของจุดทั้งหมด<br>ในปีนั้น</small></div>
         <div class="ops-stat"><b style="color:var(--danger)">${s.zero.length}</b><small>ยังไม่ได้ดำเนินการ</small></div>
       </div>
+      ${s.agencyBlock || ''}
     </div>`;
   wrapCards.innerHTML = card(s67) + card(s68);
 
