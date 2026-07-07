@@ -2689,11 +2689,7 @@ function renderOpsSummary(rows) {
     <div class="exec-big green"><b>${pct(s68.done, s68.total)}%</b><small>ผลงานปี 2568<br>(${s68.done}/${s68.total} จุด)</small></div>
     <div class="exec-big amber"><b>${review68}</b><small>จุดต้องเร่งรัด/ทบทวนมาตรการ<br>(ยังไม่เริ่ม ${s68.zero.length} + บางส่วน ${s68.partial.length})</small></div>
     <div class="exec-big red"><b>${chronic}</b><small>จุดที่ดำเนินงานต่อเนื่อง 3 ปี<br>ต้องแก้ไขเชิงโครงสร้าง</small></div>`;
-  const points = `
-    <li class="warn"><span class="pt-ic">!</span><span><strong>ต้องติดตาม</strong> — ${s68.zero.length} จุดของปี 2568 ยังไม่เริ่มดำเนินการ
-      ในจำนวนนี้ ${carry.length} จุดค้างต่อเนื่องมาตั้งแต่ปี 2567</span></li>
-    <li class="next"><span class="pt-ic">→</span><span><strong>ข้อเสนอ</strong> — จัดลำดับความสำคัญจุดที่ดำเนินงานต่อเนื่อง ${chronic} จุด
-      ซึ่งต้องการงบประมาณเชิงโครงสร้างและการประสานหลายหน่วยงาน พร้อมเริ่มบันทึกสาเหตุ/อุปสรรครายจุดในรอบติดตามถัดไป</span></li>`;
+  const points = '';
 
   fill('execHeadline', headline);  fill('execHeadline2', headline);
   fill('execBigCards', bigCards);  fill('execBigCards2', bigCards);
