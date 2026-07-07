@@ -2696,16 +2696,8 @@ function renderOpsSummary(rows) {
   fill('execPoints', points);      fill('execPoints2', points);
   fill('execYearCards', card(s67) + card(s68));
 
-  wrapQA.innerHTML = `
-    <div class="qa-item">
-      <div class="qa-q">รายชื่อจุดที่ยังไม่ได้ดำเนินการ</div>
-      <div class="qa-a">
-        <p>ปี 2567 มี <strong class="hl-red">${s67.zero.length} จุด (${pct(s67.zero.length, s67.total)}%)</strong>
-          และปี 2568 มี <strong class="hl-red">${s68.zero.length} จุด (${pct(s68.zero.length, s68.total)}%)</strong> — คลิกเพื่อดูรายชื่อ</p>
-        <details><summary>รายชื่อจุดที่ยังไม่ได้ดำเนินการ ปี 2567 (${s67.zero.length} จุด)</summary><ul class="qa-list">${zeroList(s67)}</ul></details>
-        <details><summary>รายชื่อจุดที่ยังไม่ได้ดำเนินการ ปี 2568 (${s68.zero.length} จุด)</summary><ul class="qa-list">${zeroList(s68)}</ul></details>
-      </div>
-    </div>`;
+  // รายชื่อจุดที่ยังไม่ได้ดำเนินการ — ย้ายไปแสดงที่แท็บ "สถานะ · Status" เพียงที่เดียว เพื่อไม่ให้ข้อมูลซ้ำซ้อน
+  wrapQA.innerHTML = '';
 }
 
 // ============== DATA AS-OF (hero card) ==============
