@@ -2,9 +2,9 @@
 
 **FY 2566–2568 (2023–2025)** · Portfolio Project by © Prapawadee W.
 
-[![Made by](https://img.shields.io/badge/Made_by-Prapawadee_W.-0B3B6F)](#)
-[![Org](https://img.shields.io/badge/Org-BMA_Traffic_%26_Transportation-1E5AA6)](#)
-[![Stack](https://img.shields.io/badge/Stack-Python_%7C_Chart.js_%7C_Leaflet-4A90E2)](#)
+[![Made by](https://img.shields.io/badge/Made_by-Prapawadee_W.-1D4ED8)](#)
+[![Org](https://img.shields.io/badge/Org-BMA_Traffic_%26_Transportation-2563EB)](#)
+[![Stack](https://img.shields.io/badge/Stack-Python_%7C_Chart.js_%7C_Leaflet-3B82F6)](#)
 [![Map](https://img.shields.io/badge/Map-OpenStreetMap_(ODbL)-success)](https://www.openstreetmap.org/copyright)
 
 ---
