@@ -2853,7 +2853,7 @@ function renderMap(geoJson) {
     const [lon, lat] = f.geometry.coordinates;
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
     const props = f.properties || {};
-    pts.push({ lat, lon, year: toInt(props.year), status: pointStatus(props.progress_pct), constr: props.status_group === 'ติดก่อสร้างรถไฟฟ้า', props });
+    pts.push({ lat, lon, year: toInt(props.year), status: pointStatus(props.progress_pct), constr: props.status_group === 'พื้นที่ก่อสร้างรถไฟฟ้า', props });
   });
 
   const markerLayer = L.layerGroup().addTo(map);
@@ -2937,9 +2937,9 @@ function renderMap(geoJson) {
 // ============== INIT ==============
 // ============== PENDING UPDATE (ก.ค. 2569) ==============
 const PENDING_GROUP_COLORS = {
-  'เสร็จแล้ว': '#1B8E5A', 'กำลังดำเนินการ': '#0E7490', 'มาตรการชั่วคราว': '#D97706',
-  'อยู่ระหว่างของบประมาณ': '#7C3AED', 'ติดก่อสร้างรถไฟฟ้า': '#B45309', 'นอกอำนาจ กทม.': '#475569',
-  'ติดข้อจำกัดหน่วยงานอื่น': '#64748B', 'ข้อจำกัดกายภาพ': '#B91C1C',
+  'เสร็จแล้ว': '#1B8E5A', 'อยู่ระหว่างดำเนินการ': '#0E7490', 'ใช้มาตรการชั่วคราว': '#D97706',
+  'อยู่ระหว่างของบประมาณ': '#7C3AED', 'พื้นที่ก่อสร้างรถไฟฟ้า': '#B45309', 'นอกอำนาจ กทม.': '#475569',
+  'ข้อจำกัดหน่วยงานภายนอก': '#64748B', 'ข้อจำกัดทางกายภาพ': '#B91C1C',
 };
 function renderPendingUpdate(allRows) {
   const el = document.getElementById('pendingGroupChart');
@@ -2966,7 +2966,7 @@ function renderPendingUpdate(allRows) {
     }
   });
   let html = '<thead><tr><th>#</th><th>ปี</th><th>ชื่อจุด</th><th>เขต</th><th>ผู้รับผิดชอบ</th><th>เหตุผลที่ยังไม่แล้วเสร็จ</th><th>สถานะล่าสุด</th></tr></thead><tbody>';
-  const order = ['เสร็จแล้ว','กำลังดำเนินการ','มาตรการชั่วคราว','อยู่ระหว่างของบประมาณ','ติดก่อสร้างรถไฟฟ้า','ติดข้อจำกัดหน่วยงานอื่น','นอกอำนาจ กทม.','ข้อจำกัดกายภาพ'];
+  const order = ['เสร็จแล้ว','อยู่ระหว่างดำเนินการ','ใช้มาตรการชั่วคราว','อยู่ระหว่างของบประมาณ','พื้นที่ก่อสร้างรถไฟฟ้า','ข้อจำกัดหน่วยงานภายนอก','นอกอำนาจ กทม.','ข้อจำกัดทางกายภาพ'];
   [...rows].sort((a,b) => order.indexOf(a['กลุ่มสถานะ']) - order.indexOf(b['กลุ่มสถานะ'])).forEach(r => {
     const col = PENDING_GROUP_COLORS[r['กลุ่มสถานะ']] || '#94A3B8';
     html += `<tr>
