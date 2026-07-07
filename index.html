@@ -1399,7 +1399,7 @@ footer {
             <div class="sub">คำนวณจากจุดปัญหาจราจรจริง — จุดพิกัดเดียวกันนับเป็นหนึ่ง โดยใช้สถานะปีล่าสุด</div>
           </div>
         </div>
-        <div class="chart-wrap"><canvas id="statusDonutChart" role="img" aria-label="แผนภูมิวงกลม: สัดส่วนสถานะการดำเนินการ (เสร็จสิ้น/บางส่วน/ยังไม่เริ่ม)"></canvas></div>
+        <div class="chart-wrap"><canvas id="statusDonutChart" role="img" aria-label="แผนภูมิวงกลม: สัดส่วนสถานะการดำเนินการ (เสร็จสิ้น/บางส่วน/ติดปัญหาดำเนินการ)"></canvas></div>
       </div>
       <div class="section">
         <div class="section-head">
@@ -2464,7 +2464,7 @@ function renderStatusDonut(tracked) {
   new Chart(document.getElementById('statusDonutChart'), {
     type: 'doughnut',
     data: {
-      labels: ['เสร็จสิ้น (100%)', 'บางส่วน (1-99%)', 'ยังไม่เริ่ม (0%)'],
+      labels: ['เสร็จสิ้น (100%)', 'บางส่วน (1-99%)', 'ติดปัญหาดำเนินการ'],
       datasets: [{
         data: [complete, partial, notStarted],
         backgroundColor: ['#00c08b', '#ffb449', '#DC2626'],
