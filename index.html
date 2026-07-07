@@ -2465,10 +2465,6 @@ function haversineM(lat1, lon1, lat2, lon2) {
   const a = Math.sin(dp/2)**2 + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dl/2)**2;
   return 2 * R * Math.asin(Math.sqrt(a));
 }
-function meanProgress(s) {
-  if (!s.total) return '0.0';
-  return (s.rows.reduce((a, r) => a + Number(r.progress_pct), 0) / s.total).toFixed(1);
-}
 function renderOpsSummary(rows) {
   const wrapCards = document.getElementById('opsYearCards');
   const wrapQA = document.getElementById('opsQA');
@@ -2526,15 +2522,10 @@ function renderOpsSummary(rows) {
         <div class="ops-stat"><b style="color:var(--brand)">${s.done}</b><small>ดำเนินการแล้ว<br>(≥ 1 มาตรการ)</small></div>
         <div class="ops-stat"><b style="color:var(--success)">${pct(s.done, s.total)}%</b><small>ของจุดทั้งหมด<br>ในปีนั้น</small></div>
         <div class="ops-stat"><b style="color:var(--danger)">${s.zero.length}</b><small>ยังไม่ได้ดำเนินการ</small></div>
-        <div class="ops-stat" style="background:#EAF3EE;"><b style="color:var(--success)">${meanProgress(s)}%</b><small>ความคืบหน้าเฉลี่ย<br>ของปีนี้</small></div>
       </div>
       ${s.agencyBlock || ''}
     </div>`;
-  wrapCards.innerHTML = card(s67) + card(s68) +
-    `<div style="grid-column:1/-1; font-size:.8rem; color:var(--muted); line-height:1.55;">
-      หมายเหตุ: ความคืบหน้าเฉลี่ย = ค่าเฉลี่ยของ % ความคืบหน้ารายจุดในปีนั้น (ทุกจุดน้ำหนักเท่ากัน, ประเมินตาม milestone ของหน่วยปฏิบัติ)
-      · แสดงแยกรายปี ไม่รวมสองปีเข้าด้วยกัน เนื่องจากมีจุดที่ติดตามซ้ำระหว่างปี 2567 และ 2568
-    </div>`;
+  wrapCards.innerHTML = card(s67) + card(s68);
 
   // --- KPI: จำนวนจุดที่ดำเนินการแล้ว รวม 3 ปี (ตัดตำแหน่งซ้ำ ≤ 250 ม.) ---
   const doneRecs = rows.filter(r => r.progress_pct != null && Number(r.progress_pct) > 0 && r.latitude && r.longitude);
