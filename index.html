@@ -1387,6 +1387,8 @@ footer {
       แต่คือการ refine inventory ตามเกณฑ์ TE ควรตรวจสอบสถานะจริงแยกต่างหากหากต้องการยืนยันผลของจุดกลุ่มนี้
       <br><br><strong>อัปเดต ก.ค. 2569:</strong> ปรับสถานะ 21 จุดตามรายงาน "จุดฝืดที่ยังไม่ได้ดำเนินการ" (สจส.) — แก้ไขแล้วเสร็จ 5 จุด (ปรับ progress เป็น 100%)
       ส่วนที่เหลือส่วนใหญ่ติดข้อจำกัดเชิงโครงสร้าง ดูรายละเอียดในหัวข้อ "อัปเดตสถานะจุดฝืดล่าสุด" ด้านล่าง
+      <br><strong>ข้อพึงระวังในการอ่านตัวเลข:</strong> ตัวเลขสถานะนับตาม "รายการติดตามรายปี" — ตำแหน่งที่ติดตามต่อเนื่องทั้งสองปีจะมี 2 รายการ
+      ดูจำนวนตำแหน่งจริงที่ KPI และหัวข้อ "สถานะรายตำแหน่ง (ไม่นับซ้ำ)" ด้านล่าง
     </div>
 
     <div class="two-col">
@@ -1407,6 +1409,39 @@ footer {
           </div>
         </div>
         <div class="chart-wrap"><canvas id="statusYearChart" role="img" aria-label="แผนภูมิแท่ง: สถานะการดำเนินการแยกตามปีงบประมาณ 2567 และ 2568"></canvas></div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h2>สถานะรายตำแหน่ง (ไม่นับซ้ำ)<span class="en">Status by Unique Location</span></h2>
+            <div class="sub">นับแต่ละตำแหน่งครั้งเดียว ใช้สถานะจากปีล่าสุดที่ติดตาม — สะท้อนภาพจริงของพื้นที่</div>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="locDonutChart" role="img" aria-label="แผนภูมิวงกลม: สถานะรายตำแหน่งไม่นับซ้ำ"></canvas></div>
+      </div>
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <h2>สรุปตำแหน่งจริง<span class="en">Unique Locations Summary</span></h2>
+            <div class="sub">ความสัมพันธ์ระหว่าง "รายการติดตาม" กับ "ตำแหน่งจริง"</div>
+          </div>
+        </div>
+        <div id="locSummary" style="font-size:.95rem; line-height:1.8;"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>จุดที่ติดตามต่อเนื่อง 2 ปี (พิกัดเดียวกัน)<span class="en">Points Tracked in Both FY2567 &amp; FY2568</span></h2>
+          <div class="sub">เทียบความคืบหน้าปี 2567 → 2568 รายจุด — จุดที่ % ปี 68 ต่ำกว่า ไม่ใช่งานถดถอย แต่เป็นการเริ่มมาตรการชุดใหม่ของปี 68</div>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="standard" id="continuityTable"></table>
       </div>
     </div>
 
@@ -2369,6 +2404,75 @@ function solMeasures(r) {
   const m = map.filter(([k]) => Number(r[k]) === 1).map(([,label]) => label);
   return m.length ? m.join(', ') : '-';
 }
+const locKey = r => Number(r.latitude).toFixed(6) + ',' + Number(r.longitude).toFixed(6);
+function locStats(tracked) {
+  const m67 = new Set(tracked.filter(r => toInt(r.year) === 2567).map(locKey));
+  const latest = {};
+  tracked.forEach(r => {
+    const k = locKey(r);
+    if (!latest[k] || toInt(r.year) > toInt(latest[k].year)) latest[k] = r;
+  });
+  const recs = Object.values(latest);
+  const cont = tracked.filter(r => toInt(r.year) === 2568 && m67.has(locKey(r))).length;
+  return {
+    n: recs.length, cont, recs,
+    done: recs.filter(r => Number(r.progress_pct) === 100).length,
+    partial: recs.filter(r => { const p = Number(r.progress_pct); return p > 0 && p < 100; }).length,
+    zero: recs.filter(r => Number(r.progress_pct) === 0).length,
+  };
+}
+function renderLocationStatus(tracked) {
+  const el = document.getElementById('locDonutChart');
+  if (!el) return;
+  const s = locStats(tracked);
+  const pc = v => (v / s.n * 100).toFixed(1);
+  new Chart(el, {
+    type: 'doughnut',
+    data: {
+      labels: [`เสร็จสิ้น (${s.done})`, `บางส่วน (${s.partial})`, `ยังไม่เริ่ม (${s.zero})`],
+      datasets: [{ data: [s.done, s.partial, s.zero],
+        backgroundColor: ['#1B8E5A', '#D97706', '#B91C1C'], borderColor: '#fff', borderWidth: 2 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '55%',
+      plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10 } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.raw} ตำแหน่ง (${pc(ctx.raw)}%)` } } } }
+  });
+  const sum = document.getElementById('locSummary');
+  if (sum) sum.innerHTML = `
+    <p>รายการติดตามสถานะ <b>${tracked.length} รายการ</b> (ปี 2567: ${tracked.filter(r=>toInt(r.year)===2567).length} + ปี 2568: ${tracked.filter(r=>toInt(r.year)===2568).length})
+    มาจากตำแหน่งจริง <b>${s.n} ตำแหน่ง</b> เนื่องจาก <b>${s.cont} ตำแหน่ง</b>ติดตามต่อเนื่องทั้งสองปี</p>
+    <p>เมื่อนับแต่ละตำแหน่งครั้งเดียวด้วยสถานะปีล่าสุด:
+    เสร็จสิ้น <b style="color:#1B8E5A">${s.done} ตำแหน่ง (${pc(s.done)}%)</b> ·
+    บางส่วน <b style="color:#D97706">${s.partial} (${pc(s.partial)}%)</b> ·
+    ยังไม่เริ่ม <b style="color:#B91C1C">${s.zero} (${pc(s.zero)}%)</b></p>`;
+}
+function renderContinuity(tracked) {
+  const tbl = document.getElementById('continuityTable');
+  if (!tbl) return;
+  const m67 = {};
+  tracked.filter(r => toInt(r.year) === 2567).forEach(r => { m67[locKey(r)] = r; });
+  const pairs = tracked.filter(r => toInt(r.year) === 2568 && m67[locKey(r)])
+    .map(r68 => ({ r68, r67: m67[locKey(r68)] }));
+  const lab = (a, b) => a === 100 && b === 100 ? ['เสร็จทั้งสองปี', 'tag-green', 0]
+    : b > a ? ['คืบหน้าขึ้น', 'tag-green', 1]
+    : b === a ? ['คงเดิม', 'tag-amber', 2]
+    : ['เริ่มมาตรการชุดใหม่ปี 68', 'tag-amber', 3];
+  const rows = pairs.map(({ r68, r67 }) => {
+    const [txt, cls, ord] = lab(Number(r67.progress_pct), Number(r68.progress_pct));
+    return { r68, r67, txt, cls, ord };
+  }).sort((x, y) => x.ord - y.ord || (x.r68.district || '').localeCompare(y.r68.district || '', 'th'));
+  let html = '<thead><tr><th>#</th><th>จุดปัญหา</th><th>เขต</th><th style="text-align:right;">ปี 2567</th><th style="text-align:right;">ปี 2568</th><th>การเปลี่ยนแปลง</th></tr></thead><tbody>';
+  rows.forEach((p, i) => {
+    html += `<tr><td>${i + 1}</td>
+      <td>${(p.r68.point_name || '-').toString().replace(/\n/g, ' ')}</td>
+      <td>${p.r68.district || '-'}</td>
+      <td style="text-align:right; font-family:'JetBrains Mono',monospace;">${Number(p.r67.progress_pct).toFixed(0)}%</td>
+      <td style="text-align:right; font-family:'JetBrains Mono',monospace;">${Number(p.r68.progress_pct).toFixed(0)}%</td>
+      <td><span class="tag ${p.cls}">${p.txt}</span></td></tr>`;
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+}
 function renderStatusKPIs(tracked) {
   const total = tracked.length;
   const complete = tracked.filter(r => Number(r.progress_pct) === 100).length;
@@ -2383,6 +2487,7 @@ function renderStatusKPIs(tracked) {
     <div class="kpi warning"><div class="lbl">ดำเนินการบางส่วน</div><div class="val">${partial}</div><div class="hint">${pct(partial)}% · ความคืบหน้า 1–99%</div></div>
     <div class="kpi danger"><div class="lbl">ยังไม่เริ่มดำเนินการ</div><div class="val">${notStarted}</div><div class="hint">${pct(notStarted)}% · ความคืบหน้า 0%</div></div>
     <div class="kpi danger"><div class="lbl">► ต้องทบทวน/ดำเนินการเพิ่ม</div><div class="val">${needAction}</div><div class="hint">${pct(needAction)}% รวมบางส่วน+ยังไม่เริ่ม</div></div>
+    <div class="kpi"><div class="lbl">ตำแหน่งจริง (ไม่นับซ้ำ)</div><div class="val">${locStats(tracked).n}</div><div class="hint">${locStats(tracked).cont} ตำแหน่งติดตามต่อเนื่อง 2 ปี</div></div>
   `;
 }
 function renderStatusDonut(tracked) {
@@ -2948,6 +3053,9 @@ async function init() {
     renderPointHistory(lineage);
     renderDistrictChart(combinedRows);
     renderStatusTab(combinedRows);
+    const trackedRows = combinedRows.filter(r => [2567, 2568].includes(toInt(r.year)) && r.progress_pct !== null && r.progress_pct !== undefined);
+    renderLocationStatus(trackedRows);
+    renderContinuity(trackedRows);
     if (pendingRows) renderPendingUpdate(pendingRows);
     renderRegister(combinedRows);
     renderOpsSummary(combinedRows);
