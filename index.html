@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#1E3A8A" />
+<meta name="theme-color" content="#005a9e" />
 <title>BMA Congestion Analysis | Spatial Lineage Dashboard (FY 2566–2568) — © Prapawadee_W.</title>
 <meta name="description" content="Portfolio dashboard for BMA traffic congestion analysis — spatial lineage, corridor clustering, and multi-agency intervention mapping by Prapawadee W., Statistics & Research Group, BMA Traffic and Transportation Department." />
 
@@ -27,18 +27,18 @@
   --paper: #F8FAFC;
   --panel: #FFFFFF;
 
-  --brand: #1D4ED8;
-  --brand-2: #2563EB;
-  --brand-3: #3B82F6;
-  --accent: #F59E0B;
-  --accent-soft: #FEF3C7;
-  --success: #059669;
-  --warning: #D97706;
+  --brand: #0073ce;
+  --brand-2: #0d8cd8;
+  --brand-3: #6fa7e3;
+  --accent: #ffb449;
+  --accent-soft: #ffeb9c;
+  --success: #00997a;
+  --warning: #e08600;
   --danger: #DC2626;
 
-  --y2566: #94A3B8;
-  --y2567: #3B82F6;
-  --y2568: #1D4ED8;
+  --y2566: #799987;
+  --y2567: #0d8cd8;
+  --y2568: #0073ce;
 
   --shadow-sm: 0 1px 2px rgba(15,23,42,0.06), 0 1px 3px rgba(15,23,42,0.05);
   --shadow-md: 0 4px 6px -1px rgba(15,23,42,0.08), 0 2px 4px -2px rgba(15,23,42,0.04);
@@ -105,7 +105,7 @@ body {
 .hero {
   position: relative;
   padding: 80px 24px 64px;
-  background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 45%, #2563EB 100%);
+  background: linear-gradient(135deg, #003a69 0%, #0073ce 55%, #0d8cd8 100%);
   color: white;
   overflow: hidden;
 }
@@ -141,7 +141,7 @@ body {
   font-weight: 700; line-height: 1.2;
   letter-spacing: -0.01em;
 }
-.hero h1 .accent { color: #FBBF24; }
+.hero h1 .accent { color: #ffde55; }
 .hero .lede {
   font-size: clamp(0.95rem, 0.4vw + 0.85rem, 1.1rem);
   opacity: 0.92;
@@ -172,7 +172,7 @@ body {
   border: none; cursor: pointer;
   transition: all 0.15s ease;
 }
-.btn-primary { background: #FBBF24; color: #1E3A8A; }
+.btn-primary { background: #ffde55; color: #005a9e; }
 .btn-primary:hover { background: white; transform: translateY(-1px); }
 .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.4); }
 .btn-outline:hover { background: rgba(255,255,255,0.1); }
@@ -198,10 +198,10 @@ body {
 }
 .profile-avatar {
   width: 56px; height: 56px;
-  background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+  background: linear-gradient(135deg, #ffde55 0%, #ffb449 100%);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 1.15rem; letter-spacing: 0.5px; color: #1E3A8A;
+  font-weight: 700; font-size: 1.15rem; letter-spacing: 0.5px; color: #005a9e;
 }
 .profile-name { font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
 .profile-role { font-size: 0.82rem; opacity: 0.85; margin-top: 2px; }
@@ -211,7 +211,7 @@ body {
   font-size: 0.9rem;
 }
 .hero-stat-row .label { opacity: 0.85; }
-.hero-stat-row .val { font-weight: 700; font-size: 1.05rem; color: #FBBF24; font-family: "JetBrains Mono", monospace; }
+.hero-stat-row .val { font-weight: 700; font-size: 1.05rem; color: #ffde55; font-family: "JetBrains Mono", monospace; }
 .hero-asof {
   margin-top: 14px; padding-top: 12px;
   border-top: 1px solid rgba(255,255,255,0.15);
@@ -732,7 +732,7 @@ table.standard tr:hover td { background: var(--line-soft); }
 
 /* ========== FOOTER ========== */
 footer {
-  background: linear-gradient(180deg, #0F172A 0%, #1E3A8A 100%);
+  background: linear-gradient(180deg, #003a69 0%, #0073ce 100%);
   color: rgba(255,255,255,0.85);
   padding: 32px 24px;
   margin-top: 40px;
@@ -748,7 +748,7 @@ footer {
 }
 .footer-inner p, .footer-inner li { font-size: 0.85rem; line-height: 1.7; }
 .footer-inner ul { padding-left: 0; list-style: none; margin: 0; }
-.footer-inner a { color: #FBBF24; text-decoration: none; }
+.footer-inner a { color: #ffde55; text-decoration: none; }
 .footer-inner a:hover { text-decoration: underline; }
 .footer-bottom {
   max-width: 1320px; margin: 24px auto 0;
@@ -865,7 +865,7 @@ footer {
   color: #fff; font-weight: 600; font-size: 0.98rem; display: flex; align-items: baseline; gap: 10px;
 }
 .qa-badge {
-  flex-shrink: 0; background: #FBBF24; color: var(--brand); font-weight: 800;
+  flex-shrink: 0; background: #ffde55; color: var(--brand); font-weight: 800;
   font-size: 0.8rem; padding: 2px 9px; border-radius: 20px; font-family: "JetBrains Mono", monospace;
 }
 .qa-a { padding: 14px 18px 16px; font-size: 0.93rem; }
@@ -1249,8 +1249,8 @@ footer {
         <div class="chart-wrap tall"><canvas id="lineageStack" role="img" aria-label="แผนภูมิแท่งซ้อน: องค์ประกอบบัญชีจุดปัญหารายปี (จุดเดิม/จุดใหม่/จุดที่หลุดออก)"></canvas></div>
         <div class="tl-legend-note">
           <div><span class="tl-sw" style="background:#DC2626"></span> จุดที่ดำเนินงานต่อเนื่องทั้ง 3 ปี — Priority สูงสุด</div>
-          <div><span class="tl-sw" style="background:#2563EB"></span> จุดที่ดำเนินการต่อจากปีก่อน</div>
-          <div><span class="tl-sw" style="background:#FBBF24"></span> จุดใหม่ที่เพิ่มเข้ามา</div>
+          <div><span class="tl-sw" style="background:#0d8cd8"></span> จุดที่ดำเนินการต่อจากปีก่อน</div>
+          <div><span class="tl-sw" style="background:#ffde55"></span> จุดใหม่ที่เพิ่มเข้ามา</div>
           <div><span class="tl-sw" style="background:#94A3B8"></span> จับคู่พิกัดไม่ชัดเจน (ต้องตรวจสอบ)</div>
         </div>
       </div>
@@ -1828,7 +1828,7 @@ Chart.defaults.plugins.legend.labels.padding = 12;
 const IS_NARROW = () => window.innerWidth <= 768;
 const IS_MOBILE = () => window.innerWidth <= 540;
 
-const YEAR_COLORS = { 2566: '#94A3B8', 2567: '#2563EB', 2568: '#1E3A8A' };
+const YEAR_COLORS = { 2566: '#799987', 2567: '#0d8cd8', 2568: '#0073ce' };
 // Professional pastel palette — muted tones suitable for official reports
 const ZONE_COLORS = ['#7BA7C9','#A8C5DA','#9DB7CC','#C2D4B8','#E8C8A0','#D4A8A8'];
 const ZONE_BORDER = ['#5A8AB0','#7FA5C2','#7298B4','#A4BC95','#CFAA80','#B98686'];
@@ -2003,7 +2003,7 @@ function renderZoneChart(rows) {
         if (pct < 5) return; // hide small slivers
         const pos = arc.tooltipPosition();
         ctx.font = '700 ' + (IS_MOBILE() ? '11px' : '13px') + ' "Sarabun", sans-serif';
-        ctx.fillStyle = '#1E3A8A';
+        ctx.fillStyle = '#005a9e';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         // White outline for legibility on pastel
@@ -2026,7 +2026,7 @@ function renderZoneChart(rows) {
         backgroundColor: ZONE_COLORS,
         borderColor: ZONE_BORDER,
         borderWidth: 1.5,
-        hoverBorderColor: '#1E3A8A',
+        hoverBorderColor: '#005a9e',
         hoverBorderWidth: 2,
         hoverOffset: 8,
       }]
@@ -2061,12 +2061,12 @@ function renderZoneChart(rows) {
         },
         tooltip: {
           backgroundColor: 'rgba(15, 23, 42, 0.95)',
-          titleColor: '#FBBF24',
+          titleColor: '#ffde55',
           titleFont: { size: 13, weight: '700', family: '"Sarabun",sans-serif' },
           bodyColor: '#fff',
           bodyFont: { size: 12.5, family: '"Sarabun",sans-serif' },
           padding: 12, cornerRadius: 8,
-          borderColor: '#FBBF24', borderWidth: 1,
+          borderColor: '#ffde55', borderWidth: 1,
           callbacks: {
             label: ctx => {
               const v = ctx.raw, total = ctx.dataset.data.reduce((s,x) => s+x, 0);
@@ -2109,7 +2109,7 @@ function renderTrendChart(byYear) {
         onComplete: function(){
           const ctx = this.ctx;
           ctx.font = (IS_MOBILE() ? '600 12px ' : '700 14px ') + '"Sarabun", sans-serif';
-          ctx.fillStyle = '#1E3A8A';
+          ctx.fillStyle = '#005a9e';
           ctx.textAlign = 'center';
           this.data.datasets[0].data.forEach((val, i) => {
             const meta = this.getDatasetMeta(0).data[i];
@@ -2268,8 +2268,8 @@ function renderLineageStack(lin) {
       labels: ['FY 2566','FY 2567','FY 2568'],
       datasets: [
         { label: 'จุดที่อยู่ทั้ง 3 ปี', data: [nTri, nTri, nTri], backgroundColor: '#DC2626' },
-        { label: 'จุดที่ดำเนินการต่อจากปีก่อน', data: [0, carry67, carry68], backgroundColor: '#2563EB' },
-        { label: 'จุดใหม่ที่เพิ่มเข้ามาในปี', data: [new66, lin.new67count, lin.new68], backgroundColor: '#FBBF24' },
+        { label: 'จุดที่ดำเนินการต่อจากปีก่อน', data: [0, carry67, carry68], backgroundColor: '#0d8cd8' },
+        { label: 'จุดใหม่ที่เพิ่มเข้ามาในปี', data: [new66, lin.new67count, lin.new68], backgroundColor: '#ffde55' },
         { label: 'จับคู่พิกัดไม่ชัดเจน (ต้องตรวจสอบ)', data: [0, resid67, resid68], backgroundColor: '#94A3B8' },
       ]
     },
@@ -2285,13 +2285,13 @@ function renderLineageStack(lin) {
         tooltip: {
           enabled: true,
           backgroundColor: 'rgba(15, 23, 42, 0.95)',
-          titleColor: '#FBBF24',
+          titleColor: '#ffde55',
           titleFont: { size: 13, weight: '700', family: '"Sarabun",sans-serif' },
           bodyColor: '#fff',
           bodyFont: { size: 12.5, family: '"Sarabun",sans-serif' },
           padding: 14,
           cornerRadius: 8,
-          borderColor: '#FBBF24',
+          borderColor: '#ffde55',
           borderWidth: 1,
           boxPadding: 6,
           usePointStyle: true,
@@ -2308,7 +2308,7 @@ function renderLineageStack(lin) {
               return '\nรวมทั้งหมด: ' + total + ' จุด';
             }
           },
-          footerColor: '#FBBF24',
+          footerColor: '#ffde55',
           footerFont: { size: 12, weight: '700', family: '"Sarabun",sans-serif' }
         },
         title: {
@@ -2346,7 +2346,7 @@ function renderDistrictChart(rows) {
       datasets: [{
         label: 'จุดปัญหารวม 3 ปี',
         data: top.map(e => e[1]),
-        backgroundColor: '#2563EB',
+        backgroundColor: '#0d8cd8',
         borderRadius: 6,
       }]
     },
@@ -2366,7 +2366,7 @@ function renderDistrictChart(rows) {
         onComplete: function(){
           const ctx = this.ctx;
           ctx.font = '600 ' + (IS_MOBILE() ? '11px' : '12px') + ' "Sarabun", sans-serif';
-          ctx.fillStyle = '#1E3A8A';
+          ctx.fillStyle = '#005a9e';
           ctx.textAlign = 'left';
           ctx.textBaseline = 'middle';
           this.data.datasets[0].data.forEach((val, i) => {
@@ -2419,7 +2419,7 @@ function renderLocationStatus(tracked) {
     data: {
       labels: [`เสร็จสิ้น (${s.done})`, `บางส่วน (${s.partial})`, `ยังไม่เริ่ม (${s.zero})`],
       datasets: [{ data: [s.done, s.partial, s.zero],
-        backgroundColor: ['#059669', '#D97706', '#DC2626'], borderColor: '#fff', borderWidth: 2 }]
+        backgroundColor: ['#00c08b', '#ffb449', '#DC2626'], borderColor: '#fff', borderWidth: 2 }]
     },
     options: { responsive: true, maintainAspectRatio: false, cutout: '55%',
       plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10 } },
@@ -2430,8 +2430,8 @@ function renderLocationStatus(tracked) {
     <p>รายการติดตามสถานะ <b>${tracked.length} รายการ</b> (ปี 2567: ${tracked.filter(r=>toInt(r.year)===2567).length} + ปี 2568: ${tracked.filter(r=>toInt(r.year)===2568).length})
     มาจากตำแหน่งจริง <b>${s.n} ตำแหน่ง</b> เนื่องจาก <b>${s.cont} ตำแหน่ง</b>ติดตามต่อเนื่องทั้งสองปี</p>
     <p>เมื่อนับแต่ละตำแหน่งครั้งเดียวด้วยสถานะปีล่าสุด:
-    เสร็จสิ้น <b style="color:#059669">${s.done} ตำแหน่ง (${pc(s.done)}%)</b> ·
-    บางส่วน <b style="color:#D97706">${s.partial} (${pc(s.partial)}%)</b> ·
+    เสร็จสิ้น <b style="color:#00c08b">${s.done} ตำแหน่ง (${pc(s.done)}%)</b> ·
+    บางส่วน <b style="color:#ffb449">${s.partial} (${pc(s.partial)}%)</b> ·
     ยังไม่เริ่ม <b style="color:#DC2626">${s.zero} (${pc(s.zero)}%)</b></p>`;
 }
 function renderContinuity(tracked) {
@@ -2488,7 +2488,7 @@ function renderStatusDonut(tracked) {
       labels: ['เสร็จสิ้น (100%)', 'บางส่วน (1-99%)', 'ยังไม่เริ่ม (0%)'],
       datasets: [{
         data: [complete, partial, notStarted],
-        backgroundColor: ['#059669', '#D97706', '#DC2626'],
+        backgroundColor: ['#00c08b', '#ffb449', '#DC2626'],
         borderColor: '#fff', borderWidth: 2, hoverOffset: 8,
       }]
     },
@@ -2501,10 +2501,10 @@ function renderStatusDonut(tracked) {
           labels: { font: { size: IS_MOBILE() ? 11 : 12, weight: '500' }, padding: 12, usePointStyle: true, boxWidth: 10, color: '#334155' }
         },
         tooltip: {
-          backgroundColor: 'rgba(15, 23, 42, 0.95)', titleColor: '#FBBF24',
+          backgroundColor: 'rgba(15, 23, 42, 0.95)', titleColor: '#ffde55',
           titleFont: { size: 13, weight: '700', family: '"Sarabun",sans-serif' },
           bodyColor: '#fff', bodyFont: { size: 12.5, family: '"Sarabun",sans-serif' },
-          padding: 12, cornerRadius: 8, borderColor: '#FBBF24', borderWidth: 1,
+          padding: 12, cornerRadius: 8, borderColor: '#ffde55', borderWidth: 1,
           callbacks: { label: ctx => { const v = ctx.raw, total = ctx.dataset.data.reduce((s,x)=>s+x,0); return `  ${v} จุด (${((v/total)*100).toFixed(1)}%)`; } }
         }
       },
@@ -2524,8 +2524,8 @@ function renderStatusYearChart(tracked) {
     data: {
       labels: ['FY 2567', 'FY 2568'],
       datasets: [
-        { label: 'เสร็จสิ้น', data: [byYear[2567].complete, byYear[2568].complete], backgroundColor: '#059669', borderRadius: 6 },
-        { label: 'บางส่วน', data: [byYear[2567].partial, byYear[2568].partial], backgroundColor: '#D97706', borderRadius: 6 },
+        { label: 'เสร็จสิ้น', data: [byYear[2567].complete, byYear[2568].complete], backgroundColor: '#00c08b', borderRadius: 6 },
+        { label: 'บางส่วน', data: [byYear[2567].partial, byYear[2568].partial], backgroundColor: '#ffb449', borderRadius: 6 },
         { label: 'ยังไม่เริ่ม', data: [byYear[2567].notStarted, byYear[2568].notStarted], backgroundColor: '#DC2626', borderRadius: 6 },
       ]
     },
@@ -2828,7 +2828,7 @@ function renderRegister(rows) {
 }
 
 // ============== MAP ==============
-const STATUS_COLORS = { done: '#059669', partial: '#D97706', notstarted: '#DC2626', nodata: '#94A3B8' };
+const STATUS_COLORS = { done: '#00c08b', partial: '#ffb449', notstarted: '#DC2626', nodata: '#94A3B8' };
 const STATUS_LABELS = { done: 'เสร็จสิ้น (100%)', partial: 'ดำเนินการบางส่วน', notstarted: 'ยังไม่เริ่ม', nodata: 'ยังไม่มีข้อมูลติดตาม (ปี 2566)' };
 function pointStatus(p) {
   if (p === null || p === undefined || p === '') return 'nodata';
@@ -2837,7 +2837,7 @@ function pointStatus(p) {
   if (n === 0) return 'notstarted';
   return 'partial';
 }
-const CONSTR_LEGEND = `<div class="lg-row"><span class="lg-dot" style="background:transparent; border:2px dashed #EA580C;"></span>🚧 อยู่ในพื้นที่ก่อสร้างรถไฟฟ้า</div>`;
+const CONSTR_LEGEND = `<div class="lg-row"><span class="lg-dot" style="background:transparent; border:2px dashed #ed42aa;"></span>🚧 อยู่ในพื้นที่ก่อสร้างรถไฟฟ้า</div>`;
 function renderMap(geoJson) {
   const map = L.map('map').setView([13.7563, 100.5018], 11);
   window._map = map;
@@ -2870,7 +2870,7 @@ function renderMap(geoJson) {
       + `เขต: ${pr.district || '-'} · โซน: ${translateZone(pr.zone || 'Unknown')}<br/>`
       + `ถนน: ${(pr.road || '-').toString().replace(/\n/g, ' ')}<br/>`
       + `หน่วยงานหลัก: ${pr.agency_main || 'ยังไม่ระบุ'}`
-      + (pr.status_latest ? `<br/>สถานะล่าสุด (ก.ค. 2569): <b style="color:#EA580C">🚧 ${pr.status_latest}</b>` : '');
+      + (pr.status_latest ? `<br/>สถานะล่าสุด (ก.ค. 2569): <b style="color:#ed42aa">🚧 ${pr.status_latest}</b>` : '');
   };
 
   // Legend control
@@ -2917,7 +2917,7 @@ function renderMap(geoJson) {
       sel.forEach(p => {
         const color = mode === 'year' ? (YEAR_COLORS[p.year] || '#94A3B8') : STATUS_COLORS[p.status];
         if (p.constr) {
-          L.circleMarker([p.lat, p.lon], { radius: 12, fill: false, color: '#EA580C', weight: 2.5, dashArray: '4 3' })
+          L.circleMarker([p.lat, p.lon], { radius: 12, fill: false, color: '#ed42aa', weight: 2.5, dashArray: '4 3' })
             .bindPopup(popupHtml(p)).addTo(markerLayer);
         }
         L.circleMarker([p.lat, p.lon], { radius: 6, fillOpacity: 0.85, fillColor: color, color: '#fff', weight: 1 })
@@ -2937,9 +2937,9 @@ function renderMap(geoJson) {
 // ============== INIT ==============
 // ============== PENDING UPDATE (ก.ค. 2569) ==============
 const PENDING_GROUP_COLORS = {
-  'เสร็จแล้ว': '#059669', 'อยู่ระหว่างดำเนินการ': '#0891B2', 'ใช้มาตรการชั่วคราว': '#D97706',
-  'อยู่ระหว่างของบประมาณ': '#8B5CF6', 'พื้นที่ก่อสร้างรถไฟฟ้า': '#EA580C', 'นอกอำนาจ กทม.': '#475569',
-  'ข้อจำกัดหน่วยงานภายนอก': '#64748B', 'ข้อจำกัดทางกายภาพ': '#DC2626',
+  'เสร็จแล้ว': '#00c08b', 'อยู่ระหว่างดำเนินการ': '#0d8cd8', 'ใช้มาตรการชั่วคราว': '#ffb449',
+  'อยู่ระหว่างของบประมาณ': '#6d339e', 'พื้นที่ก่อสร้างรถไฟฟ้า': '#ed42aa', 'นอกอำนาจ กทม.': '#4f7863',
+  'ข้อจำกัดหน่วยงานภายนอก': '#799987', 'ข้อจำกัดทางกายภาพ': '#DC2626',
 };
 function renderPendingUpdate(allRows) {
   const el = document.getElementById('pendingGroupChart');
