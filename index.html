@@ -1385,6 +1385,8 @@ footer {
       ในปีงบประมาณ <strong>2567 และ 2568</strong> เท่านั้น (รวม 204 จุด) ส่วนจุดปี 2566 (266 จุดจากเรื่องร้องเรียน) ยังไม่มีข้อมูลความคืบหน้าในชุดข้อมูลนี้
       เนื่องจากเป็นบัญชีก่อนการคัดกรองเชิงวิศวกรรมจราจร การที่จุดปี 2566 ไม่ถูกนับต่อในปีถัดไป (dropout) <strong>ไม่ได้แปลว่าแก้ไขสำเร็จ</strong>
       แต่คือการ refine inventory ตามเกณฑ์ TE ควรตรวจสอบสถานะจริงแยกต่างหากหากต้องการยืนยันผลของจุดกลุ่มนี้
+      <br><br><strong>อัปเดต ก.ค. 2569:</strong> ปรับสถานะ 21 จุดตามรายงาน "จุดฝืดที่ยังไม่ได้ดำเนินการ" (สจส.) — แก้ไขแล้วเสร็จ 5 จุด (ปรับ progress เป็น 100%)
+      ส่วนที่เหลือส่วนใหญ่ติดข้อจำกัดเชิงโครงสร้าง ดูรายละเอียดในหัวข้อ "อัปเดตสถานะจุดฝืดล่าสุด" ด้านล่าง
     </div>
 
     <div class="two-col">
@@ -1405,6 +1407,31 @@ footer {
           </div>
         </div>
         <div class="chart-wrap"><canvas id="statusYearChart" role="img" aria-label="แผนภูมิแท่ง: สถานะการดำเนินการแยกตามปีงบประมาณ 2567 และ 2568"></canvas></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>อัปเดตสถานะจุดฝืดล่าสุด — ก.ค. 2569<span class="en">Latest Pending-Points Update (21 Points)</span></h2>
+          <div class="sub">จากรายงาน "จุดฝืดที่ยังไม่ได้ดำเนินการ" (สจส.) — จำแนกตามอุปสรรค/สถานะจริงรายจุด</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="chart-wrap"><canvas id="pendingGroupChart" role="img" aria-label="แผนภูมิแท่ง: จำนวนจุดฝืดจำแนกตามกลุ่มสถานะล่าสุด"></canvas></div>
+        </div>
+        <div id="pendingInsight" style="font-size:.92rem; line-height:1.65;">
+          <p><strong>ข้อค้นพบหลัก:</strong> แม้หัวรายงานระบุ "ยังไม่ได้ดำเนินการ" แต่เมื่อตรวจสอบสถานะจริงพบว่า
+          <strong>5 จุดแก้ไขแล้วเสร็จ</strong> และอีก 1 จุดอยู่ระหว่างก่อสร้างโดย สนย.</p>
+          <p>จุดที่เหลือ 15 จุดส่วนใหญ่ <strong>ไม่ใช่ความล่าช้าของ กทม.</strong> แต่ติดข้อจำกัดเชิงโครงสร้าง ได้แก่
+          พื้นที่ก่อสร้างรถไฟฟ้าสายสีม่วง/สีส้ม (5), อยู่นอกอำนาจ กทม. — ทช./กทพ./ตำรวจ (3),
+          กายภาพถนนไม่เอื้อต่อการแก้ไข (3), รองบประมาณสัญญาณไฟ adaptive ปี 2569 (2)
+          และใช้มาตรการกวดขันจราจรชั่วคราว (2)</p>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="standard" id="pendingUpdateTable"></table>
       </div>
     </div>
 
@@ -2775,12 +2802,56 @@ function renderMap(geoJson) {
 }
 
 // ============== INIT ==============
+// ============== PENDING UPDATE (ก.ค. 2569) ==============
+const PENDING_GROUP_COLORS = {
+  'เสร็จแล้ว': '#1B8E5A', 'กำลังดำเนินการ': '#0E7490', 'มาตรการชั่วคราว': '#D97706',
+  'รองบปี 2569': '#7C3AED', 'ติดก่อสร้างรถไฟฟ้า': '#B45309', 'นอกอำนาจ กทม.': '#475569',
+  'ติดข้อจำกัดหน่วยงานอื่น': '#64748B', 'ข้อจำกัดกายภาพ': '#B91C1C',
+};
+function renderPendingUpdate(rows) {
+  const el = document.getElementById('pendingGroupChart');
+  if (!el || !rows || !rows.length) return;
+  const counts = {};
+  rows.forEach(r => { counts[r['กลุ่มสถานะ']] = (counts[r['กลุ่มสถานะ']] || 0) + 1; });
+  const labels = Object.keys(counts).sort((a,b) => counts[b] - counts[a]);
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ label: 'จำนวนจุด', data: labels.map(l => counts[l]),
+        backgroundColor: labels.map(l => PENDING_GROUP_COLORS[l] || '#94A3B8'), borderRadius: 6 }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x} จุด` } } },
+      scales: {
+        x: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } }, grid: { color: '#E2E8F0' } },
+        y: { grid: { display: false }, ticks: { font: { size: 12, weight: '600' } } }
+      }
+    }
+  });
+  let html = '<thead><tr><th>#</th><th>ปี</th><th>ชื่อจุด</th><th>เขต</th><th>ผู้รับผิดชอบ</th><th>กลุ่มสถานะ</th><th>สถานะล่าสุด</th></tr></thead><tbody>';
+  const order = ['เสร็จแล้ว','กำลังดำเนินการ','มาตรการชั่วคราว','รองบปี 2569','ติดก่อสร้างรถไฟฟ้า','ติดข้อจำกัดหน่วยงานอื่น','นอกอำนาจ กทม.','ข้อจำกัดกายภาพ'];
+  [...rows].sort((a,b) => order.indexOf(a['กลุ่มสถานะ']) - order.indexOf(b['กลุ่มสถานะ'])).forEach(r => {
+    const col = PENDING_GROUP_COLORS[r['กลุ่มสถานะ']] || '#94A3B8';
+    html += `<tr>
+      <td>${r['ลำดับ']}</td><td>${r['ปี']}</td><td>${r['ชื่อจุด']}</td><td>${r['เขต']}</td><td>${r['ผู้รับผิดชอบ']}</td>
+      <td><span class="tag" style="background:${col}1A; color:${col}; border:1px solid ${col}55;">${r['กลุ่มสถานะ']}</span></td>
+      <td>${r['สถานะล่าสุด']}</td>
+    </tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('pendingUpdateTable').innerHTML = html;
+}
+
 async function init() {
   try {
-    const [combinedRows, geoJson, corridors] = await Promise.all([
+    const [combinedRows, geoJson, corridors, pendingRows] = await Promise.all([
       fetchJson('data/combined_data.json'),
       fetchJson('data/all_points.geojson'),
       fetchJson('data/sheets/11_Corridors.json'),
+      fetchJson('data/sheets/13_Pending_Update.json').catch(() => null),
     ]);
 
     const byYear = { 2566: 0, 2567: 0, 2568: 0 };
@@ -2837,6 +2908,7 @@ async function init() {
     renderPointHistory(lineage);
     renderDistrictChart(combinedRows);
     renderStatusTab(combinedRows);
+    if (pendingRows) renderPendingUpdate(pendingRows);
     renderRegister(combinedRows);
     renderOpsSummary(combinedRows);
     renderMap(geoJson);

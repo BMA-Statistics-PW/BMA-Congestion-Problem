@@ -1,7 +1,7 @@
 {
   "source_xlsx": "data.xlsx",
   "generated_at_utc": "2569-05-16T17:26:58Z",
-  "total_sheets": 12,
+  "total_sheets": 13,
   "files": [
     {
       "sheet": "01_Executive Summary",
@@ -62,6 +62,13 @@
       "sheet": "12_New & Dropout",
       "file": "sheets/12_New___Dropout.json",
       "rows": 123
+    },
+    {
+      "sheet": "13_Pending_Update",
+      "file": "sheets/13_Pending_Update.json",
+      "rows": 21
     }
-  ]
+  ],
+  "updated_at": "2569-07-07",
+  "update_note": "รายงานจุดฝืดที่ยังไม่ได้ดำเนินการ (สจส., ก.ค. 2569)"
 }
