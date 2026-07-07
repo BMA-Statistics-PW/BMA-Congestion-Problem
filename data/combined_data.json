@@ -8078,7 +8078,7 @@
  {
   "year": 2567.0,
   "point_id": 46.0,
-  "point_name": "แยกมักกะสัน",
+  "point_name": "แยกมักกะสัน (สามแยกทางรถไฟ)",
   "point_type": "ทางแยก",
   "district": "ราชเทวี",
   "zone": "กรุงเทพกลาง",
@@ -8094,8 +8094,8 @@
   "sol_physical": 1.0,
   "sol_busbay": 0.0,
   "sol_cctv": 0.0,
-  "latitude": 13.754904,
-  "longitude": 100.542131
+  "latitude": 13.754,
+  "longitude": 100.5423
  },
  {
   "year": 2567.0,
@@ -8741,7 +8741,7 @@
  {
   "year": 2568.0,
   "point_id": 4.0,
-  "point_name": "แยกมักกะสัน",
+  "point_name": "แยกมักกะสัน (สามแยกทางรถไฟ)",
   "point_type": "ทางแยก",
   "district": "ราชเทวี",
   "zone": "กรุงเทพกลาง",
@@ -8757,8 +8757,8 @@
   "sol_physical": 1.0,
   "sol_busbay": 0.0,
   "sol_cctv": 0.0,
-  "latitude": 13.754904,
-  "longitude": 100.542131
+  "latitude": 13.754,
+  "longitude": 100.5423
  },
  {
   "year": 2568.0,
