@@ -1448,23 +1448,11 @@ footer {
     <div class="section">
       <div class="section-head">
         <div>
-          <h2>อัปเดตสถานะจุดฝืดล่าสุด — ก.ค. 2569<span class="en">Latest Pending-Points Update (21 Points)</span></h2>
-          <div class="sub">จากรายงาน "จุดฝืดที่ยังไม่ได้ดำเนินการ" (สจส.) — จำแนกตามอุปสรรค/สถานะจริงรายจุด</div>
+          <h2>สถานะจุดที่ยังดำเนินการไม่แล้วเสร็จ<span class="en">Unresolved Points — Status &amp; Reasons</span></h2>
+          <div class="sub">จากรายงาน "จุดฝืดที่ยังไม่ได้ดำเนินการ" (สจส. ก.ค. 2569) — พร้อมเหตุผลที่ยังไม่แล้วเสร็จรายจุด</div>
         </div>
       </div>
-      <div class="two-col">
-        <div>
-          <div class="chart-wrap"><canvas id="pendingGroupChart" role="img" aria-label="แผนภูมิแท่ง: จำนวนจุดฝืดจำแนกตามกลุ่มสถานะล่าสุด"></canvas></div>
-        </div>
-        <div id="pendingInsight" style="font-size:.92rem; line-height:1.65;">
-          <p><strong>ข้อค้นพบหลัก:</strong> แม้หัวรายงานระบุ "ยังไม่ได้ดำเนินการ" แต่เมื่อตรวจสอบสถานะจริงพบว่า
-          <strong>5 จุดแก้ไขแล้วเสร็จ</strong> และอีก 1 จุดอยู่ระหว่างก่อสร้างโดย สนย.</p>
-          <p>จุดที่เหลือ 15 จุดส่วนใหญ่ <strong>ไม่ใช่ความล่าช้าของ กทม.</strong> แต่ติดข้อจำกัดเชิงโครงสร้าง ได้แก่
-          พื้นที่ก่อสร้างรถไฟฟ้าสายสีม่วง/สีส้ม (5), อยู่นอกอำนาจ กทม. — ทช./กทพ./ตำรวจ (3),
-          กายภาพถนนไม่เอื้อต่อการแก้ไข (3), รองบประมาณสัญญาณไฟ adaptive ปี 2569 (2)
-          และใช้มาตรการกวดขันจราจรชั่วคราว (2)</p>
-        </div>
-      </div>
+      <div class="chart-wrap"><canvas id="pendingGroupChart" role="img" aria-label="แผนภูมิแท่ง: จำนวนจุดที่ยังไม่แล้วเสร็จจำแนกตามเหตุผล"></canvas></div>
       <div class="table-scroll">
         <table class="standard" id="pendingUpdateTable"></table>
       </div>
@@ -2953,9 +2941,10 @@ const PENDING_GROUP_COLORS = {
   'รองบปี 2569': '#7C3AED', 'ติดก่อสร้างรถไฟฟ้า': '#B45309', 'นอกอำนาจ กทม.': '#475569',
   'ติดข้อจำกัดหน่วยงานอื่น': '#64748B', 'ข้อจำกัดกายภาพ': '#B91C1C',
 };
-function renderPendingUpdate(rows) {
+function renderPendingUpdate(allRows) {
   const el = document.getElementById('pendingGroupChart');
-  if (!el || !rows || !rows.length) return;
+  const rows = (allRows || []).filter(r => r['กลุ่มสถานะ'] !== 'เสร็จแล้ว');
+  if (!el || !rows.length) return;
   const counts = {};
   rows.forEach(r => { counts[r['กลุ่มสถานะ']] = (counts[r['กลุ่มสถานะ']] || 0) + 1; });
   const labels = Object.keys(counts).sort((a,b) => counts[b] - counts[a]);
@@ -2976,7 +2965,7 @@ function renderPendingUpdate(rows) {
       }
     }
   });
-  let html = '<thead><tr><th>#</th><th>ปี</th><th>ชื่อจุด</th><th>เขต</th><th>ผู้รับผิดชอบ</th><th>กลุ่มสถานะ</th><th>สถานะล่าสุด</th></tr></thead><tbody>';
+  let html = '<thead><tr><th>#</th><th>ปี</th><th>ชื่อจุด</th><th>เขต</th><th>ผู้รับผิดชอบ</th><th>เหตุผลที่ยังไม่แล้วเสร็จ</th><th>สถานะล่าสุด</th></tr></thead><tbody>';
   const order = ['เสร็จแล้ว','กำลังดำเนินการ','มาตรการชั่วคราว','รองบปี 2569','ติดก่อสร้างรถไฟฟ้า','ติดข้อจำกัดหน่วยงานอื่น','นอกอำนาจ กทม.','ข้อจำกัดกายภาพ'];
   [...rows].sort((a,b) => order.indexOf(a['กลุ่มสถานะ']) - order.indexOf(b['กลุ่มสถานะ'])).forEach(r => {
     const col = PENDING_GROUP_COLORS[r['กลุ่มสถานะ']] || '#94A3B8';
