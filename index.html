@@ -1323,7 +1323,7 @@ footer {
               <option value="all">ทั้งหมด</option>
               <option value="done">เสร็จสิ้น (100%)</option>
               <option value="partial">บางส่วน</option>
-              <option value="notstarted">ยังไม่เริ่ม</option>
+              <option value="notstarted">ติดปัญหาดำเนินการ</option>
               <option value="nodata">ยังไม่มีข้อมูลติดตาม (2566)</option>
             </select>
           </div>
@@ -2149,7 +2149,7 @@ function histChip(p, present) {
   if (p === null || p === undefined) return '<span class="tag tag-blue">● พบปัญหา</span>';
   const n = Number(p);
   if (n === 100) return '<span class="tag tag-green">✓ เสร็จ</span>';
-  if (n === 0) return '<span class="tag tag-red">✕ ยังไม่เริ่ม</span>';
+  if (n === 0) return '<span class="tag tag-red">✕ ติดปัญหาดำเนินการ</span>';
   return '<span class="tag tag-amber">▲ บางส่วน</span>';
 }
 function renderPointHistory(lin) {
@@ -2369,7 +2369,7 @@ function renderDistrictChart(rows) {
 
 // ============== STATUS ดำเนินการ ==============
 function statusOf(p) {
-  if (p === 0) return 'ยังไม่เริ่ม';
+  if (p === 0) return 'ติดปัญหาดำเนินการ';
   if (p === 100) return 'เสร็จสิ้น';
   return 'บางส่วน';
 }
@@ -2509,7 +2509,7 @@ function renderStatusYearChart(tracked) {
       datasets: [
         { label: 'เสร็จสิ้น', data: [byYear[2567].complete, byYear[2568].complete], backgroundColor: '#00c08b', borderRadius: 6 },
         { label: 'บางส่วน', data: [byYear[2567].partial, byYear[2568].partial], backgroundColor: '#ffb449', borderRadius: 6 },
-        { label: 'ยังไม่เริ่ม', data: [byYear[2567].notStarted, byYear[2568].notStarted], backgroundColor: '#DC2626', borderRadius: 6 },
+        { label: 'ติดปัญหาดำเนินการ', data: [byYear[2567].notStarted, byYear[2568].notStarted], backgroundColor: '#DC2626', borderRadius: 6 },
       ]
     },
     options: {
@@ -2587,12 +2587,12 @@ function renderOpsSummary(rows) {
       <div class="ops-bar">
         <span style="width:${pct(s.complete.length, s.total)}%; background:var(--success);" title="เสร็จสิ้น ${s.complete.length} จุด"></span>
         <span style="width:${pct(s.partial.length, s.total)}%; background:var(--warning);" title="บางส่วน ${s.partial.length} จุด"></span>
-        <span style="width:${pct(s.zero.length, s.total)}%; background:var(--danger);" title="ยังไม่เริ่ม ${s.zero.length} จุด"></span>
+        <span style="width:${pct(s.zero.length, s.total)}%; background:var(--danger);" title="ติดปัญหาดำเนินการ ${s.zero.length} จุด"></span>
       </div>
       <div class="ops-legend">
         <span><i style="background:var(--success)"></i>เสร็จสิ้น 100% — ${s.complete.length} จุด</span>
         <span><i style="background:var(--warning)"></i>บางส่วน — ${s.partial.length} จุด</span>
-        <span><i style="background:var(--danger)"></i>ยังไม่เริ่ม — ${s.zero.length} จุด</span>
+        <span><i style="background:var(--danger)"></i>ติดปัญหาดำเนินการ — ${s.zero.length} จุด</span>
       </div>
       <div class="ops-stats">
         <div class="ops-stat"><b style="color:var(--brand)">${s.done}</b><small>ดำเนินการแล้ว<br>(≥ 1 มาตรการ)</small></div>
@@ -2670,7 +2670,7 @@ function renderOpsSummary(rows) {
   const bigCards = `
     <div class="exec-big green"><b>${pct(s67.done, s67.total)}%</b><small>ผลงานปี 2567<br>(${s67.done}/${s67.total} จุด)</small></div>
     <div class="exec-big green"><b>${pct(s68.done, s68.total)}%</b><small>ผลงานปี 2568<br>(${s68.done}/${s68.total} จุด)</small></div>
-    <div class="exec-big amber"><b>${review68}</b><small>จุดต้องเร่งรัด/ทบทวนมาตรการ<br>(ยังไม่เริ่ม ${s68.zero.length} + บางส่วน ${s68.partial.length})</small></div>
+    <div class="exec-big amber"><b>${review68}</b><small>จุดต้องเร่งรัด/ทบทวนมาตรการ<br>(ติดปัญหาดำเนินการ ${s68.zero.length} + บางส่วน ${s68.partial.length})</small></div>
     <div class="exec-big red"><b>${chronic}</b><small>จุดที่ดำเนินงานต่อเนื่อง 3 ปี<br>ต้องแก้ไขเชิงโครงสร้าง</small></div>`;
   const points = '';
 
@@ -2800,7 +2800,7 @@ function renderRegister(rows) {
 
 // ============== MAP ==============
 const STATUS_COLORS = { done: '#00c08b', partial: '#ffb449', notstarted: '#DC2626', nodata: '#94A3B8' };
-const STATUS_LABELS = { done: 'เสร็จสิ้น (100%)', partial: 'ดำเนินการบางส่วน', notstarted: 'ยังไม่เริ่ม', nodata: 'ยังไม่มีข้อมูลติดตาม (ปี 2566)' };
+const STATUS_LABELS = { done: 'เสร็จสิ้น (100%)', partial: 'ดำเนินการบางส่วน', notstarted: 'ติดปัญหาดำเนินการ', nodata: 'ยังไม่มีข้อมูลติดตาม (ปี 2566)' };
 function pointStatus(p) {
   if (p === null || p === undefined || p === '') return 'nodata';
   const n = Number(p);
