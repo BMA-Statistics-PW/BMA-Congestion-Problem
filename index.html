@@ -2448,13 +2448,17 @@ function renderStatusKPIs(tracked) {
   const needAction = partial + notStarted;
   const pct = v => total ? ((v/total)*100).toFixed(1) : '0.0';
   const grid = document.getElementById('statusKpiGrid');
+  const ls = locStats(tracked);
+  const n67 = tracked.filter(r => toInt(r.year) === 2567).length;
+  const n68 = tracked.filter(r => toInt(r.year) === 2568).length;
+  const lpct = v => ls.n ? ((v / ls.n) * 100).toFixed(1) : '0.0';
   grid.innerHTML = `
-    <div class="kpi"><div class="lbl">จุดที่ติดตามสถานะ</div><div class="val">${total}</div><div class="hint">FY2567 (127) + FY2568 (77)</div></div>
-    <div class="kpi success"><div class="lbl">เสร็จสิ้นแล้ว (100%)</div><div class="val">${complete}</div><div class="hint">${pct(complete)}% ของจุดที่ติดตาม</div></div>
-    <div class="kpi warning"><div class="lbl">ดำเนินการบางส่วน</div><div class="val">${partial}</div><div class="hint">${pct(partial)}% · ความคืบหน้า 1–99%</div></div>
-    <div class="kpi danger"><div class="lbl">ยังไม่เริ่มดำเนินการ</div><div class="val">${notStarted}</div><div class="hint">${pct(notStarted)}% · ความคืบหน้า 0%</div></div>
-    <div class="kpi danger"><div class="lbl">► ต้องทบทวน/ดำเนินการเพิ่ม</div><div class="val">${needAction}</div><div class="hint">${pct(needAction)}% รวมบางส่วน+ยังไม่เริ่ม</div></div>
-    <div class="kpi"><div class="lbl">ตำแหน่งจริง (ไม่นับซ้ำ)</div><div class="val">${locStats(tracked).n}</div><div class="hint">${locStats(tracked).cont} ตำแหน่งติดตามต่อเนื่อง 2 ปี</div></div>
+    <div class="kpi"><div class="lbl">ปี 2567</div><div class="val">${n67}</div><div class="hint">จำนวนจุดที่ติดตาม (จุด)</div></div>
+    <div class="kpi"><div class="lbl">ปี 2568</div><div class="val">${n68}</div><div class="hint">จุดซ้ำปี 2567 : ${ls.cont} จุด</div></div>
+    <div class="kpi"><div class="lbl">รวมจุดปัญหาจราจร</div><div class="val">${ls.n}</div><div class="hint">จุดพิกัดเดียวกันนับเป็นหนึ่ง</div></div>
+    <div class="kpi success"><div class="lbl">เสร็จสิ้น</div><div class="val">${ls.done}</div><div class="hint">${lpct(ls.done)}% · สถานะปีล่าสุด</div></div>
+    <div class="kpi warning"><div class="lbl">ดำเนินการบางส่วน</div><div class="val">${ls.partial}</div><div class="hint">${lpct(ls.partial)}% · ความคืบหน้า 1–99%</div></div>
+    <div class="kpi danger"><div class="lbl">ติดปัญหาดำเนินการ</div><div class="val">${ls.zero}</div><div class="hint">${lpct(ls.zero)}% · ยังไม่สามารถเริ่มได้</div></div>
   `;
 }
 function renderStatusDonut(tracked) {
