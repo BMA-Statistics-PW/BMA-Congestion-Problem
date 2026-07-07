@@ -2474,8 +2474,8 @@ function renderOpsSummary(rows) {
 
   // --- ผลแล้วเสร็จแยกตามหน่วยงาน: กทม. vs นอกอำนาจ กทม. (แสดงเฉพาะปีที่ระบุหน่วยงานครบทุกจุด) ---
   const agencyBlock = s => {
-    if (s.rows.some(r => !r.agency_main || !String(r.agency_main).trim())) return '';
     const grp = (name, list, color) => {
+      if (!list.length) return '';
       const done = list.filter(r => Number(r.progress_pct) === 100).length;
       const p = pct(done, list.length);
       return `<div style="margin-bottom:7px;">
@@ -2488,12 +2488,16 @@ function renderOpsSummary(rows) {
         </div>
       </div>`;
     };
-    const bma = s.rows.filter(r => String(r.agency_main).trim() === 'กทม.');
-    const ext = s.rows.filter(r => String(r.agency_main).trim() !== 'กทม.');
+    const ag = r => (r.agency_main || '').toString().trim();
+    const bma = s.rows.filter(r => ag(r) === 'กทม.');
+    const ext = s.rows.filter(r => ag(r) && ag(r) !== 'กทม.');
+    const unk = s.rows.filter(r => !ag(r));
+    const extNames = [...new Set(ext.map(ag))].map(a => ({'กรมทางหลวง':'ทล.','กรมทางหลวงชนบท':'ทช.','การทางพิเศษแห่งประเทศไทย':'กทพ.','การรถไฟแห่งประเทศไทย':'รฟท.'}[a] || a)).join('/');
     return `<div style="margin-top:12px; border-top:1px dashed var(--line); padding-top:10px;">
       <div style="font-size:.86rem; font-weight:600; color:var(--ink-soft); margin-bottom:7px;">งานแล้วเสร็จ (100%) แยกตามหน่วยงานรับผิดชอบ</div>
       ${grp('กทม.', bma, 'var(--brand)')}
-      ${grp('นอกอำนาจ กทม. (ทล./ทช./กทพ./รฟท.)', ext, '#64748B')}
+      ${grp(`นอกอำนาจ กทม.${extNames ? ' (' + extNames + ')' : ''}`, ext, '#64748B')}
+      ${grp('ยังไม่ระบุหน่วยงาน', unk, '#C4B49A')}
     </div>`;
   };
   s67.agencyBlock = agencyBlock(s67);
