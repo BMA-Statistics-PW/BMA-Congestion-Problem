@@ -1396,7 +1396,7 @@ footer {
         <div class="section-head">
           <div>
             <h2>สัดส่วนสถานะดำเนินการ<span class="en">Implementation Status</span></h2>
-            <div class="sub">จากจุดที่มีข้อมูลติดตาม 204 จุด (FY2567 + FY2568)</div>
+            <div class="sub">คำนวณจากจุดปัญหาจราจรจริง — จุดพิกัดเดียวกันนับเป็นหนึ่ง โดยใช้สถานะปีล่าสุด</div>
           </div>
         </div>
         <div class="chart-wrap"><canvas id="statusDonutChart" role="img" aria-label="แผนภูมิวงกลม: สัดส่วนสถานะการดำเนินการ (เสร็จสิ้น/บางส่วน/ยังไม่เริ่ม)"></canvas></div>
@@ -1412,25 +1412,13 @@ footer {
       </div>
     </div>
 
-    <div class="two-col">
-      <div class="section">
-        <div class="section-head">
-          <div>
-            <h2>สถานะรายตำแหน่ง (ไม่นับซ้ำ)<span class="en">Status by Unique Location</span></h2>
-            <div class="sub">นับแต่ละตำแหน่งครั้งเดียว ใช้สถานะจากปีล่าสุดที่ติดตาม — สะท้อนภาพจริงของพื้นที่</div>
-          </div>
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>สรุปจุดปัญหาจราจร<span class="en">Traffic Problem Points Summary</span></h2>
         </div>
-        <div class="chart-wrap"><canvas id="locDonutChart" role="img" aria-label="แผนภูมิวงกลม: สถานะรายตำแหน่งไม่นับซ้ำ"></canvas></div>
       </div>
-      <div class="section">
-        <div class="section-head">
-          <div>
-            <h2>สรุปตำแหน่งจริง<span class="en">Unique Locations Summary</span></h2>
-            <div class="sub">ความสัมพันธ์ระหว่าง "รายการติดตาม" กับ "ตำแหน่งจริง"</div>
-          </div>
-        </div>
-        <div id="locSummary" style="font-size:.95rem; line-height:1.8;"></div>
-      </div>
+      <div id="locSummary" style="font-size:.95rem; line-height:1.9;"></div>
     </div>
 
     <div class="section">
@@ -2410,29 +2398,20 @@ function locStats(tracked) {
   };
 }
 function renderLocationStatus(tracked) {
-  const el = document.getElementById('locDonutChart');
-  if (!el) return;
+  const sum = document.getElementById('locSummary');
+  if (!sum) return;
   const s = locStats(tracked);
   const pc = v => (v / s.n * 100).toFixed(1);
-  new Chart(el, {
-    type: 'doughnut',
-    data: {
-      labels: [`เสร็จสิ้น (${s.done})`, `บางส่วน (${s.partial})`, `ยังไม่เริ่ม (${s.zero})`],
-      datasets: [{ data: [s.done, s.partial, s.zero],
-        backgroundColor: ['#00c08b', '#ffb449', '#DC2626'], borderColor: '#fff', borderWidth: 2 }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '55%',
-      plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10 } },
-        tooltip: { callbacks: { label: ctx => ` ${ctx.raw} ตำแหน่ง (${pc(ctx.raw)}%)` } } } }
-  });
-  const sum = document.getElementById('locSummary');
-  if (sum) sum.innerHTML = `
-    <p>รายการติดตามสถานะ <b>${tracked.length} รายการ</b> (ปี 2567: ${tracked.filter(r=>toInt(r.year)===2567).length} + ปี 2568: ${tracked.filter(r=>toInt(r.year)===2568).length})
-    มาจากตำแหน่งจริง <b>${s.n} ตำแหน่ง</b> เนื่องจาก <b>${s.cont} ตำแหน่ง</b>ติดตามต่อเนื่องทั้งสองปี</p>
-    <p>เมื่อนับแต่ละตำแหน่งครั้งเดียวด้วยสถานะปีล่าสุด:
-    เสร็จสิ้น <b style="color:#00c08b">${s.done} ตำแหน่ง (${pc(s.done)}%)</b> ·
-    บางส่วน <b style="color:#ffb449">${s.partial} (${pc(s.partial)}%)</b> ·
-    ยังไม่เริ่ม <b style="color:#DC2626">${s.zero} (${pc(s.zero)}%)</b></p>`;
+  const n67 = tracked.filter(r => toInt(r.year) === 2567).length;
+  const n68 = tracked.filter(r => toInt(r.year) === 2568).length;
+  sum.innerHTML = `
+    <p>รายการ ปี 2567 : <b>${n67} จุด</b> และ ปี 2568 : <b>${n68} จุด</b><br>
+    เป็นจุดที่ดำเนินการต่อเนื่อง <b>${s.cont} จุด</b><br>
+    รวมจุดปัญหาจราจร <b>${s.n} จุด</b></p>
+    <p>สถานะ (ล่าสุด) :
+    เสร็จสิ้น <b style="color:#00997a">${s.done} จุด (${pc(s.done)}%)</b> ·
+    ดำเนินการบางส่วน <b style="color:#e08600">${s.partial} จุด (${pc(s.partial)}%)</b> ·
+    ติดปัญหาดำเนินการ <b style="color:#DC2626">${s.zero} จุด (${pc(s.zero)}%)</b></p>`;
 }
 function renderContinuity(tracked) {
   const tbl = document.getElementById('continuityTable');
@@ -2479,9 +2458,9 @@ function renderStatusKPIs(tracked) {
   `;
 }
 function renderStatusDonut(tracked) {
-  const complete = tracked.filter(r => Number(r.progress_pct) === 100).length;
-  const partial = tracked.filter(r => { const p = Number(r.progress_pct); return p > 0 && p < 100; }).length;
-  const notStarted = tracked.filter(r => Number(r.progress_pct) === 0).length;
+  // นับจากจุดจริง: พิกัดเดียวกันนับเป็นหนึ่ง ใช้สถานะปีล่าสุด
+  const s = locStats(tracked);
+  const complete = s.done, partial = s.partial, notStarted = s.zero;
   new Chart(document.getElementById('statusDonutChart'), {
     type: 'doughnut',
     data: {
