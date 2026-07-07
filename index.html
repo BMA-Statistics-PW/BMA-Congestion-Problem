@@ -2753,6 +2753,7 @@ function pointStatus(p) {
   if (n === 0) return 'notstarted';
   return 'partial';
 }
+const CONSTR_LEGEND = `<div class="lg-row"><span class="lg-dot" style="background:transparent; border:2px dashed #B45309;"></span>🚧 อยู่ในพื้นที่ก่อสร้างรถไฟฟ้า</div>`;
 function renderMap(geoJson) {
   const map = L.map('map').setView([13.7563, 100.5018], 11);
   window._map = map;
@@ -2768,7 +2769,7 @@ function renderMap(geoJson) {
     const [lon, lat] = f.geometry.coordinates;
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
     const props = f.properties || {};
-    pts.push({ lat, lon, year: toInt(props.year), status: pointStatus(props.progress_pct), props });
+    pts.push({ lat, lon, year: toInt(props.year), status: pointStatus(props.progress_pct), constr: props.status_group === 'ติดก่อสร้างรถไฟฟ้า', props });
   });
 
   const markerLayer = L.layerGroup().addTo(map);
@@ -2784,7 +2785,8 @@ function renderMap(geoJson) {
       + `ความคืบหน้า: <b>${prog}</b><br/>`
       + `เขต: ${pr.district || '-'} · โซน: ${translateZone(pr.zone || 'Unknown')}<br/>`
       + `ถนน: ${(pr.road || '-').toString().replace(/\n/g, ' ')}<br/>`
-      + `หน่วยงานหลัก: ${pr.agency_main || 'ยังไม่ระบุ'}`;
+      + `หน่วยงานหลัก: ${pr.agency_main || 'ยังไม่ระบุ'}`
+      + (pr.status_latest ? `<br/>สถานะล่าสุด (ก.ค. 2569): <b style="color:#B45309">🚧 ${pr.status_latest}</b>` : '');
   };
 
   // Legend control
@@ -2799,11 +2801,13 @@ function renderMap(geoJson) {
     } else if (mode === 'year') {
       legendEl.innerHTML = `<div class="lg-title">ปีงบประมาณ</div>`
         + [[2566, YEAR_COLORS[2566]], [2567, YEAR_COLORS[2567]], [2568, YEAR_COLORS[2568]]]
-          .map(([y, c]) => `<div class="lg-row"><span class="lg-dot" style="background:${c}"></span>ปี ${y}</div>`).join('');
+          .map(([y, c]) => `<div class="lg-row"><span class="lg-dot" style="background:${c}"></span>ปี ${y}</div>`).join('')
+        + CONSTR_LEGEND;
     } else {
       legendEl.innerHTML = `<div class="lg-title">สถานะการดำเนินการ</div>`
         + ['done', 'partial', 'notstarted', 'nodata']
-          .map(s => `<div class="lg-row"><span class="lg-dot" style="background:${STATUS_COLORS[s]}"></span>${STATUS_LABELS[s]}</div>`).join('');
+          .map(s => `<div class="lg-row"><span class="lg-dot" style="background:${STATUS_COLORS[s]}"></span>${STATUS_LABELS[s]}</div>`).join('')
+        + CONSTR_LEGEND;
     }
   };
 
@@ -2828,6 +2832,10 @@ function renderMap(geoJson) {
     } else {
       sel.forEach(p => {
         const color = mode === 'year' ? (YEAR_COLORS[p.year] || '#94A3B8') : STATUS_COLORS[p.status];
+        if (p.constr) {
+          L.circleMarker([p.lat, p.lon], { radius: 12, fill: false, color: '#B45309', weight: 2.5, dashArray: '4 3' })
+            .bindPopup(popupHtml(p)).addTo(markerLayer);
+        }
         L.circleMarker([p.lat, p.lon], { radius: 6, fillOpacity: 0.85, fillColor: color, color: '#fff', weight: 1 })
           .bindPopup(popupHtml(p)).addTo(markerLayer);
       });
