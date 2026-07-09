@@ -1275,7 +1275,7 @@ footer {
       <div class="exec-big-grid" id="histSummary"></div>
       <div class="section-head" style="margin-top:10px;">
         <div>
-          <h2 style="font-size:0.95rem;">23 จุดที่ดำเนินงานต่อเนื่อง — มาตรการและความคืบหน้า ปี 2567 → 2568<span class="en">Measures &amp; Progress of the 23 Persistent Points</span></h2>
+          <h2 style="font-size:0.95rem;"><span id="chronicCount">…</span> จุดที่ดำเนินงานต่อเนื่อง — มาตรการและความคืบหน้า ปี 2567 → 2568<span class="en">Measures &amp; Progress of the <span id="chronicCountEn">…</span> Persistent Points</span></h2>
           <div class="sub">ปี 2568 ส่วนใหญ่เป็นการ "ทำมาตรการเดิมต่อจนแล้วเสร็จ" — คอลัมน์ "เพิ่มใหม่ 2568" แสดงเฉพาะมาตรการชนิดใหม่ที่ไม่มีในปี 2567</div>
         </div>
       </div>
@@ -1387,6 +1387,7 @@ footer {
       แต่คือการ refine inventory ตามเกณฑ์ TE ควรตรวจสอบสถานะจริงแยกต่างหากหากต้องการยืนยันผลของจุดกลุ่มนี้
       <br><br><strong>อัปเดต ก.ค. 2569:</strong> ปรับสถานะ 21 จุดตามรายงาน "จุดฝืดที่ยังไม่ได้ดำเนินการ" (สจส.) — แก้ไขแล้วเสร็จ 5 จุด (ปรับ progress เป็น 100%)
       ส่วนที่เหลือส่วนใหญ่ติดข้อจำกัดเชิงโครงสร้าง ดูรายละเอียดในหัวข้อ "อัปเดตสถานะจุดฝืดล่าสุด" ด้านล่าง
+      <br><strong>ปรับปรุงชุดข้อมูล 10 ก.ค. 2569:</strong> ใช้ไฟล์รวม 3 ปีฉบับตรวจทาน — ปรับชื่อจุดให้เป็นมาตรฐานเดียวกัน 37 จุด · แก้พิกัด 6 จุด (เช่น หน้าตลาดคลองเตย, จุดกลับรถลาดพร้าว 130/2, ตลาดนัดจตุจักร 2 ถนนสุวินทวงศ์) · ทบทวนสถานะ 8 รายการ (คอขวดถนนหัวหมาก ปี 2567 คงสถานะเสร็จสิ้นตามรายงาน สจส.) · แยก "แยกมักกะสัน" (เสร็จสิ้นปี 2568) กับ "แยกหมอเหล็ง" (ติดแนวก่อสร้างรถไฟฟ้าสายสีส้ม) เป็นคนละจุดชัดเจน · ระบุหน่วยงานจุดทางเชื่อมมอเตอร์เวย์–พระราม 9 เป็น ทล.
       <br><strong>ข้อพึงระวังในการอ่านตัวเลข:</strong> ตัวเลขสถานะนับตาม "รายการติดตามรายปี" — ตำแหน่งที่ติดตามต่อเนื่องทั้งสองปีจะมี 2 รายการ
       ดูจำนวนตำแหน่งจริงที่ KPI และหัวข้อ "สถานะรายตำแหน่ง (ไม่นับซ้ำ)" ด้านล่าง
     </div>
@@ -2231,6 +2232,8 @@ function renderChronicMeasures(lin) {
   }).join('');
 
   const avg67 = (sumProg67 / lin.tri.length).toFixed(1), avg68 = (sumProg68 / lin.tri.length).toFixed(1);
+  const cc = document.getElementById('chronicCount'); if (cc) cc.textContent = lin.tri.length;
+  const ccEn = document.getElementById('chronicCountEn'); if (ccEn) ccEn.textContent = lin.tri.length;
   sumEl.innerHTML = `
     <div class="exec-big"><b>${avg67}% → ${avg68}%</b><small>ความคืบหน้าเฉลี่ย<br>2567 → 2568</small></div>
     <div class="exec-big green"><b>${done67} → ${done68}</b><small>จุดที่เสร็จ 100%<br>2567 → 2568</small></div>
