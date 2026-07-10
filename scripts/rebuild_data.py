@@ -5,8 +5,11 @@ rebuild_data.py — สร้างชั้นข้อมูลทั้งห
 จากไฟล์ต้นทาง "BMA_จุดฝืดรวมปี 2566-2568.xlsx" (คอลัมน์หลักมาตรฐาน 3 ปี)
 
 อัปเดต: data/combined_data.json, data/sheets/08_Combined_Data.json,
-        data/all_points.geojson, data.xlsx (ชีต 08, ชื่อจุดชีต 13),
-        data/sheets/13_Pending_Update.json (ชื่อจุดมาตรฐาน), data/manifest.json
+        data/all_points.geojson, data/sheets/13_Pending_Update.json (สร้างใหม่
+        จากจุดจริงที่ยังไม่แล้วเสร็จ + เหตุผลล่าสุด), data.xlsx (ชีต 08 + 13),
+        data/manifest.json
+
+วิธีใช้:  python scripts/rebuild_data.py "<ไฟล์รวม 3 ปี.xlsx>" <path repo>
 © Prapawadee_W. · Traffic and Transportation Department, BMA
 """
 import json, re, sys, datetime
@@ -28,6 +31,8 @@ SOL_COLS = {  # ชื่อคอลัมน์ Yes/No รายปี (แผ
            '[เฉพาะปี] ปรับ ติดตั้งสัญญาณไฟจราจร','[เฉพาะปี] ปรับกายภาพ',
            '[เฉพาะปี] Bus Bay หรือ Bus Priority','[เฉพาะปี] ติดกล้อง CCTV'],
 }
+NOTE_COLS = {2567: '[เฉพาะปี] หมายเหตุ การดำเนินงาน/ปัญหาอุปสรรค',
+             2568: '[เฉพาะปี] หมายเหตุ ปัญหาอุปสรรค'}
 
 def yn(v):
     s = str(v or '').strip().lower()
@@ -66,6 +71,7 @@ def load_rows(wb, year):
             'progress_pct': fnum(d['ความคืบหน้า/สถานะ']),
             'latitude': float(d['ละติจูด']),
             'longitude': float(d['ลองจิจูด']),
+            '_note': str(d.get(NOTE_COLS.get(year), '') or '').strip(),
         }
         if year in SOL_COLS:
             keys = ['sol_traffic_mgmt','sol_enforcement','sol_signal','sol_physical','sol_busbay','sol_cctv']
@@ -74,14 +80,32 @@ def load_rows(wb, year):
         else:
             for k in ['sol_traffic_mgmt','sol_enforcement','sol_signal','sol_physical','sol_busbay','sol_cctv']:
                 rec[k] = None
-        out.append({f: rec[f] for f in FIELDS})
+        out.append(rec)
     return out
+
+def classify(note, name):
+    """จัดกลุ่มสถานะมาตรฐานจากหมายเหตุปัญหาอุปสรรคในไฟล์ต้นทาง"""
+    if 'รถไฟฟ้า' in note:
+        line = 'สายสีส้ม' if ('พญาไท' in name or 'หมอเหล็ง' in name) else 'สายสีม่วง'
+        return 'พื้นที่ก่อสร้างรถไฟฟ้า', f'ติดแนวก่อสร้างรถไฟฟ้า{line} รอคืนผิวจราจรจาก รฟม.'
+    if 'กรมทางหลวงชนบท' in note: return 'นอกอำนาจ กทม.', 'อยู่ในความรับผิดชอบ ทช. (กรมทางหลวงชนบท)'
+    if 'กรมทางหลวง' in note:     return 'นอกอำนาจ กทม.', 'อยู่ในความรับผิดชอบ ทล. (กรมทางหลวง)'
+    if 'ประสานตำรวจ' in note:    return 'ใช้มาตรการชั่วคราว', 'ประสานตำรวจกวดขันวินัยจราจรแล้ว'
+    if 'ของบ' in note:           return 'อยู่ระหว่างของบประมาณ', note
+    if 'ความกว้างถนน' in note or 'ช่องลอด' in note or 'กายภาพ' in note:
+        return 'ข้อจำกัดทางกายภาพ', note
+    if 'โยธา' in note:           return 'อยู่ระหว่างดำเนินการ', 'สนย.อยู่ระหว่างก่อสร้างปรับปรุงสะพาน'
+    if not note and ('ศรีประจักษ์' in name or 'สัมมากร' in name):
+        return 'อยู่ระหว่างดำเนินการ', 'ประชุมร่วม รฟม. เร่งคืนผิวจราจร (แนวรถไฟฟ้าสายสีส้ม)'
+    extra = ' (สัญญาณไฟ adaptive งบปี 2569 อยู่ระหว่างอนุมัติจ้าง)' if ('กำแพงเพชร 7' in name or 'ปิยะเวท' in name) else ''
+    return 'อยู่ระหว่างดำเนินการ', (note or 'อยู่ระหว่างดำเนินการ') + extra
 
 def main():
     wb = openpyxl.load_workbook(SRC, data_only=True)
-    rows = []
+    raw = []
     for y in (2566, 2567, 2568):
-        rows += load_rows(wb, y)
+        raw += load_rows(wb, y)
+    rows = [{f: r[f] for f in FIELDS} for r in raw]
     counts = {y: sum(1 for r in rows if int(r['year']) == y) for y in (2566, 2567, 2568)}
     assert counts == {2566: 266, 2567: 127, 2568: 77}, counts
 
@@ -100,7 +124,29 @@ def main():
     with open(f'{REPO}/data/all_points.geojson', 'w', encoding='utf-8') as f:
         json.dump({'type': 'FeatureCollection', 'features': feats}, f, ensure_ascii=False, indent=1)
 
-    # 3) data.xlsx — ชีต 08 (header แถว 3, ข้อมูลเริ่มแถว 4)
+    # 3) 13_Pending_Update — จุดจริง (พิกัด 6 ตำแหน่ง) ที่สถานะปีล่าสุดยังไม่ 100%
+    key = lambda r: f"{r['latitude']:.6f},{r['longitude']:.6f}"
+    tracked = [r for r in raw if int(r['year']) in (2567, 2568) and r['progress_pct'] is not None]
+    latest, years = {}, {}
+    for r in tracked:
+        k = key(r); years.setdefault(k, set()).add(int(r['year']))
+        if k not in latest or r['year'] > latest[k]['year']: latest[k] = r
+    unresolved = sorted([(k, r) for k, r in latest.items() if r['progress_pct'] < 100],
+                        key=lambda t: (-t[1]['year'], t[1]['point_id']))
+    p13 = []
+    for i, (k, r) in enumerate(unresolved, start=1):
+        grp, txt = classify(r['_note'], str(r['point_name']))
+        p13.append({'ลำดับ': i,
+                    'ปี': '/'.join(str(x) for x in sorted(years[k])),
+                    'ชื่อจุด': re.sub(r'\s+', ' ', str(r['point_name'])).strip(),
+                    'เขต': r['district'], 'ผู้รับผิดชอบ': r['agency_main'],
+                    'คืบหน้า (%)': r['progress_pct'],
+                    'สถานะล่าสุด': txt, 'กลุ่มสถานะ': grp,
+                    'lat': r['latitude'], 'lon': r['longitude'], 'โซน': r['zone']})
+    with open(f'{REPO}/data/sheets/13_Pending_Update.json', 'w', encoding='utf-8') as f:
+        json.dump(p13, f, ensure_ascii=False, indent=1)
+
+    # 4) data.xlsx — ชีต 08 (header แถว 3, ข้อมูลเริ่มแถว 4) + ชีต 13
     wx = openpyxl.load_workbook(f'{REPO}/data.xlsx')
     ws8 = wx['08_Combined Data']
     hdr8 = [ws8.cell(row=3, column=c).value for c in range(1, ws8.max_column + 1)]
@@ -112,44 +158,36 @@ def main():
             v = r[f]
             if f in ('year', 'point_id') and v is not None: v = int(v)
             ws8.cell(row=i, column=j, value=v)
-
-    # 4) ชื่อจุดมาตรฐานในชีต 13 + JSON 13 (จับคู่ด้วยพิกัด ~4 ตำแหน่ง + ปี)
-    def k4(lat, lon): return (round(float(lat), 4), round(float(lon), 4))
-    by_coord = {}
-    for r in rows:
-        by_coord.setdefault((int(r['year']), k4(r['latitude'], r['longitude'])), r)
-    p13 = json.load(open(f'{REPO}/data/sheets/13_Pending_Update.json', encoding='utf-8'))
-    renamed = 0
-    for rec in p13:
-        yrs = [int(y) for y in re.findall(r'25\d\d', str(rec.get('ปี', '')))]
-        m = None
-        for yr in sorted(yrs, reverse=True):  # ปีล่าสุดก่อน
-            m = by_coord.get((yr, k4(rec['lat'], rec['lon'])))
-            if m: break
-        if m and re.sub(r'\s+', ' ', str(m['point_name'])) != re.sub(r'\s+', ' ', str(rec['ชื่อจุด'])):
-            rec['ชื่อจุด'] = re.sub(r'\s+', ' ', str(m['point_name'])).strip()
-            renamed += 1
-    with open(f'{REPO}/data/sheets/13_Pending_Update.json', 'w', encoding='utf-8') as f:
-        json.dump(p13, f, ensure_ascii=False, indent=1)
     ws13 = wx['13_Pending Update']
-    hdr13 = {ws13.cell(row=1, column=c).value: c for c in range(1, ws13.max_column + 1)}
-    if 'ชื่อจุด' in hdr13 and 'ลำดับ' in hdr13:
-        for i, rec in enumerate(p13, start=2):
-            ws13.cell(row=i, column=hdr13['ชื่อจุด'], value=rec['ชื่อจุด'])
+    ws13.cell(row=1, column=1, value=f'จุดที่ยังดำเนินการไม่แล้วเสร็จ — สถานะล่าสุดจากชุดข้อมูลรวม 3 ปี · จุดจริง {len(p13)} จุด')
+    cols13 = ['ลำดับ','ปี','ชื่อจุด','เขต','ผู้รับผิดชอบ','คืบหน้า (%)','สถานะล่าสุด','กลุ่มสถานะ','lat','lon','โซน']
+    if ws13.max_row > 3:
+        ws13.delete_rows(4, ws13.max_row - 3)
+    for j in range(1, ws13.max_column + 1):
+        ws13.cell(row=3, column=j, value=None)
+    for j, c in enumerate(cols13, start=1):
+        ws13.cell(row=3, column=j, value=c)
+    for i, rec in enumerate(p13, start=4):
+        for j, c in enumerate(cols13, start=1):
+            ws13.cell(row=i, column=j, value=rec[c])
     wx.save(f'{REPO}/data.xlsx')
 
     # 5) manifest.json
     man = json.load(open(f'{REPO}/data/manifest.json', encoding='utf-8'))
-    now = datetime.datetime.now(datetime.timezone.utc)
+    try:
+        import zoneinfo
+        now = datetime.datetime.now(zoneinfo.ZoneInfo('Asia/Bangkok'))
+    except Exception:
+        now = datetime.datetime.now()
     be = now.replace(year=now.year + 543)
-    man['updated_at'] = be.strftime('%Y-%m-%dT%H:%M:%SZ')
-    man['update_note'] = ('ปรับปรุงตามไฟล์รวม 3 ปีฉบับแก้ไข (10 ก.ค. 2569): ชื่อจุดมาตรฐาน 37 จุด, '
-                          'พิกัดแก้ไข 6 จุด, สถานะ 9 รายการ, แยก "แยกมักกะสัน"/"แยกหมอเหล็ง" ชัดเจน, '
-                          'หน่วยงานปี 2568 จุดมอเตอร์เวย์-พระราม 9 = ทล.')
+    ts = be.strftime('%Y-%m-%dT%H:%M:%SZ')
+    man['generated_at_utc'] = ts
+    man['updated_at'] = ts
+    man['update_note'] = f'rebuild จากไฟล์รวม 3 ปี — จุดค้างดำเนินการล่าสุด {len(p13)} จุด'
     with open(f'{REPO}/data/manifest.json', 'w', encoding='utf-8') as f:
         json.dump(man, f, ensure_ascii=False, indent=2)
 
-    print('rows:', counts, '| sheet13 renamed:', renamed)
+    print('rows:', counts, '| pending:', len(p13))
     print('OK — rebuilt all data layers')
 
 if __name__ == '__main__':

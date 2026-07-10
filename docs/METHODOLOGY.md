@@ -46,7 +46,7 @@ Provide an interpretable, policy-facing view of traffic congestion friction poin
 
 `BMA_จุดฝืดรวมปี 2566-2568.xlsx` (คอลัมน์หลักมาตรฐาน 3 ปี) → `scripts/rebuild_data.py` → `data/combined_data.json` = `data/sheets/08_Combined_Data.json` = `data/all_points.geojson` = `data.xlsx` ชีต 08 (ตรงกัน 100%) → dashboard คำนวณ KPI ทั้งหมดสดจากข้อมูล (ไม่มีตัวเลข hard-code)
 
-ชีตวิเคราะห์ 01–07, 09–12 เป็นผลลัพธ์ pipeline สถิติรุ่นก่อน (สถิติเชิงอนุมาน, KDE, DBSCAN, K-Means) เก็บไว้เป็น methodology snapshot — dashboard ใช้เฉพาะ 11_Corridors และ 13_Pending_Update
+ชีตวิเคราะห์ 01–07, 09–12 เป็นผลลัพธ์ pipeline สถิติรุ่นก่อน (สถิติเชิงอนุมาน, KDE, DBSCAN, K-Means) เก็บไว้เป็น methodology snapshot — dashboard ใช้เฉพาะ 11_Corridors (snapshot) และ 13_Pending_Update ซึ่ง rebuild_data.py สร้างใหม่อัตโนมัติจากจุดจริงที่สถานะปีล่าสุดยังไม่ 100% พร้อมเหตุผลจากคอลัมน์หมายเหตุของไฟล์ต้นทาง
 
 ## Portfolio Scope
 
