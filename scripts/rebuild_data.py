@@ -83,22 +83,12 @@ def load_rows(wb, year):
         out.append(rec)
     return out
 
-def classify(note, name):
-    """จัดกลุ่มสถานะมาตรฐานจากหมายเหตุปัญหาอุปสรรคในไฟล์ต้นทาง"""
-    if 'รถไฟฟ้า' in note:
-        line = 'สายสีส้ม' if ('พญาไท' in name or 'หมอเหล็ง' in name) else 'สายสีม่วง'
-        return 'พื้นที่ก่อสร้างรถไฟฟ้า', f'ติดแนวก่อสร้างรถไฟฟ้า{line} รอคืนผิวจราจรจาก รฟม.'
-    if 'กรมทางหลวงชนบท' in note: return 'นอกอำนาจ กทม.', 'อยู่ในความรับผิดชอบ ทช. (กรมทางหลวงชนบท)'
-    if 'กรมทางหลวง' in note:     return 'นอกอำนาจ กทม.', 'อยู่ในความรับผิดชอบ ทล. (กรมทางหลวง)'
-    if 'ประสานตำรวจ' in note:    return 'ใช้มาตรการชั่วคราว', 'ประสานตำรวจกวดขันวินัยจราจรแล้ว'
-    if 'ของบ' in note:           return 'อยู่ระหว่างของบประมาณ', note
-    if 'ความกว้างถนน' in note or 'ช่องลอด' in note or 'กายภาพ' in note:
-        return 'ข้อจำกัดทางกายภาพ', note
-    if 'โยธา' in note:           return 'อยู่ระหว่างดำเนินการ', 'สนย.อยู่ระหว่างก่อสร้างปรับปรุงสะพาน'
-    if not note and ('ศรีประจักษ์' in name or 'สัมมากร' in name):
-        return 'อยู่ระหว่างดำเนินการ', 'ประชุมร่วม รฟม. เร่งคืนผิวจราจร (แนวรถไฟฟ้าสายสีส้ม)'
-    extra = ' (สัญญาณไฟ adaptive งบปี 2569 อยู่ระหว่างอนุมัติจ้าง)' if ('กำแพงเพชร 7' in name or 'ปิยะเวท' in name) else ''
-    return 'อยู่ระหว่างดำเนินการ', (note or 'อยู่ระหว่างดำเนินการ') + extra
+def classify(note, progress):
+    """สถานะตามเกณฑ์ตัวเลขในไฟล์ต้นทาง (ยืนยันโดยผู้ใช้ 10 ก.ค. 2569):
+    0 = ติดปัญหาอุปสรรค · 0<x<100 = อยู่ระหว่างดำเนินการ · 100 = เสร็จสิ้น
+    หมายเหตุปัญหาอุปสรรคใช้ข้อความจากคอลัมน์หมายเหตุของไฟล์ต้นทางตรง ๆ"""
+    status = 'ติดปัญหาอุปสรรค' if progress == 0 else 'อยู่ระหว่างดำเนินการ'
+    return status, (note or None)
 
 def main():
     wb = openpyxl.load_workbook(SRC, data_only=True)
@@ -132,16 +122,16 @@ def main():
         k = key(r); years.setdefault(k, set()).add(int(r['year']))
         if k not in latest or r['year'] > latest[k]['year']: latest[k] = r
     unresolved = sorted([(k, r) for k, r in latest.items() if r['progress_pct'] < 100],
-                        key=lambda t: (-t[1]['year'], t[1]['point_id']))
+                        key=lambda t: (t[1]['progress_pct'], -t[1]['year'], t[1]['point_id']))
     p13 = []
     for i, (k, r) in enumerate(unresolved, start=1):
-        grp, txt = classify(r['_note'], str(r['point_name']))
+        grp, txt = classify(r['_note'], r['progress_pct'])
         p13.append({'ลำดับ': i,
                     'ปี': '/'.join(str(x) for x in sorted(years[k])),
                     'ชื่อจุด': re.sub(r'\s+', ' ', str(r['point_name'])).strip(),
                     'เขต': r['district'], 'ผู้รับผิดชอบ': r['agency_main'],
                     'คืบหน้า (%)': r['progress_pct'],
-                    'สถานะล่าสุด': txt, 'กลุ่มสถานะ': grp,
+                    'สถานะ': grp, 'หมายเหตุ': txt,
                     'lat': r['latitude'], 'lon': r['longitude'], 'โซน': r['zone']})
     with open(f'{REPO}/data/sheets/13_Pending_Update.json', 'w', encoding='utf-8') as f:
         json.dump(p13, f, ensure_ascii=False, indent=1)
@@ -160,7 +150,7 @@ def main():
             ws8.cell(row=i, column=j, value=v)
     ws13 = wx['13_Pending Update']
     ws13.cell(row=1, column=1, value=f'จุดที่ยังดำเนินการไม่แล้วเสร็จ — สถานะล่าสุดจากชุดข้อมูลรวม 3 ปี · จุดจริง {len(p13)} จุด')
-    cols13 = ['ลำดับ','ปี','ชื่อจุด','เขต','ผู้รับผิดชอบ','คืบหน้า (%)','สถานะล่าสุด','กลุ่มสถานะ','lat','lon','โซน']
+    cols13 = ['ลำดับ','ปี','ชื่อจุด','เขต','ผู้รับผิดชอบ','คืบหน้า (%)','สถานะ','หมายเหตุ','lat','lon','โซน']
     if ws13.max_row > 3:
         ws13.delete_rows(4, ws13.max_row - 3)
     for j in range(1, ws13.max_column + 1):

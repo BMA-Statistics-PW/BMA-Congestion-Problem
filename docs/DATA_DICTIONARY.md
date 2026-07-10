@@ -29,7 +29,7 @@
 
 - `all_points.geojson`: properties มีทุก field ยกเว้น `latitude`/`longitude` (อยู่ใน `geometry.coordinates` เป็น `[lon, lat]`) — **ห้ามเพิ่ม lat/lon เข้า properties**
 - สถานีตำรวจและ Overlap อยู่ในไฟล์ต้นทาง ยังไม่ถูกนำเข้าชั้นข้อมูลนี้ (คงโครงสร้างเดิมเพื่อความเข้ากันได้ของ dashboard)
-- การจัดกลุ่มสถานะจาก `progress_pct`: `100` = เสร็จสิ้น · `1–99` = ดำเนินการบางส่วน · `0` = ติดปัญหาดำเนินการ
+- เกณฑ์สถานะจาก `progress_pct` (ยืนยัน 10 ก.ค. 2569): `100` = เสร็จสิ้น · `1–99` = อยู่ระหว่างดำเนินการ · `0` = ติดปัญหาอุปสรรค
 
 ---
 © Prapawadee_W. · Traffic and Transportation Department, BMA
