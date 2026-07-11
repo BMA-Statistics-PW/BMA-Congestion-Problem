@@ -1422,7 +1422,7 @@ footer {
     <div class="section">
       <div class="section-head">
         <div>
-          <h2>จุดที่ติดตามต่อเนื่อง 2 ปี (พิกัดเดียวกัน)<span class="en">Points Tracked in Both FY2567 &amp; FY2568</span></h2>
+          <h2>จุดที่ติดตามต่อเนื่อง 2 ปี (จุดเดียวกันตามเกณฑ์พิกัดห่าง <20 ม.)<span class="en">Points Tracked in Both FY2567 &amp; FY2568</span></h2>
           <div class="sub">เทียบความคืบหน้าปี 2567 → 2568 รายจุด — จุดที่ % ปี 68 ต่ำกว่า ไม่ใช่งานถดถอย แต่เป็นการเริ่มมาตรการชุดใหม่ของปี 68</div>
         </div>
       </div>
@@ -1435,7 +1435,7 @@ footer {
       <div class="section-head">
         <div>
           <h2>สถานะจุดที่ยังดำเนินการไม่แล้วเสร็จ<span class="en">Unresolved Points — Status &amp; Reasons</span></h2>
-          <div class="sub">สถานะล่าสุดจากไฟล์ข้อมูลรวม 3 ปี (10 ก.ค. 2569) — จุดจริงที่ยังไม่แล้วเสร็จ <strong id="pendingCount">…</strong> จุด · เกณฑ์สถานะ: 0% = ติดปัญหาอุปสรรค · 1–99% = อยู่ระหว่างดำเนินการ · 100% = เสร็จสิ้น (ไม่แสดงในตาราง)</div>
+          <div class="sub">สถานะล่าสุดจากไฟล์ข้อมูลรวม 3 ปี ฉบับตรวจทาน (11 ก.ค. 2569) · เฉพาะจุดของ กทม. (จุดนอกอำนาจ กทม. ไม่นำมาคิด) — จุดจริงที่ยังไม่แล้วเสร็จ <strong id="pendingCount">…</strong> จุด · เกณฑ์สถานะ: 0% = ติดปัญหาอุปสรรค · 1–99% = อยู่ระหว่างดำเนินการ · 100% = เสร็จสิ้น (ไม่แสดงในตาราง)</div>
         </div>
       </div>
       <div class="chart-wrap"><canvas id="pendingGroupChart" role="img" aria-label="แผนภูมิแท่ง: จำนวนจุดที่ยังไม่แล้วเสร็จจำแนกตามสถานะ"></canvas></div>
@@ -2373,6 +2373,9 @@ function statusOf(p) {
   if (p === 100) return 'เสร็จสิ้น';
   return 'อยู่ระหว่างดำเนินการ';
 }
+// เกณฑ์ PW (11 ก.ค. 2569): จุดนอกอำนาจ กทม. ไม่นำมาคิดเปอร์เซ็นต์ — ติดตามเฉพาะจุดของ กทม.
+const EXT_AGENCIES = ['กรมทางหลวง','กรมทางหลวงชนบท','การทางพิเศษแห่งประเทศไทย','การรถไฟแห่งประเทศไทย'];
+const isBmaRow = r => !EXT_AGENCIES.includes(String(r.agency_main || '').trim());
 function solMeasures(r) {
   const map = [['sol_traffic_mgmt','จัดการจราจร'],['sol_enforcement','บังคับใช้กม.'],
     ['sol_signal','สัญญาณไฟ'],['sol_physical','กายภาพ/โครงสร้าง'],
@@ -2380,7 +2383,7 @@ function solMeasures(r) {
   const m = map.filter(([k]) => Number(r[k]) === 1).map(([,label]) => label);
   return m.length ? m.join(', ') : '-';
 }
-const locKey = r => Number(r.latitude).toFixed(6) + ',' + Number(r.longitude).toFixed(6);
+const locKey = r => (r.cluster_id !== null && r.cluster_id !== undefined) ? 'c' + r.cluster_id : (Number(r.latitude).toFixed(6) + ',' + Number(r.longitude).toFixed(6));
 function locStats(tracked) {
   const m67 = new Set(tracked.filter(r => toInt(r.year) === 2567).map(locKey));
   const latest = {};
@@ -2405,9 +2408,9 @@ function renderLocationStatus(tracked) {
   const n67 = tracked.filter(r => toInt(r.year) === 2567).length;
   const n68 = tracked.filter(r => toInt(r.year) === 2568).length;
   sum.innerHTML = `
-    <p>รายการ ปี 2567 : <b>${n67} จุด</b> และ ปี 2568 : <b>${n68} จุด</b><br>
+    <p>รายการ ปี 2567 : <b>${n67} จุด</b> และ ปี 2568 : <b>${n68} จุด</b> (เฉพาะจุดของ กทม. — จุดนอกอำนาจ กทม. ไม่นำมาคิดเปอร์เซ็นต์)<br>
     เป็นจุดที่ดำเนินการต่อเนื่อง <b>${s.cont} จุด</b><br>
-    รวมจุดปัญหาจราจร <b>${s.n} จุด</b></p>
+    รวมจุดปัญหาจราจร <b>${s.n} จุด</b> (จุดเดียวกันตามเกณฑ์พิกัดห่าง <20 ม. นับเป็นหนึ่ง)</p>
     <p>สถานะ (ล่าสุด) :
     เสร็จสิ้น <b style="color:#00997a">${s.done} จุด (${pc(s.done)}%)</b> ·
     อยู่ระหว่างดำเนินการ <b style="color:#e08600">${s.partial} จุด (${pc(s.partial)}%)</b> ·
@@ -2453,9 +2456,9 @@ function renderStatusKPIs(tracked) {
   const n68 = tracked.filter(r => toInt(r.year) === 2568).length;
   const lpct = v => ls.n ? ((v / ls.n) * 100).toFixed(1) : '0.0';
   grid.innerHTML = `
-    <div class="kpi"><div class="lbl">ปี 2567</div><div class="val">${n67}</div><div class="hint">จำนวนจุดที่ติดตาม (จุด)</div></div>
+    <div class="kpi"><div class="lbl">ปี 2567</div><div class="val">${n67}</div><div class="hint">จุดของ กทม. ที่ติดตาม (นอกอำนาจ กทม. ไม่นำมาคิด)</div></div>
     <div class="kpi"><div class="lbl">ปี 2568</div><div class="val">${n68}</div><div class="hint">จุดซ้ำปี 2567 : ${ls.cont} จุด</div></div>
-    <div class="kpi"><div class="lbl">รวมจุดปัญหาจราจร</div><div class="val">${ls.n}</div><div class="hint">จุดพิกัดเดียวกันนับเป็นหนึ่ง</div></div>
+    <div class="kpi"><div class="lbl">รวมจุดปัญหาจราจร</div><div class="val">${ls.n}</div><div class="hint">จุดเดียวกัน (พิกัดห่าง <20 ม.) นับเป็นหนึ่ง</div></div>
     <div class="kpi success"><div class="lbl">เสร็จสิ้น</div><div class="val">${ls.done}</div><div class="hint">${lpct(ls.done)}% · สถานะปีล่าสุด</div></div>
     <div class="kpi warning"><div class="lbl">อยู่ระหว่างดำเนินการ</div><div class="val">${ls.partial}</div><div class="hint">${lpct(ls.partial)}% · ความคืบหน้า 1–99%</div></div>
     <div class="kpi danger"><div class="lbl">ติดปัญหาอุปสรรค</div><div class="val">${ls.zero}</div><div class="hint">${lpct(ls.zero)}% · ยังไม่สามารถเริ่มได้</div></div>
@@ -2496,10 +2499,11 @@ function renderStatusDonut(tracked) {
   });
 }
 function renderStatusYearChart(tracked) {
-  const byYear = { 2567: { complete:0, partial:0, notStarted:0 }, 2568: { complete:0, partial:0, notStarted:0 } };
+  const byYear = { 2567: { complete:0, partial:0, notStarted:0, ext:0 }, 2568: { complete:0, partial:0, notStarted:0, ext:0 } };
   tracked.forEach(r => {
     const y = toInt(r.year); const p = Number(r.progress_pct);
     if (!byYear[y]) return;
+    if (!isBmaRow(r)) { byYear[y].ext++; return; }   // นอกอำนาจ กทม. — แสดงแยก ไม่คิด %
     if (p === 100) byYear[y].complete++; else if (p === 0) byYear[y].notStarted++; else byYear[y].partial++;
   });
   new Chart(document.getElementById('statusYearChart'), {
@@ -2510,6 +2514,7 @@ function renderStatusYearChart(tracked) {
         { label: 'เสร็จสิ้น', data: [byYear[2567].complete, byYear[2568].complete], backgroundColor: '#00c08b', borderRadius: 6 },
         { label: 'อยู่ระหว่างดำเนินการ', data: [byYear[2567].partial, byYear[2568].partial], backgroundColor: '#ffb449', borderRadius: 6 },
         { label: 'ติดปัญหาอุปสรรค', data: [byYear[2567].notStarted, byYear[2568].notStarted], backgroundColor: '#DC2626', borderRadius: 6 },
+        { label: 'นอกอำนาจ กทม. (ไม่นำมาคิด %)', data: [byYear[2567].ext, byYear[2568].ext], backgroundColor: '#94A3B8', borderRadius: 6 },
       ]
     },
     options: {
@@ -2528,12 +2533,14 @@ function renderStatusYearChart(tracked) {
 }
 // ============== OPS SUMMARY (Overview tab) ==============
 function opsStats(rows, year) {
-  const yr = rows.filter(r => toInt(r.year) === year && r.progress_pct !== null && r.progress_pct !== undefined);
+  const all = rows.filter(r => toInt(r.year) === year && r.progress_pct !== null && r.progress_pct !== undefined);
+  const ext = all.filter(r => !isBmaRow(r));
+  const yr = all.filter(isBmaRow);   // ฐานคิด % = จุดของ กทม. เท่านั้น
   const total = yr.length;
   const complete = yr.filter(r => Number(r.progress_pct) === 100);
   const partial = yr.filter(r => { const p = Number(r.progress_pct); return p > 0 && p < 100; });
   const zero = yr.filter(r => Number(r.progress_pct) === 0);
-  return { year, total, rows: yr, complete, partial, zero, done: complete.length + partial.length };
+  return { year, total, totalAll: all.length, ext, allRows: all, rows: yr, complete, partial, zero, done: complete.length + partial.length };
 }
 function haversineM(lat1, lon1, lat2, lon2) {
   const R = 6371000, rad = x => x * Math.PI / 180;
@@ -2565,9 +2572,9 @@ function renderOpsSummary(rows) {
       </div>`;
     };
     const ag = r => (r.agency_main || '').toString().trim();
-    const bma = s.rows.filter(r => ag(r) === 'กทม.');
-    const ext = s.rows.filter(r => ag(r) && ag(r) !== 'กทม.');
-    const unk = s.rows.filter(r => !ag(r));
+    const bma = s.allRows.filter(r => ag(r) === 'กทม.');
+    const ext = s.allRows.filter(r => ag(r) && ag(r) !== 'กทม.');
+    const unk = s.allRows.filter(r => !ag(r));
     const extNames = [...new Set(ext.map(ag))].map(a => ({'กรมทางหลวง':'ทล.','กรมทางหลวงชนบท':'ทช.','การทางพิเศษแห่งประเทศไทย':'กทพ.','การรถไฟแห่งประเทศไทย':'รฟท.'}[a] || a)).join('/');
     return `<div style="margin-top:12px; border-top:1px dashed var(--line); padding-top:10px;">
       <div style="font-size:.86rem; font-weight:600; color:var(--ink-soft); margin-bottom:7px;">งานแล้วเสร็จ (100%) แยกตามหน่วยงานรับผิดชอบ</div>
@@ -2583,7 +2590,7 @@ function renderOpsSummary(rows) {
   const card = s => `
     <div class="ops-card">
       <h4>ปีงบประมาณ ${s.year} (${s.year - 543})</h4>
-      <div class="ops-sub">จุดปัญหาที่ติดตามสถานะทั้งหมด ${s.total} จุด</div>
+      <div class="ops-sub">จุดของ กทม. ที่ติดตามสถานะ ${s.total} จุด · นอกอำนาจ กทม. ${s.ext.length} จุด (ไม่นำมาคิด %)</div>
       <div class="ops-bar">
         <span style="width:${pct(s.complete.length, s.total)}%; background:var(--success);" title="เสร็จสิ้น ${s.complete.length} จุด"></span>
         <span style="width:${pct(s.partial.length, s.total)}%; background:var(--warning);" title="อยู่ระหว่างดำเนินการ ${s.partial.length} จุด"></span>
@@ -2666,7 +2673,7 @@ function renderOpsSummary(rows) {
 
   const headline = `ปีงบประมาณ 2567 ดำเนินการแล้ว <strong>${s67.done} จาก ${s67.total} จุด (${pct(s67.done, s67.total)}%)</strong>
     และปีงบประมาณ 2568 ดำเนินการแล้ว <strong>${s68.done} จาก ${s68.total} จุด (${pct(s68.done, s68.total)}%)</strong>
-    — คงเหลือจุดที่ต้องเร่งรัด/ทบทวนมาตรการ <strong>${review68} จุด</strong>`;
+    — คงเหลือจุดที่ต้องเร่งรัด/ทบทวนมาตรการ <strong>${review68} จุด</strong>\n    <span style="font-size:.85em; color:var(--ink-soft);">(คิดเฉพาะจุดของ กทม. — จุดนอกอำนาจ กทม. ${s67.ext.length + s68.ext.length} จุด ไม่นำมาคิดเปอร์เซ็นต์)</span>`;
   const bigCards = `
     <div class="exec-big green"><b>${pct(s67.done, s67.total)}%</b><small>ผลงานปี 2567<br>(${s67.done}/${s67.total} จุด)</small></div>
     <div class="exec-big green"><b>${pct(s68.done, s68.total)}%</b><small>ผลงานปี 2568<br>(${s68.done}/${s68.total} จุด)</small></div>
@@ -2710,10 +2717,11 @@ function setPrintDate() {
   });
 }
 function renderStatusTab(rows) {
-  const tracked = rows.filter(r => r.progress_pct !== null && r.progress_pct !== undefined);
+  const trackedAll = rows.filter(r => r.progress_pct !== null && r.progress_pct !== undefined);
+  const tracked = trackedAll.filter(isBmaRow);   // ฐานคิด % = จุดของ กทม. เท่านั้น
   renderStatusKPIs(tracked);
   renderStatusDonut(tracked);
-  renderStatusYearChart(tracked);
+  renderStatusYearChart(trackedAll);
   setPrintDate();
 }
 
@@ -3014,7 +3022,7 @@ async function init() {
     renderDistrictChart(combinedRows);
     renderStatusTab(combinedRows);
     const trackedRows = combinedRows.filter(r => [2567, 2568].includes(toInt(r.year)) && r.progress_pct !== null && r.progress_pct !== undefined);
-    renderLocationStatus(trackedRows);
+    renderLocationStatus(trackedRows.filter(isBmaRow));   // ฐานคิด % = จุดของ กทม.
     renderContinuity(trackedRows);
     if (pendingRows) renderPendingUpdate(pendingRows);
     renderRegister(combinedRows);
