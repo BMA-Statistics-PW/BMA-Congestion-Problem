@@ -1,6 +1,6 @@
 {
   "source_xlsx": "data.xlsx",
-  "generated_at_utc": "2569-07-14T00:08:58Z",
+  "generated_at_utc": "2569-07-14T01:33:00Z",
   "total_sheets": 13,
   "files": [
     {
@@ -69,6 +69,6 @@
       "rows": 21
     }
   ],
-  "updated_at": "2569-07-14T00:08:58Z",
-  "update_note": "rebuild จากไฟล์ตรวจทาน 13 ก.ค. 2569 — cluster 375 จุดจริง, จุดค้างดำเนินการ (กทม.) 19 จุด, sol_* คงเดิม 196 แถว"
+  "updated_at": "2569-07-14T01:33:00Z",
+  "update_note": "rebuild จากไฟล์ตรวจทาน 13 ก.ค. 2569 — cluster 375 จุดจริง, จุดค้างดำเนินการ (กทม.) 18 จุด, sol_* คงเดิม 196 แถว"
 }
