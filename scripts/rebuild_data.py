@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""rebuild_data.py v2 (11 ก.ค. 2569) — สร้างชั้นข้อมูลทั้งหมดจากไฟล์ตรวจทาน
+"""rebuild_data.py v2 (13 ก.ค. 2569) — สร้างชั้นข้อมูลทั้งหมดจากไฟล์ตรวจทาน
 กฎ cluster_id: พิกัด <20 ม. = จุดเดียวกัน · ยกเว้นพื้นที่บางบอน (ต้องชื่อตรงกัน)
 และประเภทปัญหาต่างกันปี 2567/2568 ไม่รวมเป็นจุดเดียว · 13_Pending เฉพาะจุด กทม.
 sol_* คงจาก combined_data.json เดิม (จับคู่ year+point_id)
@@ -167,7 +167,7 @@ except Exception:
 be=now.replace(year=now.year+543)
 ts=be.strftime('%Y-%m-%dT%H:%M:%SZ')
 man['generated_at_utc']=ts; man['updated_at']=ts
-man['update_note']=f'rebuild จากไฟล์ตรวจทาน 11 ก.ค. 2569 — cluster {n_cl} จุดจริง, จุดค้างดำเนินการ (กทม.) {len(p13)} จุด, sol_* คงเดิม {n_sol} แถว'
+man['update_note']=f'rebuild จากไฟล์ตรวจทาน 13 ก.ค. 2569 — cluster {n_cl} จุดจริง, จุดค้างดำเนินการ (กทม.) {len(p13)} จุด, sol_* คงเดิม {n_sol} แถว'
 with open(f'{REPO}/data/manifest.json','w',encoding='utf-8') as f:
     json.dump(man,f,ensure_ascii=False,indent=2)
 print('rows:',counts,'| clusters:',n_cl,'| pending(กทม.):',len(p13),'| sol migrated:',n_sol)

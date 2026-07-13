@@ -1,6 +1,6 @@
 {
   "source_xlsx": "data.xlsx",
-  "generated_at_utc": "2569-07-12T00:18:39Z",
+  "generated_at_utc": "2569-07-14T00:08:58Z",
   "total_sheets": 13,
   "files": [
     {
@@ -69,6 +69,6 @@
       "rows": 21
     }
   ],
-  "updated_at": "2569-07-12T01:05:01Z",
-  "update_note": "regenerate ชีตวิเคราะห์ 01-12 ทั้งหมดจากชุดข้อมูลตรวจทาน 11 ก.ค. 2569 (corridors DBSCAN eps400 = 45, ครบ 3 ปี 26; hotspots chronic 20)"
+  "updated_at": "2569-07-14T00:08:58Z",
+  "update_note": "rebuild จากไฟล์ตรวจทาน 13 ก.ค. 2569 — cluster 375 จุดจริง, จุดค้างดำเนินการ (กทม.) 19 จุด, sol_* คงเดิม 196 แถว"
 }
